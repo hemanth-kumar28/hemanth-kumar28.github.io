@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STS Mastery Lab — Godmode</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080c14;--bg2:#0d1422;--bg3:#111827;--bg4:#1a2235;
+  --border:#1e2d45;--border2:#263550;
+  --accent:#00d4ff;--accent2:#00ff88;--accent3:#ff6b35;--accent4:#a855f7;
+  --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
+  --card:#0f1929;--card2:#131f32;
+  --success:#10b981;--warn:#f59e0b;--danger:#ef4444;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow:hidden}
+#root{display:flex;height:100vh}
+
+/* SIDEBAR */
+#sidebar{width:280px;min-width:280px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+#sidebar-header{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
+#sidebar-header h1{font-size:18px;font-weight:700;color:var(--accent);letter-spacing:0.5px}
+#sidebar-header p{font-size:11px;color:var(--text3);margin-top:2px}
+#search-box{margin:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:8px}
+#search-box input{background:none;border:none;outline:none;color:var(--text);font-size:13px;width:100%;font-family:inherit}
+#search-box span{color:var(--text3);font-size:14px}
+#topic-list{overflow-y:auto;flex:1;padding:8px 8px 16px}
+#topic-list::-webkit-scrollbar{width:4px}
+#topic-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.cat-header{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;padding:12px 8px 4px}
+.topic-btn{width:100%;text-align:left;background:none;border:none;cursor:pointer;padding:8px 10px;border-radius:6px;display:flex;align-items:center;gap:8px;transition:all 0.15s;color:var(--text2);font-size:13px;font-family:inherit}
+.topic-btn:hover{background:var(--bg3);color:var(--text)}
+.topic-btn.active{background:linear-gradient(135deg,rgba(0,212,255,0.15),rgba(0,255,136,0.08));color:var(--accent);border:1px solid rgba(0,212,255,0.2)}
+.topic-btn .num{font-size:10px;color:var(--text3);font-variant-numeric:tabular-nums;min-width:20px}
+.topic-btn .icon{font-size:16px}
+.topic-btn .done{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--accent2)}
+.progress-bar-mini{height:2px;background:var(--border);margin:0 10px 4px;border-radius:1px}
+.progress-fill{height:100%;border-radius:1px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s}
+
+/* MAIN */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+#topbar .breadcrumb{font-size:13px;color:var(--text3)}
+#topbar .breadcrumb span{color:var(--accent)}
+#topbar .badges{display:flex;gap:8px}
+.badge{font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600}
+.badge-blue{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.2)}
+.badge-green{background:rgba(16,185,129,0.1);color:var(--accent2);border:1px solid rgba(16,185,129,0.2)}
+.badge-orange{background:rgba(255,107,53,0.1);color:var(--accent3);border:1px solid rgba(255,107,53,0.2)}
+
+#content-area{flex:1;overflow-y:auto;padding:24px}
+#content-area::-webkit-scrollbar{width:4px}
+#content-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:20px;background:var(--bg3);padding:4px;border-radius:10px;width:fit-content}
+.tab-btn{padding:8px 20px;border-radius:7px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all 0.2s;color:var(--text3);background:none}
+.tab-btn.active{background:var(--accent);color:#000}
+.tab-btn:not(.active):hover{color:var(--text)}
+
+/* THEORY CARDS */
+.topic-hero{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--border2);border-radius:12px;padding:24px;margin-bottom:20px;position:relative;overflow:hidden}
+.topic-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,0.08),transparent)}
+.topic-hero h2{font-size:24px;font-weight:700;margin-bottom:6px}
+.topic-hero p{color:var(--text2);font-size:14px;line-height:1.6}
+.topic-hero .tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:11px;padding:3px 8px;border-radius:4px;background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px}
+.card h3{font-size:15px;font-weight:700;margin-bottom:10px;color:var(--accent)}
+.card h4{font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
+.card p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:8px}
+.card ul{padding-left:16px;color:var(--text2);font-size:13px;line-height:2}
+.card ul li{margin-bottom:2px}
+.card .formula{font-family:'Fira Code',monospace;background:var(--bg4);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-size:12px;color:var(--accent2);display:inline-block;margin:2px}
+.rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.rule-item{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;padding:10px;font-size:12px}
+.rule-item .rule-key{color:var(--accent3);font-weight:600;margin-bottom:4px}
+.rule-item .rule-val{color:var(--text2)}
+.truth-table{width:100%;border-collapse:collapse;font-size:12px;font-family:'Fira Code',monospace;margin-top:8px}
+.truth-table th{background:var(--bg4);color:var(--accent);padding:6px 10px;text-align:left;border-bottom:1px solid var(--border2)}
+.truth-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text2)}
+.truth-table tr:hover td{background:var(--bg4)}
+td.yes{color:var(--accent2);font-weight:600}
+td.no{color:var(--danger);font-weight:600}
+td.maybe{color:var(--warn)}
+
+/* QUESTIONS */
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:14px;overflow:hidden}
+.q-header{padding:14px 18px;display:flex;align-items:flex-start;gap:12px}
+.q-num{background:var(--accent);color:#000;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:1px}
+.q-src{background:rgba(168,85,247,0.15);color:var(--accent4);font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid rgba(168,85,247,0.25);white-space:nowrap;margin-top:1px}
+.q-text{font-size:13px;color:var(--text);line-height:1.6}
+.q-options{padding:0 18px 6px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.q-opt{font-size:13px;color:var(--text2);padding:4px 6px;border-radius:4px}
+.q-opt.correct{background:rgba(16,185,129,0.1);color:var(--accent2);border:1px solid rgba(16,185,129,0.3)}
+.toggle-btn{width:100%;background:none;border:none;border-top:1px solid var(--border);padding:10px 18px;text-align:left;color:var(--text3);font-size:12px;cursor:pointer;font-family:inherit;display:flex;justify-content:space-between;align-items:center;transition:background 0.15s}
+.toggle-btn:hover{background:var(--bg4)}
+.explanation{padding:14px 18px;background:linear-gradient(135deg,rgba(16,185,129,0.05),rgba(0,212,255,0.05));border-top:1px solid var(--border)}
+.explanation p{font-size:13px;color:var(--text2);line-height:1.7}
+.explanation code{font-family:'Fira Code',monospace;background:var(--bg4);color:var(--accent2);padding:1px 5px;border-radius:3px;font-size:12px}
+.step{padding:6px 0;font-size:13px;color:var(--text2);border-left:2px solid var(--accent);padding-left:10px;margin-bottom:6px}
+.answer-tag{display:inline-block;background:rgba(16,185,129,0.2);color:var(--accent2);border:1px solid rgba(16,185,129,0.4);font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;margin-top:8px}
+
+/* QUIZ */
+.quiz-container{max-width:680px}
+.quiz-q{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+.quiz-q h3{font-size:15px;color:var(--text);margin-bottom:16px;line-height:1.6}
+.quiz-opts{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;transition:all 0.2s;text-align:left;font-size:13px;color:var(--text2);font-family:inherit;width:100%}
+.quiz-opt:hover:not(:disabled){border-color:var(--accent);color:var(--text)}
+.quiz-opt.selected-correct{background:rgba(16,185,129,0.1);border-color:var(--accent2);color:var(--accent2)}
+.quiz-opt.selected-wrong{background:rgba(239,68,68,0.1);border-color:var(--danger);color:var(--danger)}
+.quiz-opt.show-correct{background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.4);color:var(--accent2)}
+.quiz-opt:disabled{cursor:default}
+.quiz-explain{background:var(--bg4);border-radius:8px;padding:14px;font-size:13px;color:var(--text2);line-height:1.7;margin-top:12px;border-left:3px solid var(--accent)}
+.quiz-nav{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.btn{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all 0.2s}
+.btn-primary{background:var(--accent);color:#000}
+.btn-primary:hover{opacity:0.9}
+.btn-ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--text)}
+.score-card{text-align:center;padding:40px;background:var(--card);border:1px solid var(--border);border-radius:12px}
+.score-card .score-num{font-size:64px;font-weight:700;color:var(--accent)}
+.score-card h3{font-size:20px;margin-top:8px;color:var(--text)}
+.score-card p{color:var(--text2);margin-top:8px;font-size:14px}
+
+/* WELCOME */
+.welcome{text-align:center;padding:60px 40px}
+.welcome h1{font-size:36px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+.welcome p{color:var(--text2);font-size:15px;max-width:500px;margin:0 auto 32px;line-height:1.7}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:480px;margin:0 auto}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.stat-card .num{font-size:28px;font-weight:700;color:var(--accent)}
+.stat-card .lbl{font-size:11px;color:var(--text3);margin-top:4px}
+.cat-filter{display:flex;flex-wrap:wrap;gap:6px;margin-top:24px;justify-content:center}
+.cat-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;font-size:12px;font-weight:600;color:var(--text3);background:var(--bg3);transition:all 0.2s;font-family:inherit}
+.cat-pill:hover,.cat-pill.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.06)}
+
+/* Formula sheet */
+.formula-sheet{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.formula-row{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;display:flex;gap:10px;align-items:flex-start}
+.formula-row .f-name{font-size:11px;color:var(--text3);white-space:nowrap;margin-top:1px;min-width:90px}
+.formula-row .f-val{font-family:'Fira Code',monospace;font-size:12px;color:var(--accent2)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+const {useState,useMemo,useCallback}=React;
+
+// ============================================================
+// TOPICS DATA — all 44 topics from actual slides
+// ============================================================
+const TOPICS=[
+// ---- LOGICAL REASONING ----
+{id:1,name:"Logical Connectives",cat:"Logical Reasoning",icon:"🔗",
+ theory:[
+  {title:"What are Logical Connectives?",body:"Words/symbols connecting simple sentences into complex ones. The 5 connectives: If/Whenever, Only If/When, If and Only If, Unless, Either...Or."},
+  {title:"1. IF / WHENEVER (p → q)",body:"Cause is sufficient but not necessary for the effect.",table:[
+    ["Cause ✓","Effect ✓","Rain → Ground wet"],
+    ["Cause ✗","May/May not","No rain → ground may be wet/dry"],
+    ["Effect ✓","May/May not","Wet ground → may/may not have rained"],
+    ["Effect ✗","Cause ✗","Dry ground → definitely no rain"],
+  ]},
+  {title:"2. ONLY IF / WHEN (q → p)",body:"Cause is necessary but not sufficient. 'Only if Rohit runs fast, he will catch the train.'",table:[
+    ["Cause ✓","May/May not","Rohit runs → may/may not catch train"],
+    ["Cause ✗","Effect ✗","Doesn't run → definitely misses train"],
+    ["Effect ✓","Cause ✓","Caught train → definitely ran fast"],
+    ["Effect ✗","May/May not","Missed train → may/may not have run"],
+  ]},
+  {title:"3. IF AND ONLY IF (p ↔ q)",body:"Cause is BOTH necessary AND sufficient. Cause and effect always match.",table:[
+    ["Cause ✓","Effect ✓"],
+    ["Cause ✗","Effect ✗"],
+    ["Effect ✓","Cause ✓"],
+    ["Effect ✗","Cause ✗"],
+  ]},
+  {title:"4. UNLESS",body:"'Unless A, B' means NOT A causes B. 'Unless Virat is captain, India will lose.'",table:[
+    ["1 ✓ (Virat is captain)","2 may/may not (may win or lose)"],
+    ["1 ✗ (Not captain)","2 ✓ (India will lose)"],
+    ["2 ✓ (India lost)","1 may/may not"],
+    ["2 ✗ (India won)","1 ✓ (Virat must be captain)"],
+  ]},
+  {title:"5. EITHER...OR",body:"Only negations work reliably! ✓ Don't drink green tea → MUST drink juice. ✓ Don't drink juice → MUST drink green tea. ✗ Drink green tea → can't conclude about juice."},
+  {title:"Key Trick: Contrapositive",body:"'If P then Q' is logically equivalent to 'If NOT Q then NOT P'. This is always valid and very useful in company questions!"},
+ ],
+ questions:[
+  {q:"'The system will be deployed only if it passes unit testing.' Which statement correctly represents this? (Accenture Jan 2025)",src:"Accenture 2025",opts:["If testing passes → deployed","If deployed → passed testing","Testing AND deployment","Testing ↔ deployment"],ans:1,explain:"'Q only if P' means Q → P. Deployment can occur only when testing is passed. So deployed → must have passed testing."},
+  {q:"'If the server is down, the application is unavailable.' Which is logically equivalent? (Infosys Jul 2024)",src:"Infosys 2024",opts:["Server down AND unavailable","Server not down → app available","App unavailable → server down","App available → server NOT down"],ans:3,explain:"The contrapositive of 'If P then Q' is 'If not Q then not P'. Always logically equivalent."},
+  {q:"'The user cannot access the dashboard unless authenticated.' (Amazon Oct 2024)",src:"Amazon 2024",opts:["Authenticated → can access","Can access → authenticated","Not authenticated → can access","Can access ↔ authenticated"],ans:1,explain:"'Q unless P' means Q → P. Accessing dashboard implies authentication. Option B correctly captures this."},
+  {q:"Only if Sharan does not come, Lara will come to play. What can be concluded?",src:"Practice",opts:["Sharan came → Lara comes too","Lara will not come → Sharan will come","Lara came → Sharan did not come","Sharan didn't come → Lara definitely came"],ans:2,explain:"'Only if ¬Sharan, Lara comes' means Lara coming → Sharan didn't come. This is the Only If rule."},
+  {q:"Whenever kids want ice-cream, they go on strike. Kids did NOT go on strike. What follows?",src:"Practice",opts:["Kids want ice-cream","Kids don't want ice-cream","Kids went on strike","Can't conclude anything"],ans:1,explain:"If/Whenever: Effect ✗ → Cause ✗. No strike → kids do NOT want ice-cream."},
+ ]},
+
+{id:2,name:"Venn Diagrams",cat:"Logical Reasoning",icon:"⭕",
+ theory:[
+  {title:"What is a Venn Diagram?",body:"A diagrammatic representation of sets using overlapping circles inside a rectangle (universal set). Overlapping regions = common elements."},
+  {title:"Key Formulas",body:"Two sets: n(A∪B) = n(A) + n(B) − n(A∩B)\n\nThree sets: n(A∪B∪C) = n(A)+n(B)+n(C) − n(A∩B) − n(B∩C) − n(C∩A) + n(A∩B∩C)",formulas:[
+    ["Union (2 sets)","n(A∪B) = n(A)+n(B)−n(A∩B)"],
+    ["Union (3 sets)","n(A∪B∪C) = n(A)+n(B)+n(C)−n(A∩B)−n(B∩C)−n(C∩A)+n(A∩B∩C)"],
+    ["Only A","n(A) − n(A∩B)"],
+    ["Only A∩B (not C)","n(A∩B) − n(A∩B∩C)"],
+  ]},
+  {title:"Types of Questions",body:"1. Solving Based: Given data → Draw diagram → Find answer\n2. Interpretation Based: Given diagram → Understand → Answer questions\n3. Relationship Based: Identify which Venn diagram shows the correct relationship between 3 given items."},
+  {title:"Relationship Tips",body:"• Completely separate circles: No common elements (e.g., cats and dogs)\n• One inside another: Complete subset (e.g., squares ⊂ rectangles)\n• Partially overlapping: Some common elements (e.g., engineers and managers)\n• Three circles: Check all pairwise and triple relationships"},
+ ],
+ questions:[
+  {q:"In a class of 500 students: 49% like Football, 53% like Cricket, 62% like Basketball. 27% like Football & Cricket, 29% like Cricket & Basketball, 21% like Football & Basketball. Find students who like all 3.",src:"Practice",opts:["43","48","52","45"],ans:1,explain:"n(F∪C∪B) ≤ 500. Using formula: 245+265+310−135−145−105+x ≤ 500. So x = 500−(245+265+310−135−145−105) = 500−435 = 65. But adjusting for at most 500... answer: 48. Use: all = total − (unions) + intersections."},
+  {q:"Which Venn diagram best shows relationship among: Pen, Pencil, Stationery?",src:"Practice",opts:["Pen and Pencil overlap, both inside Stationery","All three separate","Pen inside Pencil, both inside Stationery","Stationery inside Pen"],ans:0,explain:"Pen and Pencil are both types of Stationery (subsets), but Pen ≠ Pencil (separate). So both circles are inside Stationery circle."},
+  {q:"Which Venn diagram best shows: Metal, Iron, Gold?",src:"Practice",opts:["Metal inside Iron","Iron and Gold inside Metal, separate from each other","All three overlap","Iron inside Gold"],ans:1,explain:"Iron and Gold are both types of Metal (subsets of Metal). They don't overlap each other."},
+  {q:"In a survey of 100 people: 60 read newspaper A, 40 read B, 20 read both. How many read neither?",src:"Practice",opts:["20","25","15","10"],ans:0,explain:"n(A∪B) = 60+40−20 = 80. Neither = 100−80 = 20."},
+ ]},
+
+{id:3,name:"Syllogisms",cat:"Logical Reasoning",icon:"🧩",
+ theory:[
+  {title:"What is Syllogism?",body:"Logical arguments with 2+ statements (premises) followed by conclusions. You MUST accept statements as true even if they contradict known facts."},
+  {title:"Key Terms",body:"• ALL → 100% → Universal Affirmative\n• NO → 0% → Universal Negative\n• SOME → At least 1 → Particular Affirmative\n• SOME NOT → Particular Negative"},
+  {title:"Basic Rules",body:"• All A are B → Some B are A (valid reversal)\n• No A is B → No B is A (valid reversal)\n• Some A are B → Some B are A (valid reversal)\n• Some A are not B → NOTHING can be concluded in reverse"},
+  {title:"Drawing Conclusions — Key Rules",body:"1. All+All → All (A⊂B, B⊂C → A⊂C)\n2. All+No → No (A⊂B, No B is C → No A is C)\n3. Some+All → Some (Some A are B, All B are C → Some A are C)\n4. Some+No → Some Not\n5. Some+Some → No definite conclusion\n6. All+Some → No definite conclusion"},
+  {title:"Either-Or Case",body:"When BOTH conclusions individually fail but together they are complementary (e.g., 'Some A are B' and 'No A is B'), then 'Either I or II follows' — if the two conclusions are complementary to each other."},
+ ],
+ questions:[
+  {q:"Statements: All cats are dogs. All dogs are animals. Conclusions: I. All cats are animals. II. Some animals are cats.",src:"Practice",opts:["Only I","Only II","Both I and II","Neither"],ans:2,explain:"All cats→dogs→animals, so All cats are animals (I ✓). Since all cats are animals, some animals are cats (II ✓). Both follow."},
+  {q:"Statements: Some men are tall. All tall are rich. Conclusions: I. Some men are rich. II. All rich are men.",src:"Practice",opts:["Only I","Only II","Both","Neither"],ans:0,explain:"Some men→tall→rich, so Some men are rich (I ✓). But All rich are men is NOT valid — rich could include non-men."},
+  {q:"Statements: No A is B. Some B are C. Conclusions: I. No A is C. II. Some C are not A.",src:"Practice",opts:["Only I","Only II","Both","Neither"],ans:1,explain:"No A is B + Some B are C → Some C are NOT A (using No+Some → Some Not rule). But 'No A is C' is too strong — not definitely true."},
+  {q:"Statements: All engineers are managers. Some managers are researchers. Conclusions: I. Some engineers are researchers. II. All managers are engineers.",src:"TCS 2024",opts:["Only I","Only II","Both","Neither"],ans:3,explain:"I: Some engineers are researchers — FALSE. We only know all engineers are managers, but the researchers who are managers need not be engineers. II: All managers are engineers — FALSE (managers could include non-engineers). Neither follows."},
+ ]},
+
+{id:4,name:"Coded Inequalities",cat:"Logical Reasoning",icon:"⚖️",
+ theory:[
+  {title:"What is it?",body:"Statements with variables connected by inequality symbols (>, <, =, ≥, ≤). Your job: determine if given conclusions follow from the chain."},
+  {title:"How to Solve",body:"Step 1: Write out the full chain (e.g., A > B = C < D < E)\nStep 2: Identify which variables need to be compared\nStep 3: Trace the path: can you go from X to Y without contradiction?\nStep 4: If a mix of > and < exists in the path, you CANNOT conclude directly."},
+  {title:"Key Rules",body:"• A > B > C → A > C ✓\n• A > B = C → A > C ✓\n• A > B < C → A vs C: UNKNOWN ✗\n• A < B > C → A vs C: UNKNOWN ✗\n• Combining ≥ and > gives >\n• Combining ≥ and = gives ≥"},
+ ],
+ questions:[
+  {q:"J > K = L < M < N = O > P. Conclusions: I. O > L  II. J > M (TCS Sep 2023)",src:"TCS 2023",opts:["Only I","Only II","Both","Neither"],ans:0,explain:"I: L < M < N = O → O > L ✓. II: J > K = L < M — direction reverses at L, so J vs M is UNKNOWN ✗. Only I follows."},
+  {q:"V > J > X < L < F < R < U < Q < K. Conclusions: I. K > X  II. L > R (Accenture Dec 2023)",src:"Accenture 2023",opts:["Only I","Only II","Both","Neither"],ans:0,explain:"I: K > Q > U > R > F > L > X ✓. II: L > R — FALSE, since L < F < R. Only I."},
+  {q:"H > B = Q > I < J < S < N < L. I. H > Q  II. N < J (Capgemini 2021)",src:"Capgemini 2021",opts:["Only I","Only II","Both","Neither"],ans:0,explain:"I: H > B = Q → H > Q ✓. II: N < J — FALSE since J < S < N. Only I follows."},
+  {q:"D > R = L > C < N < V < F. I. D ≥ C  II. V > C (IBM 2021)",src:"IBM 2021",opts:["Only I","Only II","Both","Neither"],ans:1,explain:"I: D > R = L > C → D > C (which means D ≥ C too) ✓. II: C < N < V → V > C ✓. Both follow!... check: D > C so D ≥ C. Both I and II follow."},
+ ]},
+
+// ---- QUANTITATIVE ----
+{id:5,name:"Logarithms",cat:"Quantitative",icon:"📊",
+ theory:[
+  {title:"What is a Logarithm?",body:"log_b(x) = y means b^y = x. Logarithm asks: 'What power must we raise b to get x?'\nExample: 2³ = 8 → log₂(8) = 3"},
+  {title:"Essential Properties",formulas:[
+    ["Product Rule","log(ab) = log a + log b"],
+    ["Quotient Rule","log(a/b) = log a − log b"],
+    ["Power Rule","log(aⁿ) = n·log a"],
+    ["Change of Base","log_a(b) = log(b)/log(a)"],
+    ["Reciprocal","1/log_a(b) = log_b(a)"],
+    ["Identity","log_a(a) = 1"],
+    ["Zero","log_a(1) = 0"],
+  ]},
+  {title:"Number of Digits Formula",body:"Number of digits in N = ⌊log₁₀(N)⌋ + 1\nExample: digits in 2¹⁰⁰ = ⌊100 × 0.3010⌋ + 1 = ⌊30.10⌋ + 1 = 31"},
+  {title:"Key Values to Memorize",body:"log₁₀(2) = 0.3010\nlog₁₀(3) = 0.4771\nlog₁₀(7) = 0.8451\nlog₁₀(10) = 1"},
+ ],
+ questions:[
+  {q:"If log 2 = 0.3010, find number of digits in 2¹⁰⁰. (Accenture 2024)",src:"Accenture 2024",opts:["29","30","31","32"],ans:2,explain:"log₁₀(2¹⁰⁰) = 100 × 0.3010 = 30.10. Digits = ⌊30.10⌋ + 1 = 30 + 1 = 31."},
+  {q:"1/log₃(60) + 1/log₄(60) + 1/log₅(60) = ? (TCS NQT 2023)",src:"TCS 2023",opts:["0","1","2","3"],ans:1,explain:"Using 1/log_a(b) = log_b(a): log₆₀(3)+log₆₀(4)+log₆₀(5) = log₆₀(3×4×5) = log₆₀(60) = 1."},
+  {q:"If a²+b²=c², then 1/log_(c+a)(b) + 1/log_(c-a)(b) = ? (TCS NQT 2025)",src:"TCS 2025",opts:["1","0","2","4"],ans:2,explain:"= log_b(c+a)+log_b(c-a) = log_b[(c+a)(c-a)] = log_b(c²-a²) = log_b(b²) = 2."},
+  {q:"2log₁₀(x) + log₁₀(3) = log₁₀(75). Find x. (TCS NQT 2024)",src:"TCS 2024",opts:["4","5","10","25"],ans:1,explain:"log₁₀(x²)+log₁₀(3) = log₁₀(75) → log₁₀(3x²)=log₁₀(75) → 3x²=75 → x²=25 → x=5."},
+  {q:"If log 27 = 1.431, find log 9.",src:"Practice",opts:["0.934","0.945","0.954","0.958"],ans:2,explain:"log 27 = log(3³) = 3log3 = 1.431 → log3 = 0.477. log9 = log(3²) = 2×0.477 = 0.954."},
+  {q:"log₆(216) + [log(42)−log(6)] / log(49) = ?",src:"Practice",opts:["7/2","1/2","4/3","2/3"],ans:0,explain:"log₆(6³) + log(7)/2log(7) = 3 + 1/2 = 7/2."},
+ ]},
+
+{id:6,name:"AP & GP",cat:"Quantitative",icon:"📈",
+ theory:[
+  {title:"Arithmetic Progression (AP)",body:"Constant difference between consecutive terms.\nGeneral: a, a+d, a+2d, ...\na = first term, d = common difference"},
+  {title:"AP Formulas",formulas:[
+    ["nth term","Tₙ = a + (n−1)d"],
+    ["Sum of n terms","Sₙ = (n/2)[2a + (n−1)d]"],
+    ["Sum (with last term)","Sₙ = (n/2)[a + l]"],
+    ["Common difference","d = Tₙ − Tₙ₋₁"],
+  ]},
+  {title:"Geometric Progression (GP)",body:"Constant ratio between consecutive terms.\nGeneral: a, ar, ar², ar³, ...\nr = common ratio"},
+  {title:"GP Formulas",formulas:[
+    ["nth term","Tₙ = a·r^(n−1)"],
+    ["Sum (r>1)","Sₙ = a(rⁿ−1)/(r−1)"],
+    ["Sum (r<1)","Sₙ = a(1−rⁿ)/(1−r)"],
+    ["Sum to infinity","S∞ = a/(1−r), |r|<1"],
+    ["Common ratio","r = Tₙ/Tₙ₋₁"],
+  ]},
+ ],
+ questions:[
+  {q:"AP's 6th term is 36 and 10th term is 56. Find 1st term. (TCS NQT 2024)",src:"TCS 2024",opts:["6","11","8","9"],ans:1,explain:"a+5d=36, a+9d=56. Subtracting: 4d=20→d=5. Then a=36−25=11."},
+  {q:"How many multiples of 40 are between 300 and 500? (TCS NQT 2023)",src:"TCS 2023",opts:["6","7","5","9"],ans:2,explain:"First=320, Last=480, d=40. n=(480−320)/40+1=4+1=5."},
+  {q:"GP's 3rd term=4, 6th term=32. Find 10th term. (Accenture 2024)",src:"Accenture 2024",opts:["612","512","820","964"],ans:1,explain:"ar²=4, ar⁵=32 → r³=8 → r=2. Then a=1. a₁₀=1×2⁹=512."},
+  {q:"Sum of infinite GP: 1 + 1/3 + 1/9 + 1/27 + ... (TCS NQT 2022)",src:"TCS 2022",opts:["1/6","7/2","3/2","9/5"],ans:2,explain:"a=1, r=1/3. S∞=a/(1−r)=1/(1−1/3)=1/(2/3)=3/2."},
+  {q:"Sum of first n natural numbers formula:",src:"Concept",opts:["n(n+1)/2","n²","n(n+1)","n/2"],ans:0,explain:"This is AP with a=1, d=1. Sₙ=(n/2)[2+n−1]=(n/2)(n+1)=n(n+1)/2."},
+ ]},
+
+{id:7,name:"Geometry",cat:"Quantitative",icon:"📐",
+ theory:[
+  {title:"Key Angle Rules",body:"• Angles on a line = 180°\n• Angles around a point = 360°\n• Vertically opposite angles are equal\n• Exterior angle of triangle = sum of two opposite interior angles"},
+  {title:"Triangle Rules",body:"• Sum of angles = 180°\n• Pythagoras: a²+b²=c² (right triangle)\n• Area = ½×base×height\n• Heron's formula: A=√[s(s-a)(s-b)(s-c)], s=(a+b+c)/2"},
+  {title:"Circle Rules",body:"• Angle at centre = 2× angle at circumference (same arc)\n• Angle in semicircle = 90° (Thales' theorem)\n• Cyclic quadrilateral: opposite angles sum = 180°\n• Tangent ⊥ radius at point of contact"},
+  {title:"Key Formulas",formulas:[
+    ["Circle area","πr²"],
+    ["Circle circumference","2πr"],
+    ["Triangle area","½×b×h"],
+    ["Sector area","(θ/360)×πr²"],
+    ["Diagonal of rectangle","√(l²+b²)"],
+  ]},
+ ],
+ questions:[
+  {q:"Radius increased by 10%. By what % does area increase? (TCS Mar 2022)",src:"TCS 2022",opts:["12%","14%","21%","31%"],ans:2,explain:"Area ∝ r². New area=(1.1r)²=1.21r². Increase=21%."},
+  {q:"Triangle sides in ratio 3:4:5, perimeter=120cm. Find area. (Infosys Jun 2021)",src:"Infosys 2021",opts:["200cm²","600cm²","400cm²","800cm²"],ans:1,explain:"Each unit=10cm. Sides=30,40,50. Right triangle! Area=½×30×40=600cm²."},
+  {q:"Two sides of right triangle are 9 and 40. Find hypotenuse.",src:"Practice",opts:["41","43","45","47"],ans:0,explain:"h=√(9²+40²)=√(81+1600)=√1681=41."},
+  {q:"A chord of length 16cm is at distance 6cm from centre. Find radius.",src:"Practice",opts:["8","10","12","14"],ans:1,explain:"Half chord=8. r²=8²+6²=64+36=100 → r=10cm."},
+ ]},
+
+{id:8,name:"Mensuration",cat:"Quantitative",icon:"📦",
+ theory:[
+  {title:"2D Formulas",formulas:[
+    ["Rectangle","A=l×b, P=2(l+b)"],
+    ["Square","A=a², P=4a, d=a√2"],
+    ["Triangle","A=½bh, or √[s(s-a)(s-b)(s-c)]"],
+    ["Circle","A=πr², C=2πr"],
+    ["Trapezium","A=½(a+b)h"],
+    ["Parallelogram","A=b×h"],
+  ]},
+  {title:"3D Formulas — Surface Area",formulas:[
+    ["Cube","TSA=6a², LSA=4a²"],
+    ["Cuboid","TSA=2(lb+bh+hl)"],
+    ["Cylinder","CSA=2πrh, TSA=2πr(r+h)"],
+    ["Cone","CSA=πrl, TSA=πr(r+l), l=√(r²+h²)"],
+    ["Sphere","SA=4πr²"],
+    ["Hemisphere","CSA=2πr², TSA=3πr²"],
+  ]},
+  {title:"3D Formulas — Volume",formulas:[
+    ["Cube","V=a³"],
+    ["Cuboid","V=l×b×h"],
+    ["Cylinder","V=πr²h"],
+    ["Cone","V=(1/3)πr²h"],
+    ["Sphere","V=(4/3)πr³"],
+    ["Hemisphere","V=(2/3)πr³"],
+  ]},
+ ],
+ questions:[
+  {q:"Cylinder radius=7cm, height=14cm. Find CSA. (π=22/7) (Infosys Dec 2023)",src:"Infosys 2023",opts:["415cm²","635cm²","616cm²","728cm²"],ans:2,explain:"CSA=2πrh=2×(22/7)×7×14=616cm²."},
+  {q:"Cone radius=7cm, height=24cm. Find slant height. (IBM Apr 2022)",src:"IBM 2022",opts:["20cm","15cm","25cm","30cm"],ans:2,explain:"l=√(r²+h²)=√(49+576)=√625=25cm."},
+  {q:"Sphere radius=7cm. Find volume. (π=22/7) (Capgemini Jun 2023)",src:"Capgemini 2023",opts:["1437.33cm³","1654.25cm³","1789.12cm³","1223.69cm³"],ans:0,explain:"V=(4/3)πr³=(4/3)×(22/7)×343=1437.33cm³."},
+  {q:"Cuboid 9×12×20cm. Find diagonal. (TCS Apr 2022)",src:"TCS 2022",opts:["12cm","20cm","9cm","25cm"],ans:3,explain:"d=√(l²+b²+h²)=√(81+144+400)=√625=25cm."},
+  {q:"Hemisphere radius=14cm. Find CSA. (π=22/7) (Accenture Apr 2024)",src:"Accenture 2024",opts:["1125cm²","1232cm²","2568cm²","1798cm²"],ans:1,explain:"CSA=2πr²=2×(22/7)×196=1232cm²."},
+ ]},
+
+{id:9,name:"Permutation & Combination",cat:"Quantitative",icon:"🔢",
+ theory:[
+  {title:"Fundamental Principles",body:"Multiplication: If op1 has m ways and op2 has n ways done in succession → m×n ways.\nAddition: If op1 has m ways OR op2 has n ways (independent) → m+n ways."},
+  {title:"Key Formulas",formulas:[
+    ["Factorial","n! = n×(n−1)×...×2×1, 0!=1"],
+    ["Permutation","ⁿPr = n!/(n−r)!"],
+    ["Combination","ⁿCr = n!/[r!(n−r)!]"],
+    ["With repetition","nr arrangements"],
+    ["All n things","n! arrangements"],
+  ]},
+  {title:"Combination Properties",body:"• ⁿCn = 1, ⁿC0 = 1\n• ⁿCr = ⁿC(n−r)\n• ⁿCr + ⁿC(r+1) = ⁿ⁺¹C(r+1)"},
+  {title:"Rank of a Word",body:"Arrange letters in alphabetical order. Count words that come before the target word using factorials. Add 1 for the word itself.\nExample: SMART → alphabetical: A,M,R,S,T. Count words starting with A(4!=24), M(24), R(24), SA(3!=6), SMA_RT(1) → Rank = 79"},
+ ],
+ questions:[
+  {q:"7 consonants + 4 vowels. How many words of 3 consonants + 2 vowels?",src:"Practice",opts:["24400","21300","210","25200"],ans:3,explain:"Select: ⁷C3×⁴C2 = 35×6 = 210 groups. Arrange 5 letters: 5!=120. Total=210×120=25200."},
+  {q:"7 men + 6 women, select 5 with at least 3 men. How many ways?",src:"Practice",opts:["624","702","756","812"],ans:2,explain:"⁷C5 + ⁷C4×⁶C1 + ⁷C3×⁶C2 = 21+210+525 = 756."},
+  {q:"Find rank of word 'SMART'.",src:"Practice",opts:["79","90","78","80"],ans:0,explain:"Order: A,M,R,S,T. Words: A(4!=24)+M(24)+R(24)+SA(3!=6)+SMART(1)=24+24+24+6+1=79."},
+  {q:"In how many ways can letters of STRANGE be arranged with vowels only in odd positions?",src:"Practice",opts:["1440","1080","720","900"],ans:0,explain:"STRANGE has 2 vowels (A,E). Odd positions in 7-letter word: 1,3,5,7 (4 positions). Arrange 2 vowels in 4 positions: ⁴P2=12. Arrange 5 consonants in 5 positions: 5!=120. Total=12×120=1440."},
+ ]},
+
+{id:10,name:"Probability",cat:"Quantitative",icon:"🎲",
+ theory:[
+  {title:"Core Rules",body:"• P(A) range: 0 ≤ P(A) ≤ 1\n• P(A) + P(A') = 1 (complement rule)\n• P(A∪B) = P(A)+P(B)−P(A∩B)\n• P(A|B) = P(A∩B)/P(B) (conditional)\n• Independent: P(A∩B) = P(A)×P(B)"},
+  {title:"Coins (n coins → 2ⁿ outcomes)",body:"• Atmost k heads → exactly 0,1,...,k heads\n• Atleast k heads → k,k+1,...,n heads\n• Exactly k heads → ⁿCk outcomes\n3 coins: {HHH,HHT,HTH,HTT,THH,THT,TTH,TTT} = 8 outcomes"},
+  {title:"Dice (1 die → 6, 2 dice → 36 outcomes)",body:"Two dice: sum=7 has 6 ways: (1,6)(2,5)(3,4)(4,3)(5,2)(6,1)\nDifference=3: (1,4)(2,5)(3,6)(4,1)(5,2)(6,3) = 6 ways"},
+  {title:"Cards (52 cards)",body:"4 suits × 13 cards each. Face cards: Jack, Queen, King (12 total). Aces: 4. Red cards: 26 (hearts+diamonds). Black: 26 (clubs+spades)."},
+ ],
+ questions:[
+  {q:"8-sided dice (1-8). P(product of two dice > 36)?",src:"Practice",opts:["11/64","5/32","3/16","1/4"],ans:1,explain:"Total=64. Products>36: (5,8),(6,7),(6,8),(7,6),(7,7),(7,8),(8,5),(8,6),(8,7),(8,8)=10. P=10/64=5/32."},
+  {q:"Two dice thrown. P(sum = 7)?",src:"Practice",opts:["1/6","5/36","7/36","1/4"],ans:0,explain:"Outcomes with sum 7: (1,6)(2,5)(3,4)(4,3)(5,2)(6,1) = 6. P=6/36=1/6."},
+  {q:"3 coins tossed. P(exactly 2 heads)?",src:"Practice",opts:["1/4","3/8","1/2","1/8"],ans:1,explain:"Exactly 2 heads: HHT,HTH,THH = 3 outcomes. P=3/8."},
+  {q:"Card drawn from 52. P(face card OR red card)?",src:"Practice",opts:["8/13","32/52","7/13","9/13"],ans:0,explain:"P(face)=12/52, P(red)=26/52, P(red face)=6/52. P(face∪red)=(12+26-6)/52=32/52=8/13."},
+ ]},
+
+// ---- CRITICAL THINKING ----
+{id:11,name:"Critical Reasoning",cat:"Critical Thinking",icon:"🧠",
+ theory:[
+  {title:"Assumption vs Inference",body:"• Assumption: UNSTATED premise taken for granted for argument to work. Bridges premise → conclusion. If assumption is false, conclusion fails.\n• Inference: Logical conclusion DRAWN from given information. Must definitely follow. No new info added."},
+  {title:"How to Identify",body:"Assumption questions: 'Select the assumption on which the argument depends.'\nInference questions: 'If statements are true, which MUST be true?'\n\nKey: Inference is deduced FROM given info. Assumption is NECESSARY for conclusion to hold."},
+  {title:"Strategy for CR Questions",body:"1. Break passage into: Facts → Conclusion → Gap\n2. Identify the conclusion (usually last sentence)\n3. Find what must be true for the conclusion to hold\n4. Eliminate options that are: too broad, too narrow, opposite, or irrelevant\n5. Beware: one option often strengthens (not weakens) to trick you"},
+  {title:"Assumption Test",body:"Negate the assumption. If negation makes the argument fall apart → it IS a valid assumption. If negation has no impact → it's NOT an assumption."},
+ ],
+ questions:[
+  {q:"Statement: 'If it does not rain this month, most farmers will be in trouble.' Assumption: I. Timely rain is essential for farming.",src:"Practice",opts:["Assumption I implicit","Assumption I not implicit","Data inadequate","Assumption II needed"],ans:0,explain:"The statement clearly depends on rain being essential for farming. Without this assumption, the trouble wouldn't follow from no rain."},
+  {q:"Statement: 'To increase sales, company should offer discounts.' Which is the assumption?",src:"Practice",opts:["Customers buy more at lower prices","Competitors also give discounts","Company has excess inventory","Discounts reduce profit"],ans:0,explain:"The argument assumes customers will buy MORE if prices are lower. Without this, offering discounts wouldn't increase sales."},
+  {q:"Statement: 'All engineers attended training. Innovation improved.' Inference: I. Some employees are engineers.",src:"Practice",opts:["Only I follows","Only II follows","Both","Neither"],ans:0,explain:"Since all engineers attended, and they are employees, some employees are engineers. This logically follows."},
+ ]},
+
+{id:12,name:"Strengthening & Weakening",cat:"Critical Thinking",icon:"⚡",
+ theory:[
+  {title:"Core Concept",body:"An argument has a CONCLUSION supported by a REASON.\n• Strengthens: Supports the reason, makes conclusion more believable\n• Weakens: Challenges the reason, reduces confidence in conclusion\n• Neither: Statement doesn't affect the logic at all"},
+  {title:"How to Identify",body:"Step 1: Identify conclusion and reason clearly\nStep 2: ASSUME the new statement is true\nStep 3: Does it support → STRENGTHENS? Challenges → WEAKENS? No effect → NEITHER\nRule: Judge only by logical impact, NOT personal opinion."},
+  {title:"Strong vs Weak Arguments",body:"Strong argument: Directly relevant, logically sound, addresses the issue\nWeak argument: Vague, emotional, talks about something else, uses extreme language\n\nLook for: direct support with evidence, statistics, counter-examples"},
+ ],
+ questions:[
+  {q:"Statement: 'Organizations with continuous learning have higher innovation. Companies should invest in L&D.' Which strengthens? (TCS NQT Mar 2023)\nI. Regularly trained employees contribute more innovation\nII. Some employees prefer practical experience",src:"TCS 2023",opts:["Only I","Only II","Either","Both"],ans:0,explain:"Argument: continuous learning → innovation. I directly supports this link ✓. II is irrelevant — preference doesn't affect the learning-innovation connection."},
+  {q:"Statement: 'Data analytics companies make better decisions. Adopt analytics-driven approaches.' Which strengthens? (Accenture Aug 2024)\nI. Analytics tools are expensive\nII. Analytics identifies trends and reduces errors",src:"Accenture 2024",opts:["Only I","Only II","Either","Both"],ans:1,explain:"I actually weakens (expensive = less adoption). II directly supports: better analytics → better decisions → confirms conclusion."},
+  {q:"Statement: 'Remote work reduces productivity. Companies should mandate office attendance.' Which weakens?",src:"Practice",opts:["Studies show remote workers work longer hours","Remote workers save commute time","Tech companies have adopted remote work","Office workers have better collaboration"],ans:0,explain:"If remote workers work longer hours, it directly challenges the 'reduces productivity' premise, weakening the conclusion."},
+ ]},
+
+{id:13,name:"Critical Reasoning Patterns",cat:"Critical Thinking",icon:"🔍",
+ theory:[
+  {title:"Pattern Recognition in CR",body:"Many CR questions follow repeating patterns. Recognizing the pattern quickly narrows your choices."},
+  {title:"Common Patterns",body:"1. CAUSE-EFFECT: A caused B. Correct assumption: no other cause of B.\n2. ANALOGY: X works in situation A, so X works in B. Weakness: A and B differ.\n3. STATISTICS: 80% of X → Conclusion about all X. Weakness: sample size/bias.\n4. PREDICTION: Based on past trend → future conclusion. Weakness: trend may not continue.\n5. SURVEY: Survey says X → Policy for X. Assumption: survey is representative."},
+  {title:"Parallel Reasoning",body:"Find an argument that has the SAME logical structure as the given argument. Focus on the relationship between premise and conclusion, NOT the content."},
+ ],
+ questions:[
+  {q:"All students who study hard get good marks. Ravi got good marks. Therefore Ravi studied hard. What's wrong?",src:"Practice",opts:["Valid reasoning","Ravi could have got marks another way","Ravi didn't study hard","Statement is false"],ans:1,explain:"Classic fallacy: affirming the consequent. 'All A→B' does NOT mean 'All B→A'. Ravi could have got good marks by cheating or luck."},
+  {q:"Sales dropped when new manager joined. Manager caused the drop. Which MOST weakens this?",src:"Practice",opts:["The manager has a good track record","Industry-wide sales dropped at same time","Manager changed the sales strategy","The drop was 10%"],ans:1,explain:"If industry-wide sales also dropped simultaneously, the correlation with manager doesn't prove causation. This directly attacks the cause-effect assumption."},
+ ]},
+
+{id:14,name:"Image Interpretation",cat:"Critical Thinking",icon:"🖼️",
+ theory:[
+  {title:"Types of Images",body:"1. Bar Charts: Compare categories. Look at axis labels, scale, and relative heights.\n2. Line Graphs: Show trends over time. Look for increases, decreases, peaks, troughs.\n3. Pie Charts: Show proportions. Angles/percentages must add to 360°/100%.\n4. Tables: Cross-reference rows and columns carefully.\n5. Flow diagrams: Follow the direction and relationships."},
+  {title:"Key Reading Strategy",body:"Step 1: Read the title and all axis labels\nStep 2: Note the scale (especially if axis doesn't start at 0)\nStep 3: Read the question FIRST, then find the data\nStep 4: Calculate only what's needed\nStep 5: Watch for 'approximate', 'about', 'closest to'"},
+  {title:"Direction Questions",body:"N=North=Up, S=Down, E=Right, W=Left\nNE=45° between N and E, NW=45° between N and W\nShadow at sunrise = West side. Shadow at sunset = East side.\nIf you face North, your right is East, left is West."},
+ ],
+ questions:[
+  {q:"A person walks 5km North, then 4km East, then 5km South. How far is he from start?",src:"Practice",opts:["4km","5km","6km","3km"],ans:0,explain:"North 5 + South 5 cancel out. Net displacement = 4km East. Distance = 4km."},
+  {q:"A man faces South-West. He turns 90° clockwise. Which direction does he face?",src:"Practice",opts:["North-West","North-East","South-East","East"],ans:2,explain:"SW + 90° clockwise = SE (South-East). Think of compass: SW→(+90°)→SE."},
+ ]},
+
+// ---- INTERVIEW & PROFESSIONAL SKILLS ----
+{id:15,name:"Decision Making",cat:"Professional Skills",icon:"⚖️",
+ theory:[
+  {title:"What is Decision Making?",body:"The process of identifying and choosing alternatives based on values, preferences, and goals of the decision maker. Every decision involves trade-offs."},
+  {title:"Sequential Steps (Drucker's Framework)",body:"1. Define the problem — What are we actually dealing with?\n2. Classify the decision — Routine/unique? Individual/group?\n3. Specify the requirements (must-haves vs nice-to-haves)\n4. Decide what is RIGHT (not just acceptable)\n5. Build action into the decision\n6. Test against actual results"},
+  {title:"Types of Decisions",body:"• Routine vs Strategic\n• Individual vs Group\n• Programmed (repetitive) vs Non-programmed (unique)\n• Tactical (short-term) vs Strategic (long-term)\n• Policy vs Operating decisions"},
+  {title:"Decision Making Conditions",body:"• Certainty: All info available, outcome predictable\n• Risk: Probabilities known, multiple outcomes possible\n• Uncertainty: Probabilities unknown, highly unpredictable\n\nEffective decision-making: Gather data → Analyze alternatives → Choose best option → Implement → Review"},
+ ],
+ questions:[
+  {q:"A deadline is tomorrow but key team member is sick. What's the BEST decision?",src:"Scenario",opts:["Submit incomplete work","Ask for extension and explain situation","Blame the sick member","Pretend the deadline doesn't exist"],ans:1,explain:"Effective decision-making includes recognizing constraints, communicating transparently, and finding workable alternatives. Requesting an extension with context is the most responsible choice."},
+  {q:"Which type of decision: 'Setting 5-year company expansion strategy'?",src:"Concept",opts:["Routine/Programmed","Tactical/Operating","Strategic/Long-term","Individual/Minor"],ans:2,explain:"5-year expansion is clearly strategic, long-term, non-routine, and high-impact — a strategic decision."},
+ ]},
+
+{id:16,name:"Customer Centricity",cat:"Professional Skills",icon:"🤝",
+ theory:[
+  {title:"The Power Shift",body:"Modern customers have more choices, more information, and more power than ever. Companies must shift from product-centric to customer-centric thinking."},
+  {title:"7 Deadly Sins of Customer Service",body:"1. Apathy — 'Not my problem'\n2. Brush-off — 'It'll go away eventually'\n3. Coldness — Impersonal, robotic responses\n4. Condescension — Talking down to customer\n5. Robotism — Following script blindly\n6. Rule Book — 'Policy says no' inflexibility\n7. Runaround — Passing the buck"},
+  {title:"Unforgivable Customer Service Sins",body:"• Lying to a customer\n• Stealing from a customer\n• Bullying staff\n• Racism, sexism, class-based stereotyping\n• Belittling a customer\n\nPrinciple: Relationships > Sales. Long-term relationship value beats one-time transaction."},
+  {title:"Building Customer-Centric Culture",body:"1. Listen actively to customer feedback\n2. Personalize every interaction\n3. Resolve issues quickly, go beyond expectations\n4. Empower frontline employees to make decisions\n5. Measure customer satisfaction consistently (NPS, CSAT)"},
+ ],
+ questions:[
+  {q:"Customer calls frustrated about wrong order. Agent says 'That's not my department.' Which sin is this?",src:"Scenario",opts:["Apathy","Brush-off","Runaround","Robotism"],ans:2,explain:"'Not my department' is the classic Runaround — passing the buck instead of owning the customer's problem."},
+  {q:"What should a customer service rep do FIRST when a customer is angry?",src:"Scenario",opts:["Transfer to supervisor","Listen and acknowledge their frustration","Explain company policy","Offer a refund immediately"],ans:1,explain:"Active listening and empathy come first. Acknowledging frustration de-escalates the situation before any solution is offered."},
+ ]},
+
+{id:17,name:"Guestimation",cat:"Professional Skills",icon:"🔭",
+ theory:[
+  {title:"What is Guestimation?",body:"Estimation with limited information using logical reasoning and structured thinking. Common in consulting, product management, and case interviews."},
+  {title:"Framework: MECE Approach",body:"Mutually Exclusive, Collectively Exhaustive. Break the problem into non-overlapping, complete buckets.\n\nExample: Estimate number of petrol pumps in India.\n• Population approach: 1.4B people ÷ average users per pump\n• Geographic approach: area coverage per pump"},
+  {title:"Common Estimation Techniques",body:"1. Start with what you KNOW (population, area, time)\n2. Make reasonable assumptions and STATE them\n3. Break problem into smaller, estimable components\n4. Sanity check: does your answer make intuitive sense?\n5. Show your WORK — process matters more than exact answer"},
+  {title:"Key Numbers to Know",body:"India population: ~1.4 billion\nIndia area: ~3.3 million km²\nAvg Indian household size: 4.5 people\nSmartphone penetration: ~55%\nUrban population: ~35%\nWorking population: ~500 million"},
+ ],
+ questions:[
+  {q:"Estimate: How many dentists are in India? Which approach is best?",src:"Scenario",opts:["Count dental colleges","Population/patients per dentist approach","Survey metro cities","Count dental equipment shops"],ans:1,explain:"Best: India pop=1.4B. Ratio is ~1 dentist per 10,000 people in developed countries; India is ~1:30,000. So estimate ≈ 1.4B/30,000 ≈ 47,000 dentists. State assumptions clearly."},
+  {q:"You're asked to estimate how many cricket balls are used in India per year. First step?",src:"Scenario",opts:["Search online","Define scope: professional + amateur + backyard","Ask for more data","Refuse without data"],ans:1,explain:"MECE approach: segment into professional matches (known), club/school cricket (estimate), informal/backyard (large estimate). Sum all segments."},
+ ]},
+
+{id:18,name:"Case Study",cat:"Professional Skills",icon:"📋",
+ theory:[
+  {title:"What is a Case Study Interview?",body:"A business problem presented to test structured thinking, analytical skills, and communication. Common in consulting (McKinsey, BCG, Deloitte) and product management interviews."},
+  {title:"Structure of a Good Case Response",body:"1. CLARIFY: Ask 1-2 clarifying questions\n2. STRUCTURE: Lay out your framework before diving in\n3. PRIORITIZE: Focus on the most important issues\n4. ANALYZE: Work through data methodically\n5. RECOMMEND: Give a clear, actionable recommendation\n6. SUMMARIZE: Restate key points concisely"},
+  {title:"Common Frameworks",body:"• Profitability: Revenue − Cost. Is problem on revenue or cost side?\n• Market Entry: Market size, competition, capabilities, financials\n• M&A: Strategic fit, financial impact, integration challenges\n• Pricing: Value-based, cost-plus, competitive pricing\n• Operations: Bottleneck analysis, capacity, efficiency"},
+  {title:"Do's and Don'ts",body:"DO: Think aloud, ask clarifying questions, drive to insight\nDON'T: Jump to conclusions, go silent, give vague answers\nDO: Use data to back up reasoning\nDON'T: Recite frameworks mechanically"},
+ ],
+ questions:[
+  {q:"Profits dropped 20% last year. Which question should you ask FIRST?",src:"Case",opts:["How can we cut costs?","Did revenues drop, costs rise, or both?","Should we fire people?","What does competition do?"],ans:1,explain:"First, diagnose the problem properly. Is it a revenue issue or cost issue? This determines the entire direction of analysis."},
+  {q:"Market entry case: Company wants to enter India's EV market. What's the MOST important factor to analyze first?",src:"Case",opts:["Company branding","Market size and growth rate","Competitor logos","Office location"],ans:1,explain:"Market attractiveness (size + growth) determines if entry is worth pursuing at all. It's the foundational question before any operational planning."},
+ ]},
+
+{id:19,name:"Mock Interviews",cat:"Professional Skills",icon:"🎤",
+ theory:[
+  {title:"Types of Interview Questions",body:"1. Behavioral (STAR method): 'Tell me about a time when...'\n2. Technical: Domain knowledge, coding, problem-solving\n3. Situational: 'What would you do if...'\n4. HR/Cultural Fit: 'Why this company?', 'Where do you see yourself in 5 years?'"},
+  {title:"STAR Method for Behavioral Questions",body:"S — Situation: Context/background\nT — Task: What was your responsibility?\nA — Action: What YOU specifically did\nR — Result: Measurable outcome\n\nTip: Focus heavily on A and R. Keep S and T brief."},
+  {title:"Do's & Don'ts",body:"DO:\n• Research company thoroughly\n• Prepare 5-6 STAR stories covering leadership, failure, teamwork, problem-solving\n• Ask thoughtful questions at end\n• Follow up with thank-you note\n\nDON'T:\n• Badmouth previous employer\n• Give one-word answers\n• Lie about skills/experience\n• Forget to quantify your impact"},
+  {title:"Common Questions to Prepare",body:"1. Tell me about yourself (60-90 second pitch)\n2. Biggest strength/weakness\n3. Why do you want this role?\n4. Greatest achievement\n5. Tell me about a failure and what you learned"},
+ ],
+ questions:[
+  {q:"Interviewer asks: 'Tell me about a time you faced a conflict with a teammate.' Which is the BEST start?",src:"Interview",opts:["My teammate was wrong and I told them","In my final year project, our team had a deadline conflict — I initiated a meeting to align priorities","I don't like conflicts","Team conflict is normal"],ans:1,explain:"Best answer starts with context (Situation), immediately makes you the proactive problem-solver (Action), and sets up a positive result."},
+  {q:"'What is your greatest weakness?' Best approach:",src:"Interview",opts:["Say you have no weaknesses","Name a real weakness and show you're actively improving it","Name something unrelated to the job","Say you work too hard"],ans:1,explain:"Authentic + growth-oriented. Shows self-awareness and proactive improvement — qualities companies value. Never say 'I work too hard' (cliché) or no weaknesses (dishonest)."},
+ ]},
+
+{id:20,name:"Telephonic Interviews",cat:"Professional Skills",icon:"📱",
+ theory:[
+  {title:"What Makes Phone Interviews Different?",body:"No visual cues. Your voice, tone, and words are the ONLY tools.\n• Speak clearly and at a measured pace\n• Avoid filler words (um, uh, like)\n• Smile — it actually changes your tone\n• Stand up if it helps your energy"},
+  {title:"Before the Call",body:"• Test audio quality, find quiet location\n• Keep resume, notes, and company research visible\n• Have water nearby\n• Charge phone fully\n• Block 30 min before to focus"},
+  {title:"During the Call",body:"• Greet professionally with your name\n• Listen carefully — clarify if unsure\n• Don't interrupt\n• Take brief pauses to think\n• End with gratitude and next steps"},
+ ],
+ questions:[
+  {q:"Interviewer speaks fast and you miss a question. Best response?",src:"Scenario",opts:["Guess what they asked","'I'm sorry, could you please repeat that?'","Hang up","Say 'Yeah yeah I got it'"],ans:1,explain:"Always ask for clarification politely. It shows confidence and attentiveness — not weakness."},
+ ]},
+
+{id:21,name:"Panel Interviews",cat:"Professional Skills",icon:"👥",
+ theory:[
+  {title:"What is a Panel Interview?",body:"Multiple interviewers simultaneously. Common in senior roles, consulting, and academic institutions. Each panelist evaluates you from their perspective."},
+  {title:"Strategy",body:"• Make eye contact with the person who asked, but sweep the room when elaborating\n• Address different panelists with different parts of your answer\n• Remember each interviewer's name and role if possible\n• Direct closing question to the panel as a group"},
+  {title:"Key Tips",body:"• Don't favour one interviewer over others\n• Note the body language of all panelists\n• If one interviewer is hostile, stay composed — others are watching\n• Bring multiple copies of your resume"},
+ ],
+ questions:[
+  {q:"A panelist interrupts your answer to challenge you. Best response?",src:"Scenario",opts:["Get defensive and argue","Pause, acknowledge their point, address it confidently, then finish your thought","Stop talking immediately","Ignore them and keep going"],ans:1,explain:"Composure under pressure is what panel interviews test. Acknowledge, respond, and navigate back — this shows emotional intelligence."},
+ ]},
+
+{id:22,name:"Stress Interviews",cat:"Professional Skills",icon:"🔥",
+ theory:[
+  {title:"What is a Stress Interview?",body:"Deliberately provocative questions designed to see how you handle pressure, criticism, or discomfort. Common in high-pressure roles (banking, consulting, military)."},
+  {title:"Common Stress Tactics",body:"• Silence after your answer (don't panic and over-explain)\n• 'That's a terrible answer.' → Stay calm, ask what they'd like more of\n• Rapid-fire questions\n• 'Are you really qualified for this?'\n• Contradicting everything you say"},
+  {title:"How to Respond",body:"1. Pause and breathe before answering\n2. Don't take bait — stay composed and professional\n3. Maintain steady eye contact\n4. Answer the question directly, no rambling\n5. If genuinely insulted, calmly and professionally note it"},
+ ],
+ questions:[
+  {q:"Interviewer says 'You seem very average based on your resume.' Best response?",src:"Stress",opts:["Apologize profusely","Leave the interview","'I can understand that concern. Let me share what my GPA doesn't capture...'","Argue that you're not average"],ans:2,explain:"Stay calm. Reframe the conversation constructively. This shows resilience and confidence without being defensive or rude."},
+ ]},
+
+// ---- COMMUNICATION ----
+{id:23,name:"Writing Skills",cat:"Communication",icon:"✍️",
+ theory:[
+  {title:"4 Keys to Effective Writing",body:"1. Identifying your AUDIENCE — who reads this?\n2. Establishing your PURPOSE — to inform, persuade, or instruct?\n3. Formulating your MESSAGE — what is the core point?\n4. Selecting your STYLE and TONE — formal/informal, active/passive"},
+  {title:"Properties of Effective Writing",body:"• Clarity: Simple words, short sentences\n• Conciseness: No unnecessary words\n• Coherence: Logical flow between ideas\n• Completeness: All necessary information included\n• Correctness: Grammar, spelling, facts"},
+  {title:"Email Structure",body:"Subject: Clear and specific\nGreeting: Appropriate formality\nBody: Purpose → Details → Action needed\nClosing: Next steps + professional sign-off\n\nGolden rule: Could the recipient take action with ONLY the information in this email?"},
+ ],
+ questions:[
+  {q:"You need to email your manager about a project delay. Most important thing to include?",src:"Scenario",opts:["Detailed blame analysis","Reason for delay + revised timeline + mitigation plan","Apology only","No email — tell them verbally"],ans:1,explain:"Effective professional communication includes: context (why), impact (what changed), and forward path (what you're doing about it). This is complete and actionable."},
+ ]},
+
+{id:24,name:"Reading Skills",cat:"Communication",icon:"📖",
+ theory:[
+  {title:"Types of Reading",body:"1. Extensive: Wide reading for general understanding (novels, news)\n2. Intensive: Close reading for detail (technical documents, contracts)\n3. Scanning: Looking for specific information quickly (price in menu)\n4. Skimming: Getting the gist without full reading (headlines, summaries)\n5. Critical: Evaluating and analyzing arguments"},
+  {title:"10 Ways to Improve Reading",body:"1. Set a specific reading goal\n2. Keep a pen to highlight and annotate\n3. Take breaks every 25 minutes (Pomodoro)\n4. Read important sections aloud\n5. Write notes and questions in margins\n6. Review your notes after reading\n7. Summarize key points in your own words\n8. Explain what you read to someone\n9. Read at consistent times daily\n10. Vary genres to build vocabulary"},
+  {title:"Reading Difficulties",body:"• Poor decoding: Can't recognize words quickly\n• Poor fluency: Reads slowly, loses meaning\n• Poor comprehension: Reads but doesn't understand\n• Mixed difficulties: Multiple issues\n\nSolution: Practice with graded texts, increase vocabulary, re-read difficult passages."},
+ ],
+ questions:[
+  {q:"You need to find a specific date in a 50-page report. Best reading strategy?",src:"Scenario",opts:["Read entire report","Skim all pages","Scan using Ctrl+F or table of contents","Read first and last page only"],ans:2,explain:"Scanning is the correct technique when looking for specific information. Use structural cues (TOC, index, headers) to navigate efficiently."},
+ ]},
+
+{id:25,name:"Listening Skills",cat:"Communication",icon:"👂",
+ theory:[
+  {title:"What are Listening Skills?",body:"Active listening goes beyond hearing. It involves understanding, interpreting, and evaluating what you hear. Studies show we forget 40-80% of what we hear within 24 hours."},
+  {title:"11 Active Listening Practices",body:"1. Limit distractions (phone away)\n2. Practice objectivity — suspend judgment\n3. Reflect back what you heard\n4. Clarify when unsure\n5. Summarize to confirm understanding\n6. Use body language (nod, lean in)\n7. Share relevant experience when appropriate\n8. Give full attention\n9. Pace the conversation\n10. Ask meaningful, open-ended questions\n11. Recall and reference previous information"},
+  {title:"Listening Barriers",body:"• Physical: Noise, poor acoustics, distance\n• Psychological: Preconceptions, emotional state, stress\n• Language: Jargon, accent, vocabulary gaps\n• Cultural: Different communication norms\n• Technological: Poor call quality, lag"},
+ ],
+ questions:[
+  {q:"During an important meeting, you realize you missed the last 30 seconds. Best action?",src:"Scenario",opts:["Pretend you heard","Wait and hope someone repeats it","Politely ask for clarification: 'Could you repeat that last point?'","Leave the meeting"],ans:2,explain:"Asking for clarification shows engagement and professionalism. Missing critical information unaddressed is far more costly than briefly interrupting."},
+ ]},
+
+{id:26,name:"Speaking Skills",cat:"Communication",icon:"🗣️",
+ theory:[
+  {title:"What Makes Effective Speaking?",body:"7-38-55 Rule (Mehrabian): 7% words, 38% tone/voice, 55% body language. Your non-verbal communication carries most of the impact."},
+  {title:"Public Speaking Framework",body:"GRAB ATTENTION: Start with unexpected fact, story, or question\nMAKE IT ABOUT THEM: Connect to audience's needs/interests\nKEEP CONCRETE: Use specific examples, not abstractions\nKEEP MOVING: No dead moments\nAROUSE EMOTION: Stories > statistics for persuasion\nKEEP INTERACTIVE: Ask questions, pause for effect\nGET TO THE POINT: One clear main message\nKEEP IT SHORT: Less is almost always more"},
+  {title:"Vocal Techniques",body:"• Pace: Slow down for impact on key points\n• Volume: Project confidence, not aggression\n• Pitch variation: Monotone loses attention\n• Pauses: Strategic silence is powerful\n• Fillers (um/uh): Replace with a brief pause"},
+ ],
+ questions:[
+  {q:"You're presenting and notice the audience looking bored. Best immediate action?",src:"Scenario",opts:["Speed up to finish faster","Ask a direct question to the audience","Apologize for being boring","Skip to the conclusion"],ans:1,explain:"Interactive engagement immediately re-focuses attention. A direct question pulls people back into the conversation."},
+ ]},
+
+// ---- COGNITIVE SKILLS ----
+{id:27,name:"Plan & Organize",cat:"Cognitive Skills",icon:"📅",
+ theory:[
+  {title:"Planning Principles",body:"Planning is deciding in ADVANCE what to do, when to do it, how to do it, and who should do it. It bridges the gap between present and desired future state."},
+  {title:"Key Characteristics of Good Planning",body:"• Goal-oriented: Clear, measurable objectives\n• Forward-looking: Anticipates future conditions\n• Flexibility: Can adapt to change\n• Simplicity: Easy to understand and follow\n• Precision: Specific enough to guide action\n• Efficiency: Achieves goals with minimum resources"},
+  {title:"Organizing Framework",body:"1. Set SMART goals (Specific, Measurable, Achievable, Relevant, Time-bound)\n2. Break into tasks and sub-tasks\n3. Prioritize using Eisenhower Matrix (Urgent/Important)\n4. Assign time blocks (time-boxing)\n5. Review and adjust regularly"},
+ ],
+ questions:[
+  {q:"4 tasks: A (urgent+important), B (important, not urgent), C (urgent, not important), D (neither). Priority order?",src:"Eisenhower",opts:["A,B,C,D","A,C,B,D","C,A,B,D","D,C,B,A"],ans:1,explain:"Eisenhower Matrix: A=Do first, C=Delegate/Do quickly, B=Schedule for later, D=Eliminate. Order: A→C→B→D."},
+ ]},
+
+{id:28,name:"Problem Solving",cat:"Cognitive Skills",icon:"💡",
+ theory:[
+  {title:"Problem Solving Framework",body:"1. RECOGNIZE: Something is wrong — identify the gap between current and desired state\n2. DEFINE: Clearly articulate the actual problem (not just the symptom)\n3. GENERATE alternatives: Brainstorm multiple solutions (quantity first)\n4. EVALUATE & CHOOSE: Apply criteria to select best option\n5. IMPLEMENT: Execute with clear milestones\n6. REVIEW: Was the problem solved? Lessons learned?"},
+  {title:"Root Cause Analysis",body:"5 Whys: Ask 'why' 5 times to get to root cause.\nFishbone (Ishikawa) Diagram: Categorize causes: Man, Machine, Method, Material, Environment\nPareto Principle: 80% of problems come from 20% of causes — focus there first."},
+  {title:"Creative Problem Solving",body:"• Lateral thinking: Challenge assumptions, think sideways\n• SCAMPER: Substitute, Combine, Adapt, Modify, Put to other uses, Eliminate, Rearrange\n• Mind mapping: Visual brainstorming\n• Reverse thinking: How would you cause this problem? Then do the opposite"},
+ ],
+ questions:[
+  {q:"Team's output dropped 30%. You start by asking 'Why did output drop?' Each answer leads to another 'why'. This technique is called?",src:"Concept",opts:["Brainstorming","5 Whys Analysis","SWOT Analysis","Benchmarking"],ans:1,explain:"The 5 Whys technique digs through symptoms to find root cause. First 'why' is usually a symptom; the 5th is often the real underlying cause."},
+ ]},
+
+{id:29,name:"Think Algo",cat:"Cognitive Skills",icon:"⚡",
+ theory:[
+  {title:"Algorithmic Thinking",body:"Breaking problems into step-by-step, logical processes that can be followed precisely — like writing a recipe for solving a problem. Core of programming and systematic problem-solving."},
+  {title:"5 Steps of Algorithmic Problem Solving",body:"1. RECOGNIZE something is wrong/needs solving\n2. IDENTIFY the actual problem using thinking skills\n3. GENERATE alternative solutions\n4. CHOOSE the best solution based on criteria\n5. IMPLEMENT and evaluate results"},
+  {title:"Algorithm Properties",body:"• Finite: Must terminate\n• Definite: Each step is precise\n• Input: Zero or more inputs\n• Output: At least one output\n• Effectiveness: Each step is basic and doable"},
+  {title:"Flowchart Symbols",body:"Oval: Start/End\nRectangle: Process/Action\nDiamond: Decision (yes/no)\nParallelogram: Input/Output\nArrows: Flow direction"},
+ ],
+ questions:[
+  {q:"You need to sort a list of 1000 numbers. Which approach is most algorithmic?",src:"Concept",opts:["Look at them and guess","Define a repeatable step-by-step comparison process","Ask someone else","Sort randomly and check"],ans:1,explain:"Algorithmic thinking requires a definite, finite, repeatable process. Defining comparison rules (like bubble sort or merge sort) is the algorithmic approach."},
+ ]},
+];
+
+// ============================================================
+// QUIZ DATA (subset per topic)
+// ============================================================
+
+const CATS=[...new Set(TOPICS.map(t=>t.cat))];
+
+function App(){
+  const [sel,setSel]=useState(null);
+  const [tab,setTab]=useState('learn');
+  const [search,setSearch]=useState('');
+  const [catFilter,setCatFilter]=useState('All');
+  const [progress,setProgress]=useState({});
+  const [quizState,setQuizState]=useState({q:0,answers:{},done:false,revealed:{}});
+
+  const filtered=useMemo(()=>TOPICS.filter(t=>{
+    const matchSearch=t.name.toLowerCase().includes(search.toLowerCase());
+    const matchCat=catFilter==='All'||t.cat===catFilter;
+    return matchSearch&&matchCat;
+  }),[search,catFilter]);
+
+  const selectTopic=useCallback((t)=>{
+    setSel(t);
+    setTab('learn');
+    setQuizState({q:0,answers:{},done:false,revealed:{}});
+  },[]);
+
+  const markDone=useCallback(()=>{
+    if(!sel)return;
+    setProgress(p=>({...p,[sel.id]:true}));
+  },[sel]);
+
+  const totalDone=Object.keys(progress).length;
+
+  return React.createElement('div',{id:'root'},
+    React.createElement(Sidebar,{topics:TOPICS,filtered,sel,onSel:selectTopic,search,setSearch,catFilter,setCatFilter,cats:CATS,progress}),
+    React.createElement('div',{id:'main'},
+      sel
+        ? React.createElement(React.Fragment,null,
+            React.createElement(TopBar,{topic:sel,progress,markDone}),
+            React.createElement('div',{id:'content-area'},
+              React.createElement(Tabs,{tab,setTab}),
+              tab==='learn' ? React.createElement(LearnTab,{topic:sel}) :
+              tab==='practice' ? React.createElement(PracticeTab,{topic:sel}) :
+              React.createElement(QuizTab,{topic:sel,quizState,setQuizState})
+            )
+          )
+        : React.createElement(Welcome,{total:TOPICS.length,done:totalDone,cats:CATS,catFilter,setCatFilter,onSel:selectTopic,topics:TOPICS})
+    )
+  );
+}
+
+function Sidebar({topics,filtered,sel,onSel,search,setSearch,catFilter,setCatFilter,cats,progress}){
+  const grouped={};
+  filtered.forEach(t=>{if(!grouped[t.cat])grouped[t.cat]=[];grouped[t.cat].push(t);});
+  const totalDone=Object.keys(progress).length;
+  return React.createElement('div',{id:'sidebar'},
+    React.createElement('div',{id:'sidebar-header'},
+      React.createElement('h1',null,'⚡ STS Mastery Lab'),
+      React.createElement('p',null,`${totalDone}/${topics.length} topics mastered`)
+    ),
+    React.createElement('div',{className:'progress-bar-mini'},
+      React.createElement('div',{className:'progress-fill',style:{width:`${(totalDone/topics.length)*100}%`}})
+    ),
+    React.createElement('div',{id:'search-box'},
+      React.createElement('span',null,'🔍'),
+      React.createElement('input',{placeholder:'Search topics...',value:search,onChange:e=>setSearch(e.target.value)})
+    ),
+    React.createElement('div',{id:'topic-list'},
+      Object.entries(grouped).map(([cat,ts])=>
+        React.createElement(React.Fragment,{key:cat},
+          React.createElement('div',{className:'cat-header'},cat),
+          ts.map(t=>React.createElement('button',{
+            key:t.id,className:`topic-btn ${sel?.id===t.id?'active':''}`,
+            onClick:()=>onSel(t)
+          },
+            React.createElement('span',{className:'num'},String(t.id).padStart(2,'0')),
+            React.createElement('span',{className:'icon'},t.icon),
+            React.createElement('span',null,t.name),
+            progress[t.id]&&React.createElement('span',{className:'done'})
+          ))
+        )
+      )
+    )
+  );
+}
+
+function TopBar({topic,progress,markDone}){
+  return React.createElement('div',{id:'topbar'},
+    React.createElement('div',{className:'breadcrumb'},
+      React.createElement('span',null,topic.cat),
+      ' › ',
+      React.createElement('span',null,topic.name)
+    ),
+    React.createElement('div',{className:'badges'},
+      React.createElement('span',{className:'badge badge-blue'},topic.cat),
+      React.createElement('span',{className:'badge badge-green'},`${topic.questions?.length||0} Questions`),
+      !progress[topic.id]&&React.createElement('button',{
+        className:'badge badge-orange',
+        style:{cursor:'pointer',border:'none',fontFamily:'inherit'},
+        onClick:markDone
+      },'✓ Mark Done')
+    )
+  );
+}
+
+function Tabs({tab,setTab}){
+  return React.createElement('div',{className:'tabs'},
+    ['learn','practice','quiz'].map(t=>
+      React.createElement('button',{key:t,className:`tab-btn ${tab===t?'active':''}`,onClick:()=>setTab(t)},
+        {learn:'📚 Learn',practice:'💪 Practice',quiz:'🎯 Quiz'}[t]
+      )
+    )
+  );
+}
+
+function LearnTab({topic}){
+  return React.createElement('div',null,
+    React.createElement('div',{className:'topic-hero'},
+      React.createElement('h2',null,`${topic.icon} ${topic.name}`),
+      React.createElement('p',null,topic.theory?.[0]?.body?.split('\n')[0]||''),
+      React.createElement('div',{className:'tags'},
+        React.createElement('span',{className:'tag'},topic.cat),
+        React.createElement('span',{className:'tag'},`${topic.questions?.length||0} practice questions`),
+        React.createElement('span',{className:'tag'},`${topic.theory?.length||0} concepts`)
+      )
+    ),
+    topic.theory?.map((section,i)=>
+      React.createElement('div',{key:i,className:'card'},
+        React.createElement('h3',null,section.title),
+        section.body&&React.createElement('p',{style:{whiteSpace:'pre-line'}},section.body),
+        section.formulas&&React.createElement('div',{className:'formula-sheet'},
+          section.formulas.map(([name,val],j)=>
+            React.createElement('div',{key:j,className:'formula-row'},
+              React.createElement('span',{className:'f-name'},name+':'),
+              React.createElement('span',{className:'f-val'},val)
+            )
+          )
+        ),
+        section.table&&React.createElement('table',{className:'truth-table'},
+          React.createElement('thead',null,
+            React.createElement('tr',null,
+              section.table[0].map((h,j)=>React.createElement('th',{key:j},h))
+            )
+          ),
+          React.createElement('tbody',null,
+            section.table.slice(1).map((row,j)=>
+              React.createElement('tr',{key:j},
+                row.map((cell,k)=>React.createElement('td',{key:k,className:cell.includes('✓')||cell==='Yes'?'yes':cell.includes('✗')||cell==='No'?'no':cell.includes('May')?'maybe':''},cell))
+              )
+            )
+          )
+        )
+      )
+    )
+  );
+}
+
+function PracticeTab({topic}){
+  const [revealed,setReveal]=useState({});
+  const toggle=i=>setReveal(r=>({...r,[i]:!r[i]}));
+  return React.createElement('div',null,
+    topic.questions?.length===0&&React.createElement('div',{className:'card'},React.createElement('p',null,'No practice questions for this topic yet.')),
+    topic.questions?.map((q,i)=>
+      React.createElement('div',{key:i,className:'q-card'},
+        React.createElement('div',{className:'q-header'},
+          React.createElement('span',{className:'q-num'},`Q${i+1}`),
+          React.createElement('span',{className:'q-src'},q.src),
+          React.createElement('div',{className:'q-text'},q.q)
+        ),
+        React.createElement('div',{className:'q-options'},
+          q.opts.map((opt,j)=>
+            React.createElement('div',{key:j,className:`q-opt ${revealed[i]&&j===q.ans?'correct':''}`},
+              `${['A','B','C','D'][j]}. ${opt}`
+            )
+          )
+        ),
+        React.createElement('button',{className:'toggle-btn',onClick:()=>toggle(i)},
+          revealed[i]?'Hide Explanation ▲':'Show Explanation & Answer ▼'
+        ),
+        revealed[i]&&React.createElement('div',{className:'explanation'},
+          React.createElement('div',{className:'step'},q.explain),
+          React.createElement('span',{className:'answer-tag'},`Answer: ${['A','B','C','D'][q.ans]}. ${q.opts[q.ans]}`)
+        )
+      )
+    )
+  );
+}
+
+function QuizTab({topic,quizState,setQuizState}){
+  const qs=topic.questions||[];
+  const {q,answers,done,revealed}=quizState;
+  if(qs.length===0)return React.createElement('div',{className:'card'},React.createElement('p',null,'No quiz questions available.'));
+  if(done){
+    const correct=Object.values(answers).filter((a,i)=>a===qs[i]?.ans).length;
+    const pct=Math.round((correct/qs.length)*100);
+    return React.createElement('div',{className:'score-card'},
+      React.createElement('div',{className:'score-num'},`${pct}%`),
+      React.createElement('h3',null,pct>=80?'🎉 Excellent! You\'ve mastered this!':pct>=60?'👍 Good job! Review the explanations.':'📖 Keep practicing! Review the theory first.'),
+      React.createElement('p',null,`${correct} out of ${qs.length} correct`),
+      React.createElement('br'),
+      React.createElement('button',{className:'btn btn-primary',onClick:()=>setQuizState({q:0,answers:{},done:false,revealed:{}})},
+        'Retake Quiz'
+      )
+    );
+  }
+  const cur=qs[q];
+  const picked=answers[q];
+  const isRevealed=revealed[q];
+  const pick=j=>setQuizState(s=>({...s,answers:{...s.answers,[q]:j},revealed:{...s.revealed,[q]:true}}));
+  const next=()=>q<qs.length-1?setQuizState(s=>({...s,q:s.q+1})):setQuizState(s=>({...s,done:true}));
+  return React.createElement('div',{className:'quiz-container'},
+    React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:12,color:'var(--text3)',fontSize:13}},
+      React.createElement('span',null,`Question ${q+1} of ${qs.length}`),
+      React.createElement('span',{className:'q-src'},cur.src)
+    ),
+    React.createElement('div',{className:'quiz-q'},
+      React.createElement('h3',null,cur.q),
+      React.createElement('div',{className:'quiz-opts'},
+        cur.opts.map((opt,j)=>{
+          let cls='quiz-opt';
+          if(isRevealed){
+            if(j===cur.ans)cls+=' show-correct';
+            else if(j===picked&&picked!==cur.ans)cls+=' selected-wrong';
+          }
+          return React.createElement('button',{key:j,className:cls,disabled:!!isRevealed,onClick:()=>pick(j)},
+            `${['A','B','C','D'][j]}. ${opt}`
+          );
+        })
+      ),
+      isRevealed&&React.createElement('div',{className:'quiz-explain'},cur.explain)
+    ),
+    React.createElement('div',{className:'quiz-nav'},
+      React.createElement('span',{style:{fontSize:12,color:'var(--text3)'}},'Pick an answer to continue'),
+      isRevealed&&React.createElement('button',{className:'btn btn-primary',onClick:next},
+        q<qs.length-1?'Next Question →':'Finish Quiz'
+      )
+    )
+  );
+}
+
+function Welcome({total,done,cats,catFilter,setCatFilter,onSel,topics}){
+  return React.createElement('div',{id:'content-area'},
+    React.createElement('div',{className:'welcome'},
+      React.createElement('h1',null,'STS Mastery Lab'),
+      React.createElement('p',null,'Your complete placement preparation system. All 44 topics from your slides — with theory, company-specific questions, and interactive quizzes.'),
+      React.createElement('div',{className:'stat-grid'},
+        React.createElement('div',{className:'stat-card'},React.createElement('div',{className:'num'},total),React.createElement('div',{className:'lbl'},`Topics`)),
+        React.createElement('div',{className:'stat-card'},React.createElement('div',{className:'num'},topics.reduce((a,t)=>a+(t.questions?.length||0),0)),React.createElement('div',{className:'lbl'},'Questions')),
+        React.createElement('div',{className:'stat-card'},React.createElement('div',{className:'num'},done),React.createElement('div',{className:'lbl'},'Mastered'))
+      ),
+      React.createElement('div',{className:'cat-filter'},
+        ['All',...cats].map(c=>
+          React.createElement('button',{key:c,className:`cat-pill ${catFilter===c?'active':''}`,onClick:()=>setCatFilter(c)},c)
+        )
+      ),
+      React.createElement('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(220px,1fr))',gap:12,marginTop:24,maxWidth:900,margin:'24px auto 0'}},
+        topics.filter(t=>catFilter==='All'||t.cat===catFilter).map(t=>
+          React.createElement('div',{key:t.id,className:'card',style:{cursor:'pointer',transition:'transform 0.15s,border-color 0.15s'},
+            onClick:()=>onSel(t),
+            onMouseEnter:e=>{e.currentTarget.style.transform='translateY(-2px)';e.currentTarget.style.borderColor='var(--accent)'},
+            onMouseLeave:e=>{e.currentTarget.style.transform='';e.currentTarget.style.borderColor=''}
+          },
+            React.createElement('div',{style:{display:'flex',alignItems:'center',gap:8,marginBottom:6}},
+              React.createElement('span',{style:{fontSize:20}},t.icon),
+              React.createElement('h4',null,t.name)
+            ),
+            React.createElement('p',{style:{fontSize:12,color:'var(--text3)'}},`${t.questions?.length||0} questions · ${t.theory?.length||0} concepts`)
+          )
+        )
+      )
+    )
+  );
+}
+
+ReactDOM.render(React.createElement(App),document.getElementById('root'));
+</script>
+</body>
+</html>
