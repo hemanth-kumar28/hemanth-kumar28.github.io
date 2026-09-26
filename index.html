@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Software Project Management — Syllabus Guide and Question Bank</title>
+<style>
+:root{
+  --paper:#eff2ed; --panel:#fbfcfa; --panel-2:#e5eae3;
+  --ink:#17322a; --ink-soft:#4c6158; --ink-faint:#7b8f86;
+  --rule:#c5d0c8; --rule-soft:#dae1d9;
+  --accent:#9b2242; --accent-soft:#f3e1e6;
+  --steel:#1f5f8b; --steel-soft:#dfeaf2;
+  --warn:#8a5a00; --warn-soft:#f6ead0;
+  box-sizing:border-box;
+}
+:root[data-theme="dark"]{
+  --paper:#111a17; --panel:#18211e; --panel-2:#1f2b27;
+  --ink:#dee8e2; --ink-soft:#a3b5ac; --ink-faint:#7e9188;
+  --rule:#2f403a; --rule-soft:#253430;
+  --accent:#e98099; --accent-soft:#2c1d22;
+  --steel:#86bcdf; --steel-soft:#16242e;
+  --warn:#d9a94b; --warn-soft:#2a2314;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:78px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;font-size:17px;line-height:1.7}
+.bar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
+.bar-in{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;font-family:Arial,sans-serif}
+.bar-title{margin:0;color:var(--ink-soft);font-size:14px}.bar-title b{color:var(--ink)}.bar-tools{display:flex;gap:8px;align-items:center}
+button.tool{color:var(--ink-soft);background:var(--panel);border:1px solid var(--rule);border-radius:3px;padding:7px 10px;font:500 13px Arial,sans-serif;cursor:pointer}
+button.tool:hover{color:var(--ink);border-color:var(--ink-faint)}
+button.tool:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.shell{max-width:1200px;margin:0 auto;padding:0 20px 96px}
+@media (min-width:1000px){.shell{display:grid;grid-template-columns:236px minmax(0,1fr);gap:52px;align-items:start}}
+nav.toc{display:none}
+@media (min-width:1000px){nav.toc{display:block;position:sticky;top:68px;max-height:calc(100vh - 84px);overflow:auto;padding:34px 28px 32px 0;border-right:1px solid var(--rule-soft);margin-right:-26px;font:13px/1.4 Arial,sans-serif}}
+nav.toc ol{list-style:none;margin:0;padding:0;counter-reset:toc}nav.toc li{counter-increment:toc;margin:0 0 3px}
+nav.toc a{display:flex;gap:9px;padding:6px 7px 6px 10px;text-decoration:none;color:var(--ink-soft);border-left:2px solid transparent}
+nav.toc a::before{content:counter(toc);color:var(--ink-faint);min-width:14px}nav.toc a:hover{color:var(--ink);border-left-color:var(--rule)}
+nav.toc a.on{color:var(--accent);border-left-color:var(--accent);font-weight:700}
+main{min-width:0;max-width:77ch;padding-top:8px}
+.hero{padding:54px 0 40px;border-bottom:1px solid var(--rule)}
+h1,h2,h3,h4{font-family:Arial,sans-serif;color:var(--ink)}
+h1{font-size:clamp(31px,5vw,47px);line-height:1.06;letter-spacing:-.03em;margin:0 0 16px;max-width:18ch}
+.lede{font-size:18px;color:var(--ink-soft);margin:0;max-width:62ch}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:29px;font:13px Arial,sans-serif}
+.stats span{border:1px solid var(--rule);background:var(--panel);border-radius:3px;padding:7px 10px;color:var(--ink-soft)}.stats b{color:var(--accent)}
+.mental{margin:24px 0 0;padding:17px;border:1px solid var(--rule);border-radius:3px;background:var(--panel)}
+.mental figcaption{margin-bottom:11px;color:var(--ink-faint);font:700 12px Arial,sans-serif;text-transform:uppercase;letter-spacing:.07em}
+.mental-flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;align-items:stretch}
+.mental-flow div{position:relative;display:grid;align-content:center;min-height:78px;padding:10px;background:var(--panel-2);border-radius:3px;text-align:center;font:700 12px/1.4 Arial,sans-serif}
+.mental-flow div:not(:last-child)::after{content:"→";position:absolute;right:-10px;top:50%;z-index:2;transform:translate(50%,-50%);color:var(--accent);font:700 17px Arial,sans-serif}
+.mental-flow small{display:block;margin-top:4px;color:var(--ink-faint);font:11px/1.3 Arial,sans-serif}
+.coverage{font-size:13px}
+section{padding:58px 0 10px;border-bottom:1px solid var(--rule)}section:last-of-type{border-bottom:0}
+h2{font-size:clamp(25px,3.5vw,33px);line-height:1.14;letter-spacing:-.025em;margin:0 0 8px}h2 .num{color:var(--accent);margin-right:10px}
+.sub{font:14px/1.5 Arial,sans-serif;color:var(--ink-faint);margin:0 0 28px}
+h3{font-size:20px;line-height:1.28;margin:38px 0 11px}h4{font-size:16px;margin:26px 0 8px}
+p{margin:0 0 16px}ul,ol{margin:0 0 18px;padding-left:24px}li{margin:0 0 8px}strong{font-weight:700}em{font-style:italic}
+.box{margin:22px 0;padding:18px 20px;border:1px solid var(--rule);border-radius:3px;background:var(--panel)}.box .bt{display:block;margin-bottom:8px;font:700 13px Arial,sans-serif;color:var(--ink-soft)}
+.box.def{border-left:3px solid var(--steel)}.box.def .bt{color:var(--steel)}.box.tip{border-left:3px solid var(--warn);background:var(--warn-soft)}.box.tip .bt{color:var(--warn)}.box.work{border-left:3px solid var(--accent);background:var(--accent-soft)}.box.work .bt{color:var(--accent)}
+.formula{margin:19px 0;padding:15px 17px;overflow:auto;border:1px solid var(--rule);border-left:3px solid var(--accent);border-radius:3px;background:var(--panel);font:15px/1.85 Consolas,"Courier New",monospace}
+.formula .hl{color:var(--accent);font-weight:700}.formula .note{font:12.5px/1.5 Arial,sans-serif;color:var(--ink-faint)}
+.scroll{overflow:auto;margin:20px 0;border:1px solid var(--rule);border-radius:3px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14px;line-height:1.48}caption{caption-side:top;text-align:left;padding:11px 13px 4px;color:var(--ink-faint);font:13px Arial,sans-serif}
+th,td{padding:9px 12px;border-bottom:1px solid var(--rule-soft);text-align:left;vertical-align:top}thead th{background:var(--panel-2);color:var(--ink-soft);font:700 12.5px Arial,sans-serif;white-space:nowrap}
+tbody tr:last-child td,tbody tr:last-child th{border-bottom:0}tbody th{font:700 13px Arial,sans-serif}.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+tr.total th,tr.total td{background:var(--accent-soft);border-top:1px solid var(--accent);font-weight:700}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:19px 0 22px;font:13px Arial,sans-serif}.flow span{padding:6px 10px;background:var(--panel);border:1px solid var(--rule);border-radius:3px}.flow i{font-style:normal;color:var(--ink-faint)}
+ol.steps{list-style:none;padding:0;counter-reset:step;margin:20px 0}ol.steps>li{counter-increment:step;position:relative;padding-left:42px;margin:0 0 15px}
+ol.steps>li::before{content:counter(step);position:absolute;left:0;top:2px;width:26px;height:26px;display:grid;place-items:center;border:1px solid var(--accent);border-radius:50%;color:var(--accent);font:700 12px Arial,sans-serif}
+ol.steps>li>b{display:block;font:700 15px Arial,sans-serif;margin-bottom:2px}
+.formula-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:20px 0}.formula-grid .formula{margin:0;font-size:13px}
+.q-intro{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 24px;font:13px Arial,sans-serif}.q-intro span{padding:7px 10px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);color:var(--ink-soft)}
+.badge{display:inline-block;min-width:21px;padding:2px 5px;border-radius:2px;text-align:center;font:700 11px Arial,sans-serif}.badge.h{background:var(--accent-soft);color:var(--accent)}.badge.m{background:var(--steel-soft);color:var(--steel)}
+.q-group{margin:36px 0}.q-group h3{margin-bottom:14px}
+details.q{margin:0 0 11px;border:1px solid var(--rule);border-radius:3px;background:var(--panel)}details.q>summary{display:flex;gap:10px;align-items:flex-start;padding:14px 16px;cursor:pointer;list-style:none;font:600 15px/1.45 Arial,sans-serif}
+details.q>summary::-webkit-details-marker{display:none}details.q>summary::before{content:"+";color:var(--accent);font-size:18px;line-height:1.13;font-weight:700}details.q[open]>summary::before{content:"–"}
+.qno{color:var(--ink-faint);font-variant-numeric:tabular-nums}.a{padding:14px 17px 16px 43px;border-top:1px solid var(--rule-soft)}.a>:last-child{margin-bottom:0}.a ol,.a ul{margin-bottom:0}.answer{font:700 13px Arial,sans-serif;color:var(--accent);margin-bottom:6px}.mcq{margin:10px 0 0;padding-left:21px}.mcq li{margin:4px 0}
+footer{max-width:1200px;margin:0 auto;padding:34px 20px 56px;border-top:1px solid var(--rule);color:var(--ink-faint);font:13px Arial,sans-serif}.mob-btn{display:none}
+@media (max-width:999px){.mob-btn{display:inline-block}nav.toc.mob-open{display:block;position:fixed;inset:57px 0 0;z-index:90;margin:0;padding:18px 20px 30px;overflow:auto;background:var(--paper);border:0;font:14px/1.4 Arial,sans-serif}nav.toc.mob-open a{padding:10px;min-height:42px}}
+@media (max-width:560px){body{font-size:16px;line-height:1.64}.bar-in{padding:9px 14px}.shell{padding:0 14px 70px}.bar-title{font-size:13px}.bar-tools{gap:5px}button.tool{padding:7px 8px}.hero{padding:40px 0 30px}section{padding-top:44px}h3{margin-top:31px}.formula-grid{grid-template-columns:1fr}.mental-flow{grid-template-columns:1fr}.mental-flow div:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-14px;transform:translate(50%,50%)}.box{padding:15px}.formula{padding:13px;font-size:13px}.a{padding-left:35px}.q-intro{gap:6px}}
+@media print{.bar,nav.toc{display:none}.shell{display:block;max-width:none}.hero{padding-top:0}body{font-size:11pt;background:#fff}details.q{break-inside:avoid}details.q>summary::before{content:""}section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in">
+    <p class="bar-title"><b>Software Project Management</b> · Clean Syllabus Guide &amp; Question Bank</p>
+    <div class="bar-tools">
+      <button class="tool mob-btn" id="tocToggle" type="button" aria-controls="toc" aria-expanded="false">Contents</button>
+      <button class="tool" id="solutions" type="button">Open solutions</button>
+      <button class="tool" id="theme" type="button">Theme</button>
+    </div>
+  </div>
+</header>
+<div class="shell">
+<nav class="toc" id="toc" aria-label="Contents">
+  <ol>
+    <li><a href="#estimation" class="on">Effort Estimation</a></li>
+    <li><a href="#fpa">Function Point Methods</a></li>
+    <li><a href="#cocomo">COCOMO &amp; Object Points</a></li>
+    <li><a href="#risk">Risk Management</a></li>
+    <li><a href="#pert">PERT &amp; Critical Path</a></li>
+    <li><a href="#monitoring">Monitoring &amp; Change</a></li>
+    <li><a href="#contracts">Contract Management</a></li>
+    <li><a href="#formula-sheet">Formula Sheet</a></li>
+    <li><a href="#question-bank">Question Bank</a></li>
+  </ol>
+</nav>
+<main>
+<div class="hero">
+  <h1>SPM: Clean Syllabus Guide and Question Bank</h1>
+  <p class="lede">A focused revision guide for estimation, risk management, PERT, monitoring and control, and contracts. Repetition and low-value detail have been removed; the remaining material supports the question bank below.</p>
+  <div class="stats">
+    <span><b>9</b> core revision sections</span>
+    <span><b>24</b> solution-backed questions</span>
+    <span><b>20</b> hard scenario or calculation questions</span>
+    <span><b>4</b> medium coverage questions</span>
+  </div>
+  <figure class="mental" aria-label="Mental model for the course">
+    <figcaption>A mental model: plan the work, see drift, steer the project, close the agreement</figcaption>
+    <div class="mental-flow">
+      <div>Estimate size &amp; effort<small>FP · Mark II · COCOMO</small></div>
+      <div>Plan with risk in view<small>Hazards · PERT · baseline</small></div>
+      <div>Measure actual progress<small>Data · visuals · EVM</small></div>
+      <div>Correct through control<small>Priorities · recovery · change</small></div>
+      <div>Deliver &amp; accept<small>Contract · criteria · sign-off</small></div>
+    </div>
+  </figure>
+</div>
+
+<section id="estimation">
+<h2><span class="num">1</span>Effort Estimation Techniques</h2>
+<p class="sub">Predicting effort, cost, staffing and duration before development is complete</p>
+<div class="box def"><span class="bt">Effort estimation</span><p>Effort estimation predicts the work needed to develop a project, usually in person-hours, person-days or person-months. It gives the basis for schedules, cost estimates, resource allocation, bids, risk planning and progress control.</p></div>
+<p>Estimates depend on project size and complexity, requirement stability, team capability, technology, development method, reuse, customer involvement, risk, and tool support. An estimate is a reasoned prediction with stated assumptions, not a guarantee.</p>
+<div class="scroll"><table>
+<caption>Common estimation approaches</caption>
+<thead><tr><th>Method</th><th>Use it when</th><th>Strength</th><th>Main limitation</th></tr></thead>
+<tbody>
+<tr><th>Expert judgment</th><td>Requirements are incomplete, work is novel, or history is limited.</td><td>Uses relevant technical and domain experience.</td><td>Subject to optimism, anchoring and hidden assumptions.</td></tr>
+<tr><th>Estimation by analogy</th><td>Reliable data exists for a genuinely similar completed project.</td><td>Anchors the estimate in observed effort.</td><td>False similarity produces misleading estimates.</td></tr>
+<tr><th>Top-down</th><td>An early, system-level estimate is needed before tasks are stable.</td><td>Fast and includes integration effort.</td><td>Can overlook detailed work.</td></tr>
+<tr><th>Bottom-up</th><td>A detailed work breakdown and stable requirements exist.</td><td>Traceable to individual tasks.</td><td>Time-consuming and weak when the scope is still changing.</td></tr>
+</tbody></table></div>
+<h3>Expert judgment</h3>
+<p>Use people with relevant experience, define the scope and assumptions first, collect independent estimates, reconcile differences, record a range and rationale, and compare the result with actual performance later. A Delphi-style review reduces authority bias by allowing independent rounds before a moderated discussion.</p>
+<h3>Estimation by analogy</h3>
+<p>Select a completed reference project with trustworthy actual data. Compare size, technology, interfaces, team capability, reuse, quality target and schedule pressure. Scale for size, then state explicit adjustments for the differences.</p>
+<div class="formula"><span class="hl">Estimate<sub>new</sub> = Estimate<sub>reference</sub> × (Size<sub>new</sub> / Size<sub>reference</sub>) × adjustment factors</span><br><span class="note">Use a range if key differences remain uncertain.</span></div>
+</section>
+
+<section id="fpa">
+<h2><span class="num">2</span>Function Point Methods</h2>
+<p class="sub">Sizing business functionality independently of the programming language</p>
+<h3>Albrecht Function Point Analysis</h3>
+<p>Albrecht’s Function Point Analysis (FPA) measures the functionality delivered to users. It is used for software sizing, effort and cost estimation, productivity comparison, project planning and scheduling.</p>
+<div class="scroll"><table>
+<caption>Albrecht function types and complexity weights</caption>
+<thead><tr><th>Function type</th><th>Meaning</th><th class="n">Low</th><th class="n">Average</th><th class="n">High</th></tr></thead>
+<tbody>
+<tr><th>EI — External Input</th><td>Data or control information entering the application.</td><td class="n">3</td><td class="n">4</td><td class="n">6</td></tr>
+<tr><th>EO — External Output</th><td>Processed information leaving the application, often with derived data.</td><td class="n">4</td><td class="n">5</td><td class="n">7</td></tr>
+<tr><th>EQ — External Inquiry</th><td>An input-output retrieval with no significant derived processing or update.</td><td class="n">3</td><td class="n">4</td><td class="n">6</td></tr>
+<tr><th>ILF — Internal Logical File</th><td>Logical data maintained within the application boundary.</td><td class="n">7</td><td class="n">10</td><td class="n">15</td></tr>
+<tr><th>EIF — External Interface File</th><td>Logical data referenced by the application but maintained outside its boundary.</td><td class="n">5</td><td class="n">7</td><td class="n">10</td></tr>
+</tbody></table></div>
+<div class="formula"><span class="hl">UFP = Σ (count of a function type × its complexity weight)</span></div>
+<h3>Value Adjustment Factor</h3>
+<p>Rate each General System Characteristic (GSC) from 0 to 5: no influence, incidental, moderate, average, significant, or strong. The 14 GSCs are data communications, distributed processing, performance, heavily used configuration, transaction rate, online data entry, end-user efficiency, online update, complex processing, reusability, installation ease, operational ease, multiple sites and facilitate change.</p>
+<div class="formula"><span class="hl">DI = Σ 14 GSC ratings</span> &nbsp; (0 ≤ DI ≤ 70)<br><span class="hl">VAF = 0.65 + 0.01 × DI</span> &nbsp; (0.65 ≤ VAF ≤ 1.35)<br><span class="hl">Adjusted FP = UFP × VAF</span></div>
+<h3>Function Point Mark II</h3>
+<p>Mark II measures logical transactions through input data element types (<em>N<sub>i</sub></em>), entity-type references used during processing (<em>N<sub>e</sub></em>), and output data element types (<em>N<sub>o</sub></em>). It does not use Albrecht’s EI/EO/EQ/ILF/EIF weight table or its VAF.</p>
+<div class="formula"><span class="hl">Mark II FPI = 0.58 ΣN<sub>i</sub> + 1.66 ΣN<sub>e</sub> + 0.26 ΣN<sub>o</sub></span></div>
+<div class="box tip"><span class="bt">Important distinction</span><p>Do not mix the two methods. Albrecht counts five function types and applies their weights; Mark II counts transaction inputs, entity references and outputs.</p></div>
+</section>
+
+<section id="cocomo">
+<h2><span class="num">3</span>COCOMO and Object Points</h2>
+<p class="sub">Algorithmic cost estimation and the COCOMO II Application Composition model</p>
+<h3>Constructive Cost Model (COCOMO)</h3>
+<p>COCOMO is Barry Boehm’s software cost-estimation model. Classic COCOMO converts estimated size in KLOC into effort and development time. Basic COCOMO uses size and development mode; Intermediate COCOMO adds effort-adjustment factors; Detailed COCOMO distributes the estimate by lifecycle phase.</p>
+<div class="scroll"><table>
+<caption>Classic Basic COCOMO modes</caption>
+<thead><tr><th>Mode</th><th>Typical setting</th><th>Effort E (person-months)</th><th>Time TDEV (months)</th></tr></thead>
+<tbody>
+<tr><th>Organic</th><td>Small, familiar project with an experienced team and few rigid constraints.</td><td>2.4 × KLOC<sup>1.05</sup></td><td>2.5 × E<sup>0.38</sup></td></tr>
+<tr><th>Semi-detached</th><td>Medium project with mixed experience and some novelty.</td><td>3.0 × KLOC<sup>1.12</sup></td><td>2.5 × E<sup>0.35</sup></td></tr>
+<tr><th>Embedded</th><td>Project with strong hardware, safety, regulatory or operational constraints.</td><td>3.6 × KLOC<sup>1.20</sup></td><td>2.5 × E<sup>0.32</sup></td></tr>
+</tbody></table></div>
+<div class="formula"><span class="hl">Basic effort = a × KLOC<sup>b</sup></span><br><span class="hl">Intermediate effort = a × KLOC<sup>b</sup> × EAF</span><br><span class="hl">TDEV = c × Effort<sup>d</sup></span><br><span class="hl">Average staffing = Effort / TDEV</span><br><span class="note">Detailed COCOMO distributes the estimate across lifecycle phases; coefficients vary by mode.</span></div>
+<h3>COCOMO II Application Composition: Object Points</h3>
+<p>Use Application Composition early in prototyping or rapid application development when the application is assembled from screens, reports and 3GL components. Its size unit is the <strong>object point</strong>, a weighted count of those user-visible components.</p>
+<div class="scroll"><table>
+<caption>Screen and report complexity classification</caption>
+<thead><tr><th>Object measure</th><th>&lt;4 tables<br>(&lt;2 server, &lt;3 client)</th><th>4–7 tables<br>(2–3 server, 3–5 client)</th><th>≥8 tables<br>(&gt;3 server, &gt;5 client)</th></tr></thead>
+<tbody>
+<tr><th>Screen: &lt;3 views / Report: 0–1 sections</th><td>Simple</td><td>Simple</td><td>Medium</td></tr>
+<tr><th>Screen: 3–7 views / Report: 2–3 sections</th><td>Simple</td><td>Medium</td><td>Difficult</td></tr>
+<tr><th>Screen: ≥8 views / Report: ≥4 sections</th><td>Medium</td><td>Difficult</td><td>Difficult</td></tr>
+</tbody></table></div>
+<div class="scroll"><table>
+<caption>Object-point weights and productivity rates</caption>
+<thead><tr><th>Object type</th><th class="n">Simple</th><th class="n">Medium</th><th class="n">Difficult</th></tr></thead>
+<tbody>
+<tr><th>Screen</th><td class="n">1</td><td class="n">2</td><td class="n">3</td></tr>
+<tr><th>Report</th><td class="n">2</td><td class="n">5</td><td class="n">8</td></tr>
+<tr><th>3GL component</th><td class="n">—</td><td class="n">—</td><td class="n">10</td></tr>
+</tbody></table></div>
+<p><strong>Productivity (new object points per person-month):</strong> very low 4, low 7, nominal 13, high 25, very high 50.</p>
+<div class="formula"><span class="hl">OP = Σ (number of object instances × complexity weight)</span><br><span class="hl">NOP = OP × (100 − % reuse) / 100</span><br><span class="hl">Effort (person-months) = NOP / productivity rate</span></div>
+</section>
+
+<section id="risk">
+<h2><span class="num">4</span>Module 4 — Project Planning and Risk Management</h2>
+<p class="sub">Integrating uncertainty into scope, schedule, cost, quality and stakeholder decisions</p>
+<h3>Project planning</h3>
+<div class="flow"><span>Identify stakeholders</span><i>→</i><span>Set priorities</span><i>→</i><span>Define deliverables</span><i>→</i><span>Build schedule</span><i>→</i><span>Assess risks</span><i>→</i><span>Approve baseline</span></div>
+<p>The approved scope, schedule and cost plan becomes the baseline for monitoring and change control; the risk plan and register stay connected to it and are reviewed as conditions change. Risk management belongs within project planning: uncertain requirements affect scope; uncertain activities affect schedule and critical-path buffers; resource or supplier uncertainty affects cost and procurement plans.</p>
+<h3>Nature and types of risk</h3>
+<p>A <strong>risk</strong> is an uncertain future event or condition that may affect a project objective, positively or negatively; the response strategies below focus on threats. A <strong>hazard</strong> is a source or condition that can cause harm. An <strong>issue</strong> is a risk that has already occurred.</p>
+<div class="scroll"><table>
+<caption>Risk categories used in software projects</caption>
+<thead><tr><th>Type</th><th>Examples</th><th>Typical impact</th></tr></thead>
+<tbody>
+<tr><th>Technical</th><td>Unproven technology, integration failure, performance shortfall</td><td>Rework, quality failure, delay</td></tr>
+<tr><th>Project</th><td>Poor estimates, scope drift, resource shortage, unrealistic schedule</td><td>Overrun or missed milestones</td></tr>
+<tr><th>People / organisational</th><td>Key-person loss, skill gap, slow decisions, conflict</td><td>Reduced productivity or knowledge loss</td></tr>
+<tr><th>Business / external</th><td>Budget cut, supplier failure, regulatory change, contract dispute</td><td>Cost increase, redesign or cancellation</td></tr>
+<tr><th>Security / operational</th><td>Attack, data loss, outage, weak backup or recovery</td><td>Service disruption, compliance or reputational loss</td></tr>
+</tbody></table></div>
+<h3>Hazard identification and assessment</h3>
+<p>Identify hazards with historical checklists, lessons learned, brainstorming, stakeholder interviews, work-breakdown-structure review, architecture and interface reviews, and supplier assessment. Then analyse probability and impact, rank exposure, and decide which hazards need active treatment.</p>
+<div class="formula"><span class="hl">Risk Exposure = Probability of occurrence × Impact (severity)</span></div>
+<div class="box tip"><span class="bt">Assessment condition</span><p>Probability and impact must use compatible scales. Rank risks consistently, then set an explicit threshold for active response rather than treating every recorded risk equally.</p></div>
+<div class="scroll"><table>
+<caption>Example hazard assessment: banking system</caption>
+<thead><tr><th>Hazard</th><th>Probability</th><th>Impact</th><th>Control mechanism</th></tr></thead>
+<tbody>
+<tr><th>Security attack</th><td>Medium</td><td>Very high</td><td>Strong encryption, multi-factor authentication and regular penetration testing.</td></tr>
+<tr><th>Database loss</th><td>Low</td><td>Very high</td><td>Redundant backups and tested disaster-recovery procedures.</td></tr>
+<tr><th>Developer resignation</th><td>Medium</td><td>High</td><td>Knowledge sharing and cross-training.</td></tr>
+<tr><th>Scope or requirement drift</th><td>High</td><td>High</td><td>Formal change-request review and approval.</td></tr>
+</tbody></table></div>
+<h3>Risk planning and control</h3>
+<div class="flow"><span>Identify</span><i>→</i><span>Analyse</span><i>→</i><span>Prioritise</span><i>→</i><span>Plan response</span><i>→</i><span>Assign owner</span><i>→</i><span>Monitor triggers</span><i>→</i><span>Update register</span></div>
+<div class="scroll"><table>
+<caption>Risk response strategies</caption>
+<thead><tr><th>Strategy</th><th>Meaning</th><th>Example</th></tr></thead>
+<tbody>
+<tr><th>Avoid</th><td>Change the plan so the threat no longer applies.</td><td>Replace unstable technology with a proven alternative.</td></tr>
+<tr><th>Mitigate / reduce</th><td>Lower the probability or impact.</td><td>Train developers or prototype a risky integration early.</td></tr>
+<tr><th>Transfer</th><td>Shift defined responsibility to a third party.</td><td>Use a managed hosting agreement with service obligations.</td></tr>
+<tr><th>Accept</th><td>Retain the risk and use contingency if it occurs.</td><td>Accept a minor non-critical documentation delay.</td></tr>
+</tbody></table></div>
+<p>A useful risk register records the description and cause, probability, impact, exposure or priority, response, contingency, owner, trigger, status and review date. Risk control continuously monitors indicators, checks mitigation effectiveness, executes contingency plans and communicates material changes.</p>
+<div class="scroll"><table>
+<caption>Sample risk register entries</caption>
+<thead><tr><th>Risk event</th><th>Response strategy</th></tr></thead>
+<tbody>
+<tr><th>Requirement changes</th><td>Use formal change control.</td></tr>
+<tr><th>Developer turnover</th><td>Cross-train team members and use pair programming.</td></tr>
+<tr><th>Server outage</th><td>Provide automated failover and backup servers.</td></tr>
+<tr><th>Budget shortage</th><td>Track milestones and budget burn regularly.</td></tr>
+<tr><th>Minor UI defects</th><td>Use continuous integration and automated regression testing.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="pert">
+<h2><span class="num">5</span>PERT and Critical Path Analysis</h2>
+<p class="sub">Planning and controlling projects when activity durations are uncertain</p>
+<p><strong>PERT</strong> (Program Evaluation and Review Technique) uses three time estimates and a network of dependencies to estimate duration, identify critical activities and reason about completion uncertainty. The <strong>critical path</strong> is the longest-duration path through the network; delaying a critical activity delays the project unless the path changes.</p>
+<div class="scroll"><table>
+<caption>Three-point estimates</caption>
+<thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><th>t<sub>o</sub></th><td>Optimistic time under favourable conditions.</td></tr>
+<tr><th>t<sub>m</sub></th><td>Most likely time under normal conditions.</td></tr>
+<tr><th>t<sub>p</sub></th><td>Pessimistic time under unfavourable conditions.</td></tr>
+</tbody></table></div>
+<div class="formula"><span class="hl">Expected duration: t<sub>e</sub> = (t<sub>o</sub> + 4t<sub>m</sub> + t<sub>p</sub>) / 6</span><br><span class="hl">Activity variance: σ² = ((t<sub>p</sub> − t<sub>o</sub>) / 6)²</span><br><span class="hl">Activity standard deviation: σ = (t<sub>p</sub> − t<sub>o</sub>) / 6</span></div>
+<ol class="steps">
+<li><b>List activities and dependencies</b>Break down the project and show predecessor relationships.</li>
+<li><b>Estimate durations</b>Assign t<sub>o</sub>, t<sub>m</sub> and t<sub>p</sub>, then calculate t<sub>e</sub> and variance.</li>
+<li><b>Run the network</b>Use a forward pass for earliest start/finish and a backward pass for latest start/finish.</li>
+<li><b>Find floats and the critical path</b>Total float = LS − ES = LF − EF. A zero-float activity is critical under the current network.</li>
+<li><b>Estimate project uncertainty</b>Sum expected times and variances only along the critical path, assuming activity durations are independent.</li>
+</ol>
+<div class="formula"><span class="hl">T<sub>E</sub> = Σ t<sub>e</sub> on the critical path</span><br><span class="hl">σ²<sub>project</sub> = Σ σ²<sub>i</sub> on the critical path</span><br><span class="hl">σ<sub>project</sub> = √σ²<sub>project</sub></span><br><span class="hl">Z = (target date − T<sub>E</sub>) / σ<sub>project</sub></span><br><span class="note">Use Z with the supplied normal-distribution probability. Recalculate the network if an activity duration or dependency changes.</span></div>
+</section>
+
+<section id="monitoring">
+<h2><span class="num">6</span>Module 5 — Monitoring, Control and Change Management</h2>
+<p class="sub">Measure actual performance against the approved baseline and take controlled corrective action</p>
+<h3>Creating the monitoring framework</h3>
+<p>Define the approved scope, schedule and cost baselines; metrics; data sources; collection frequency; reporting format; thresholds; owners; escalation route; and review cadence.</p>
+<h3>Collecting the data</h3>
+<p>Collect trustworthy actuals on completed work, effort, cost, defects, milestones, resource use, risks and change requests from work records, timesheets, finance systems, issue/defect trackers, milestone sign-offs, risk logs and approved change records. Give each measure a clear definition, status date, owner and consistent source.</p>
+<h3>Visualizing progress</h3>
+<p>Choose a visual that answers the management question: milestone or Gantt views for timing and dependencies; trend charts for change over time; dashboards for threshold exceptions; and variance or burn-down charts for remaining work. A chart should make deviations and causes easier to spot, not decorate incomplete data.</p>
+<h3>Cost monitoring</h3>
+<p>Compare the approved cost baseline with actual cost, committed cost and the forecast needed to finish remaining work. Investigate variances early and interpret spending against completed work.</p>
+<h3>Earned Value Management</h3>
+<p>EVM combines scope, schedule and cost by comparing planned budgeted work, completed budgeted work and actual cost at the status date.</p>
+<div class="scroll"><table>
+<caption>EVM measures</caption>
+<thead><tr><th>Measure</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><th>PV — Planned Value</th><td>Budgeted cost of work scheduled by the status date.</td></tr>
+<tr><th>EV — Earned Value</th><td>Budgeted value of work actually completed; it is not money spent.</td></tr>
+<tr><th>AC — Actual Cost</th><td>Actual cost of the completed work.</td></tr>
+<tr><th>BAC — Budget at Completion</th><td>Total approved budget for the project.</td></tr>
+</tbody></table></div>
+<div class="formula"><span class="hl">CV = EV − AC</span> &nbsp; negative = over budget<br><span class="hl">SV = EV − PV</span> &nbsp; negative = behind schedule<br><span class="hl">CPI = EV / AC</span> &nbsp; below 1 = poor cost efficiency<br><span class="hl">SPI = EV / PV</span> &nbsp; below 1 = slow progress<br><span class="hl">EAC = BAC / CPI</span> when current cost efficiency is expected to continue<br><span class="hl">ETC = EAC − AC; VAC = BAC − EAC</span></div>
+<h3>Prioritising monitoring</h3>
+<p>Give priority to critical-path work, high-risk items, large cost or schedule variances, resource bottlenecks, quality defects, milestones and scope changes. Consider criticality, risk severity, cost/schedule impact, dependencies and visibility.</p>
+<h3>Getting the project back to target</h3>
+<p>When performance deviates, identify the deviation, find the root cause, assess project-wide impact, select and approve corrective action, implement it, and monitor recovery.</p>
+<div class="flow"><span>Plan</span><i>→</i><span>Monitor</span><i>→</i><span>Compare</span><i>→</i><span>Find deviation</span><i>→</i><span>Correct</span><i>→</i><span>Re-monitor</span></div>
+<h3>Change control</h3>
+<p>Change control is the formal process for changes to scope, requirements, schedule, cost, resources, architecture or deliverables. A change request is logged, impact is analysed, the request is reviewed and approved or rejected, the baseline is updated after approval, then the change is implemented, verified and monitored. Rebaselining without approval hides performance and breaks traceability.</p>
+</section>
+
+<section id="contracts">
+<h2><span class="num">7</span>Module 5 — Contract Management and Acceptance</h2>
+<p class="sub">Managing the client–supplier agreement from requirements through formal closeout</p>
+<p>A contract is a legally binding agreement that defines obligations, deliverables, timelines, price and terms. Contract management plans, negotiates, administers, monitors and closes the agreement while controlling changes and resolving disputes.</p>
+<p><strong>Purpose and participants:</strong> clarify client and supplier responsibilities, quality and delivery expectations, payment and remedies, and maintain auditable records. The customer, supplier, project manager, and legal or procurement team contribute according to their authority.</p>
+<div class="scroll"><table>
+<caption>Common contract types</caption>
+<thead><tr><th>Type</th><th>Best fit</th><th>Risk allocation</th></tr></thead>
+<tbody>
+<tr><th>Fixed-price</th><td>Clear, stable scope and measurable deliverables.</td><td>More cost risk sits with the supplier.</td></tr>
+<tr><th>Cost-reimbursement</th><td>Uncertain scope or research work requiring flexibility.</td><td>More cost risk sits with the buyer.</td></tr>
+<tr><th>Time and materials</th><td>Work is needed but effort and scope cannot yet be fixed.</td><td>Shared through agreed rates and controls.</td></tr>
+<tr><th>Unit-price</th><td>Work can be measured in standard units.</td><td>Depends on quantity uncertainty and rate agreement.</td></tr>
+</tbody></table></div>
+<h3>Stages in contract placement</h3>
+<div class="flow"><span>Define requirements</span><i>→</i><span>Prepare documents</span><i>→</i><span>Invite tender (RFP / RFQ)</span><i>→</i><span>Receive proposals</span><i>→</i><span>Evaluate</span><i>→</i><span>Negotiate</span><i>→</i><span>Award</span><i>→</i><span>Sign</span><i>→</i><span>Administer</span><i>→</i><span>Close</span></div>
+<p>Requirements and acceptance needs inform the statement of work and bid criteria. Proposal evaluation compares technical capability, price, feasibility, experience and risk. Negotiation finalises scope, milestones, price, warranties, liability and change terms.</p>
+<h3>Contract administration and closure</h3>
+<p>During administration, compare vendor progress and deliverables with milestones and quality terms, verify invoices, process approved changes, record issues and resolve claims. At closure, confirm contractual completion and acceptance, settle final amounts, document outstanding obligations and archive the agreement.</p>
+<h3>Typical software-contract terms</h3>
+<p>Scope of work; deliverables; schedule and milestones; contract price; payment terms; acceptance criteria; change control; quality standards; intellectual-property rights; confidentiality; warranties and support; liability; liquidated damages or penalties; termination; and dispute resolution.</p>
+<h3>Acceptance</h3>
+<p>Contract acceptance is the customer’s formal confirmation that delivered work meets the agreed requirements and acceptance criteria. The flow is: define criteria, deliver, inspect and verify, run UAT, log deficiencies, remediate, re-verify, issue written acceptance and settle the final payment.</p>
+<ul>
+<li><strong>Provisional acceptance:</strong> temporary approval while minor non-blocking defects are fixed.</li>
+<li><strong>Partial acceptance:</strong> approval of a completed subsystem or milestone.</li>
+<li><strong>Final acceptance:</strong> unconditional approval of all contractual requirements.</li>
+<li><strong>Conditional acceptance:</strong> approval subject to specified future obligations or remediation.</li>
+</ul>
+<h4>Acceptance criteria checklist</h4>
+<ul>
+<li>Functional requirements and agreed system behaviour.</li>
+<li>System performance benchmarks and software quality standards.</li>
+<li>Security and data-protection requirements.</li>
+<li>UI/UX requirements and approved design criteria.</li>
+<li>Technical and user documentation.</li>
+<li>Architecture and technical specifications.</li>
+<li>Successful test-case execution and agreed pass rates.</li>
+<li>All critical and high-severity defects resolved.</li>
+<li>Delivery within the agreed contractual timeline.</li>
+</ul>
+</section>
+
+<section id="formula-sheet">
+<h2><span class="num">8</span>Formula Sheet and Conditions</h2>
+<p class="sub">Use the formula that matches the method, unit and stated assumptions</p>
+<div class="formula-grid">
+<div class="formula"><span class="hl">FPA</span><br>UFP = Σ(count × weight)<br>VAF = 0.65 + 0.01DI<br>FP = UFP × VAF</div>
+<div class="formula"><span class="hl">Mark II</span><br>FPI = 0.58ΣN<sub>i</sub> + 1.66ΣN<sub>e</sub> + 0.26ΣN<sub>o</sub></div>
+<div class="formula"><span class="hl">Basic COCOMO</span><br>E = a × KLOC<sup>b</sup><br>TDEV = c × E<sup>d</sup><br>Average staff = E / TDEV</div>
+<div class="formula"><span class="hl">Object points</span><br>OP = Σ(instances × weight)<br>NOP = OP(100 − reuse%)/100<br>Effort = NOP / PROD</div>
+<div class="formula"><span class="hl">Risk</span><br>Risk Exposure = Probability of occurrence × Impact (severity)<br>Use compatible probability and impact scales.</div>
+<div class="formula"><span class="hl">PERT</span><br>t<sub>e</sub> = (t<sub>o</sub> + 4t<sub>m</sub> + t<sub>p</sub>)/6<br>σ² = ((t<sub>p</sub> − t<sub>o</sub>)/6)²</div>
+<div class="formula"><span class="hl">Critical path</span><br>Total float = LS − ES = LF − EF<br>Project variance = sum of variances on current critical path only.</div>
+<div class="formula"><span class="hl">EVM</span><br>CV = EV − AC; SV = EV − PV<br>CPI = EV/AC; SPI = EV/PV<br>EAC = BAC/CPI only under its stated assumption.</div>
+</div>
+</section>
+
+<section id="question-bank">
+<h2><span class="num">9</span>Question Bank</h2>
+<p class="sub">24 integrated questions with worked answers: 20 hard application questions and 4 medium questions</p>
+<div class="q-intro">
+  <span><span class="badge h">H</span> Hard: multi-step application, calculation, tracing or diagnosis</span>
+  <span><span class="badge m">M</span> Medium: focused coverage of a core distinction</span>
+  <span>Open a question to reveal the answer and reasoning.</span>
+</div>
+<div class="scroll"><table class="coverage">
+<caption>Coverage map — every listed syllabus topic is represented</caption>
+<thead><tr><th>Syllabus topics</th><th>Questions</th></tr></thead>
+<tbody>
+<tr><th>Expert judgment; analogy; top-down and bottom-up</th><td>Q1–Q3</td></tr>
+<tr><th>Albrecht FPA, weights, DI, VAF and adjusted FP</th><td>Q4</td></tr>
+<tr><th>Function Point Mark II</th><td>Q5</td></tr>
+<tr><th>COCOMO and Object Points</th><td>Q6–Q7</td></tr>
+<tr><th>Project planning in risk management; nature and types of risk; hazard identification and assessment; risk planning and control</th><td>Q8–Q11</td></tr>
+<tr><th>PERT, expected duration, variance, network tracing, critical path, float and completion probability</th><td>Q12–Q15</td></tr>
+<tr><th>Monitoring framework, collecting data, visualising progress, cost monitoring, earned value and prioritising monitoring</th><td>Q16–Q18</td></tr>
+<tr><th>Getting back to target and change control</th><td>Q19–Q20</td></tr>
+<tr><th>Contract introduction, types, placement stages, terms, administration and acceptance</th><td>Q21–Q24</td></tr>
+</tbody></table></div>
+
+<div class="q-group">
+<h3>1. Effort estimation and sizing</h3>
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q1.</span> A new identity service has incomplete requirements, strict security needs and no close historical match. A director asks one senior engineer for a single number. Recommend a defensible estimation process and explain whether expert judgment or analogy should anchor it.</span></summary><div class="a"><p class="answer">Answer</p><p>Use <strong>expert judgment</strong> as the primary anchor because no close analogue exists. First bound the scope and assumptions; collect independent ranges from security, architecture, development and testing specialists; compare the assumptions behind differences; reconcile a range; record risks and rationale; and later compare actual effort to calibrate estimates. A single senior estimate hides uncertainty and invites anchoring.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q2.</span> A completed 400-FP banking service took 24 person-months. A new, comparable service is 500 FP, but its integration burden is estimated to be 15% higher. Calculate an analogy estimate and state the key assumption.</span></summary><div class="a"><p class="answer">Answer</p><p>Scale for size: 24×(500/400)=30 PM. Apply the stated burden: 30×1.15=<strong>34.5 person-months</strong>. This assumes effort scales proportionally with function points over this range and that the 15% integration adjustment is justified.</p></div></details>
+
+<details class="q"><summary><span class="badge m">M</span><span><span class="qno">Q3.</span> An estimate is needed before task details are stable, and system integration is significant. Later, the requirements and work breakdown become stable. Which sequence best fits? <br>A. Bottom-up first, then top-down. <br>B. Top-down first, then bottom-up. <br>C. Analogy first, then expert judgment. <br>D. Bottom-up at both stages because it is always more accurate.</span></summary><div class="a"><p class="answer">Answer: B</p><p>Lead early with <strong>top-down</strong> estimation: it is quicker and captures system-level integration, but may overlook task detail. Once requirements and tasks are stable, use <strong>bottom-up</strong>: it is more traceable to work items but takes longer and depends on complete decomposition. Option D confuses detail with accuracy when the task breakdown is unstable.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q4.</span> Counted functions are 10 average EI, 6 average EO, 5 low EQ, 4 average ILF and 2 low EIF. Calculate UFP and adjusted FP at DI=40. A review then raises DI to 55 without changing function counts; calculate the revised FP and percentage increase.</span></summary><div class="a"><p class="answer">Answer</p><p>UFP=(10×4)+(6×5)+(5×3)+(4×10)+(2×5)=<strong>135</strong>. At DI=40, VAF=1.05 and FP=135×1.05=<strong>141.75</strong>. At DI=55, VAF=1.20 and FP=135×1.20=<strong>162</strong>. Increase=20.25 FP, or 20.25/141.75×100≈<strong>14.29%</strong>. Both DI values are within 0–70 and both VAFs within 0.65–1.35.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q5.</span> For a Mark II count, ΣNᵢ=14, ΣNₑ=8 and ΣNₒ=12. Calculate FPI and effort at 8 Mark II FP per person-month. Why should this count not be run through Albrecht’s VAF?</span></summary><div class="a"><p class="answer">Answer</p><p>FPI=(0.58×14)+(1.66×8)+(0.26×12)=8.12+13.28+3.12=<strong>24.52 Mark II FP</strong>. Effort=24.52/8=<strong>3.065 PM</strong>, approximately 3.07 PM. Mark II uses transaction inputs, entity references and outputs; Albrecht’s VAF adjusts an Albrecht UFP count and does not apply to Mark II.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q6.</span> A 10-KLOC project is classified as organic. Using E=2.4×KLOC^1.05 and TDEV=2.5×E^0.38, calculate effort, development time and average staffing. What does the staffing result not tell you?</span></summary><div class="a"><p class="answer">Answer</p><p>E=2.4×10^1.05=<strong>26.93 PM</strong>. TDEV=2.5×26.93^0.38=<strong>8.74 months</strong>. Average staffing=26.93/8.74=<strong>3.08 people</strong>. It is an average over the schedule, not the number of people required at every lifecycle phase.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q7.</span> A prototype has 4 screens with 4 views and 7 data tables each, plus 2 reports with 6 sections and 5 tables each. Reuse is 10% and capability is Low. Classify, then calculate OP, NOP and effort.</span></summary><div class="a"><p class="answer">Answer</p><p>Each screen is <strong>Medium</strong> (3–7 views and 4–7 tables; weight 2). Each report is <strong>Difficult</strong> (≥4 sections and 4–7 tables; weight 8). OP=(4×2)+(2×8)=<strong>24</strong>. NOP=24×90/100=<strong>21.6</strong>. Low PROD=7, so effort=21.6/7=<strong>3.086 PM</strong>.</p></div></details>
+</div>
+
+<div class="q-group">
+<h3>2. Project planning and risk management</h3>
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q8.</span> A project has uncertain requirements, a critical-path supplier dependency and a new technology choice. Explain how the project manager should incorporate risk management into the project plan and identify which artifacts are baselined versus maintained.</span></summary><div class="a"><p class="answer">Answer</p><p>Risk management is part of normal project management, not a separate final document. Prioritise stakeholder goals and clarify requirements; identify and assess supplier, technology and scope risks; assign owners, triggers and responses; include contingency in cost and schedule; define acceptance and change rules; and review the plan with stakeholders. Baseline the approved scope/deliverables, schedule and cost. Maintain the risk plan and register alongside them, with owners and responses linked to relevant baseline work.</p></div></details>
+
+<details class="q"><summary><span class="badge m">M</span><span><span class="qno">Q9.</span> Classify these as hazard, risk or issue, then choose a suitable identification technique for the unfamiliar technical dependency: (a) an unsupported database server, (b) the likelihood and impact of its failure, (c) the server has failed.</span></summary><div class="a"><p class="answer">Answer</p><p>(a) <strong>Hazard</strong>; (b) <strong>risk</strong>; (c) <strong>issue</strong>. For the unfamiliar dependency, use a cross-functional architecture/interface review with engineers and suppliers, supported by brainstorming and WBS review. A lessons-learned checklist can supplement this review but cannot replace analysis of the new interface.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q10.</span> Three risks have exposure data: A has probability 0.6 and impact ₹50,000; B has 0.2 and ₹160,000; C has 0.4 and ₹70,000. Policy requires an active response at exposure ≥₹30,000. Calculate exposures, apply the boundary correctly and rank the responses.</span></summary><div class="a"><p class="answer">Answer</p><p>A=₹30,000; B=₹32,000; C=₹28,000. A and B meet the inclusive <strong>≥₹30,000</strong> threshold; C does not. Rank B first, then A; monitor C under the lower-risk policy. This shows why both impact and probability, plus the exact threshold operator, matter.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q11.</span> Match the response and control action: replace an unstable framework; train a team to lower error probability; use a managed cloud contract with explicit service liability; accept a minor documentation delay. For each, say what the risk owner should keep monitoring after the response.</span></summary><div class="a"><p class="answer">Answer</p><p>Replace framework=<strong>avoid</strong>; training=<strong>mitigate</strong>; cloud agreement=<strong>transfer</strong>; minor delay=<strong>accept</strong>. In every case, retain an owner, trigger, status and review date in the risk register. Control continues by tracking indicators and residual exposure, checking mitigation effectiveness, identifying new risks, using contingency when triggered, and updating the register and stakeholders.</p></div></details>
+</div>
+
+<div class="q-group">
+<h3>3. PERT and critical path</h3>
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q12.</span> An activity has optimistic time 4 days, most likely time 7 days and pessimistic time 16 days. Calculate expected time, standard deviation and variance. What ordering must the three estimates satisfy?</span></summary><div class="a"><p class="answer">Answer</p><p>tₑ=(4+4×7+16)/6=<strong>8 days</strong>. σ=(16−4)/6=<strong>2 days</strong>; variance=σ²=<strong>4 days²</strong>. Valid estimates must satisfy tₒ≤tₘ≤tₚ.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q13.</span> Network: A(3) and B(4) start together; C(6) and D(2) follow A; E(5) follows both B and D; F(4) follows both C and E. Find project duration, all critical paths and total float for B and C.</span></summary><div class="a"><p class="answer">Answer</p><p>Path lengths: A–C–F=13; A–D–E–F=14; B–E–F=13. Project duration=<strong>14 days</strong>, critical path=<strong>A–D–E–F</strong>. Backward pass gives B and C each <strong>1 day total float</strong>. Both become critical if that float is consumed.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q14.</span> In Q13, E is shortened from 5 to 3 days. Recalculate the finish date and critical path. Why is simply subtracting two days from the original project duration wrong?</span></summary><div class="a"><p class="answer">Answer</p><p>New path lengths: A–D–E–F=12; A–C–F=13; B–E–F=11. The new duration is <strong>13 days</strong> on <strong>A–C–F</strong>. Shortening E makes another path longest; the project only gains one day because the critical path shifts.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q15.</span> A critical path has expected duration 32 days and activity variances 1, 0.25 and 2.25 days². Assuming independent durations and the normal approximation, find the probability of finishing within 34 days. Use P(Z≤1.07)=0.8577.</span></summary><div class="a"><p class="answer">Answer</p><p>Project variance=1+0.25+2.25=<strong>3.5 days²</strong>; σ=√3.5=1.871 days. Z=(34−32)/1.871=1.07. Probability=<strong>0.8577 or 85.77%</strong>. This estimate depends on the stated independence and normal-approximation assumptions.</p></div></details>
+</div>
+
+<div class="q-group">
+<h3>4. Monitoring, control and change</h3>
+<details class="q"><summary><span class="badge m">M</span><span><span class="qno">Q16.</span> A manager receives monthly spreadsheets with inconsistent dates and definitions. Design the minimum monitoring framework and choose a useful visual for (a) dependency timing and (b) trend or threshold exceptions.</span></summary><div class="a"><p class="answer">Answer</p><p>Define approved baselines; metric definitions and status date; data owners and sources; collection frequency; validation rules; thresholds; reporting format; escalation path; and review cadence. Use a <strong>Gantt/milestone view</strong> for timing and dependencies, and a <strong>trend chart/dashboard</strong> for changes over time and threshold exceptions. Collect comparable data from work records, finance, issue/defect trackers, risk logs and approved change records.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q17.</span> At the status date PV=₹120,000, EV=₹90,000, AC=₹105,000 and BAC=₹300,000. A further ₹18,000 is committed but not yet incurred. Calculate CV, SV, CPI, SPI and EAC if current cost efficiency continues. Should the commitment be added to AC?</span></summary><div class="a"><p class="answer">Answer</p><p>CV=EV−AC=<strong>−₹15,000</strong>; SV=EV−PV=<strong>−₹30,000</strong>; CPI=90/105=<strong>0.857</strong>; SPI=90/120=<strong>0.75</strong>. The project is over budget and behind schedule in earned-value terms. EAC=BAC/CPI=300,000/0.8571≈<strong>₹350,000</strong>. Do <strong>not</strong> add the unincurred commitment to EVM AC; track it separately in cost monitoring and include it in the remaining-cost forecast as appropriate. This EAC assumes current cost efficiency continues.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q18.</span> You can inspect only one item in a weekly monitoring review. Policy says first review any zero-float activity; otherwise review the item with the highest risk exposure. Item A is a zero-float migration with exposure ₹20,000; B has 2 days float and exposure ₹80,000; C has 5 days float and exposure ₹50,000. What is reviewed first, and why?</span></summary><div class="a"><p class="answer">Answer</p><p>Review <strong>A</strong> first. The policy gives zero float priority before comparing exposure, and A is on the critical path. If no item had zero float, B would be selected because its exposure is highest.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q19.</span> A critical integration task is late because the test environment was unavailable. Give the recovery sequence and explain when the schedule may be rebaselined.</span></summary><div class="a"><p class="answer">Answer</p><p>Confirm deviation; find root cause; assess impact on dependencies, cost, quality and delivery; compare feasible corrective actions; get required approval; implement; monitor recovery. Rebaseline only after authorised approval of a legitimate plan change. Changing the baseline first would conceal the original variance.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q20.</span> An urgent security fix is requested after baseline approval. Place these actions in order and state why work should not start merely because a request was received: impact analysis, submit/log request, approve or reject, update baseline, implement, verify and monitor.</span></summary><div class="a"><p class="answer">Answer</p><p><strong>Submit and log → impact analysis → approve/reject through the authorised urgent route → update affected baseline and records after approval → implement → verify → monitor.</strong> A request is not approval; starting early can create unapproved scope, cost, schedule and acceptance obligations. An emergency route can accelerate review while preserving authority and traceability.</p></div></details>
+</div>
+
+<div class="q-group">
+<h3>5. Contracts and acceptance</h3>
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q21.</span> Select a contract type for each case and identify who bears more cost risk: (a) stable payroll scope with objective acceptance tests, (b) uncertain research, (c) variable specialist hours, and (d) a known price per migrated record but uncertain volume.</span></summary><div class="a"><p class="answer">Answer</p><p>(a) <strong>Fixed-price</strong>; supplier bears more cost risk if scope is controlled. (b) <strong>Cost-reimbursement</strong>; buyer bears more cost risk. (c) <strong>Time and materials</strong>; payment follows hours/rates, so buyer exposure depends on controls. (d) <strong>Unit-price</strong>; rate per unit is known but total cost changes with quantity.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q22.</span> Put the contract-placement stages in order: negotiate, define needs, evaluate bids, prepare contract documents, award, invite tender/RFP/RFQ, receive supplier proposals, sign, administer and close. Name two evaluation criteria.</span></summary><div class="a"><p class="answer">Answer</p><p><strong>Define needs → prepare documents → invite tender/RFP/RFQ → receive proposals → evaluate → negotiate → award → sign → administer → close.</strong> Evaluation criteria include technical capability, price, delivery feasibility, past performance, team qualifications and risk. Contract administration tracks deliverables, milestones, invoices, quality and approved changes; closure confirms acceptance, settles payments/claims and archives records.</p></div></details>
+
+<details class="q"><summary><span class="badge m">M</span><span><span class="qno">Q23.</span> A draft software contract names a price and delivery date but says nothing about what will be delivered, how it will be accepted, ownership of source code, or handling of defects after launch. Name the missing terms most directly required.</span></summary><div class="a"><p class="answer">Answer</p><p>Add <strong>scope of work and deliverables</strong>; measurable <strong>acceptance criteria</strong>; <strong>intellectual-property rights</strong>; and <strong>warranties/support</strong>. A complete contract should also specify milestones/payment, change control, quality, confidentiality, liability, penalties, termination and dispute resolution.</p></div></details>
+
+<details class="q"><summary><span class="badge h">H</span><span><span class="qno">Q24.</span> During administration, the customer signs off one completed subsystem while the rest continues; later the whole system is accepted with minor non-blocking defects to be fixed by an agreed date; another approval is made subject to regulator clearance. Identify the acceptance types and state the key control steps.</span></summary><div class="a"><p class="answer">Answer</p><p>The subsystem sign-off is <strong>partial acceptance</strong>. Temporary sign-off of the whole system with minor defects is <strong>provisional acceptance</strong>. Approval subject to regulator clearance is <strong>conditional acceptance</strong>. Final acceptance is unconditional confirmation that all requirements are met. Define criteria before delivery; inspect and run UAT; log deficiencies; require fixes and re-verification; obtain written sign-off; then settle final payment and close the contract when obligations are complete.</p></div></details>
+</div>
+</section>
+</main>
+</div>
+<footer>Software Project Management · Clean syllabus guide and scenario-based question bank.</footer>
+<script>
+(function(){
+  var root=document.documentElement;
+  var theme=document.getElementById('theme');
+  var solutions=document.getElementById('solutions');
+  var toc=document.getElementById('toc');
+  var tocToggle=document.getElementById('tocToggle');
+  var questions=[].slice.call(document.querySelectorAll('details.q'));
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var sections=links.map(function(link){return document.querySelector(link.getAttribute('href'));}).filter(Boolean);
+  function currentTheme(){return root.getAttribute('data-theme')||'dark';}
+  try{var saved=localStorage.getItem('spm-theme');if(saved==='light'||saved==='dark')root.setAttribute('data-theme',saved);}catch(e){}
+  theme.addEventListener('click',function(){
+    var next=currentTheme()==='dark'?'light':'dark';
+    root.setAttribute('data-theme',next);
+    try{localStorage.setItem('spm-theme',next);}catch(e){}
+  });
+  solutions.addEventListener('click',function(){
+    var openSome=questions.some(function(q){return !q.open;});
+    questions.forEach(function(q){q.open=openSome;});
+    solutions.textContent=openSome?'Close solutions':'Open solutions';
+  });
+  if(tocToggle){
+    tocToggle.addEventListener('click',function(){
+      var open=toc.classList.toggle('mob-open');
+      tocToggle.setAttribute('aria-expanded',open?'true':'false');
+      tocToggle.textContent=open?'Close contents':'Contents';
+    });
+  }
+  links.forEach(function(link){
+    link.addEventListener('click',function(event){
+      var target=document.querySelector(link.getAttribute('href'));
+      if(!target)return;
+      event.preventDefault();
+      target.scrollIntoView({behavior:'smooth'});
+      history.pushState(null,'',link.getAttribute('href'));
+      links.forEach(function(item){item.classList.remove('on');});
+      link.classList.add('on');
+      if(tocToggle){toc.classList.remove('mob-open');tocToggle.setAttribute('aria-expanded','false');tocToggle.textContent='Contents';}
+    });
+  });
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape'&&toc.classList.contains('mob-open')){
+      toc.classList.remove('mob-open');
+      tocToggle.setAttribute('aria-expanded','false');
+      tocToggle.textContent='Contents';
+      tocToggle.focus();
+    }
+  });
+  if('IntersectionObserver' in window&&sections.length){
+    var observer=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting)return;
+        links.forEach(function(link){link.classList.remove('on');});
+        var active=links.filter(function(link){return link.getAttribute('href')==='#'+entry.target.id;})[0];
+        if(active)active.classList.add('on');
+      });
+    },{rootMargin:'-72px 0px -72% 0px',threshold:0});
+    sections.forEach(function(section){observer.observe(section);});
+  }
+})();
+</script>
+</body>
+</html>
