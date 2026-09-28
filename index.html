@@ -1,0 +1,1248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f5f0e5">
+<title>Software Design Practices — Exam Focus Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  try {
+    const savedTheme = localStorage.getItem("design-guide-theme");
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+    document.documentElement.dataset.theme = initialTheme;
+    document.querySelector('meta[name="theme-color"]').content = initialTheme === "dark" ? "#131915" : "#f5f0e5";
+  } catch (_) { document.documentElement.dataset.theme = "light"; }
+</script>
+<style>
+:root{
+  --ink:#172d3d; --muted:#597080; --navy:#102538; --navy2:#18394e;
+  --teal:#13877f; --teal2:#e3f4f1; --gold:#c38324; --gold2:#fff3dc;
+  --coral:#b95345; --coral2:#fff0ed; --line:#d7e2e8; --paper:#ffffff;
+  --wash:#f2f7f8; --soft:#eaf1f4; --shadow:0 12px 34px rgba(16,37,56,.08);
+  --radius:18px; --small-radius:12px; --max:1360px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:26px}
+body{margin:0;color:var(--ink);background:
+  radial-gradient(ellipse at 88% 0%,rgba(19,135,127,.08),transparent 32rem),
+  linear-gradient(180deg,#f4f8f9 0%,#eef4f6 100%);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  line-height:1.62}
+a{color:#087c77;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:#075c5a}
+button{font:inherit}
+code,pre,.mono{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace}
+.skip{position:absolute;left:-9999px;top:10px;background:#fff;padding:10px}
+.skip:focus{left:10px;z-index:99}
+.topbar{max-width:var(--max);margin:auto;padding:22px 28px 0;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:750;letter-spacing:.01em;color:var(--navy)}
+.brand-mark{width:35px;height:35px;border-radius:11px;display:grid;place-items:center;background:var(--navy);color:#bde9df;font-size:17px}
+.top-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#fff;color:var(--navy);padding:9px 13px;border-radius:10px;cursor:pointer;font-weight:650;font-size:.88rem}
+.btn:hover{border-color:#98b7bf;background:#f8fbfc}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.primary:hover{background:#1c465e}
+.hero{max-width:var(--max);margin:17px auto 24px;padding:27px 28px 28px}
+.hero-inner{position:relative;overflow:hidden;padding:40px 42px 35px;border-radius:25px;background:
+  radial-gradient(circle at 89% 15%,rgba(60,191,171,.25),transparent 23rem),
+  linear-gradient(125deg,#102538 0%,#18394e 70%,#1c5261 100%);color:white;box-shadow:var(--shadow)}
+.hero-inner:after{content:"";position:absolute;width:300px;height:300px;border:1px solid rgba(213,248,241,.17);border-radius:50%;right:5%;top:-185px;box-shadow:0 0 0 35px rgba(255,255,255,.025),0 0 0 75px rgba(255,255,255,.02)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.77rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#9be0d4}
+.eyebrow .dot{width:7px;height:7px;background:#ffc86b;border-radius:50%}
+.hero h1{max-width:800px;font-size:clamp(2.25rem,5vw,4.2rem);line-height:1.04;letter-spacing:-.045em;margin:14px 0 13px}
+.hero p{max-width:730px;color:#d7e5eb;font-size:1.04rem;margin:0}
+.hero-bottom{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:24px}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:6px 10px;border:1px solid rgba(255,255,255,.2);border-radius:999px;color:#ecf6f7;background:rgba(255,255,255,.07);font-size:.8rem;font-weight:650}
+.pill strong{color:#ffd587}
+.hero-art{position:absolute;right:40px;bottom:29px;width:220px;height:120px;opacity:.9}
+.layout{max-width:var(--max);margin:auto;padding:0 28px 55px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:26px;align-items:start}
+.sidebar{position:sticky;top:18px}
+.side-card{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:16px;padding:15px 13px;box-shadow:0 4px 15px rgba(16,37,56,.035)}
+.side-title{font-size:.73rem;text-transform:uppercase;letter-spacing:.11em;color:#7a8f9b;font-weight:800;padding:4px 8px 8px}
+.side-nav{display:grid;gap:4px}
+.side-nav a{display:flex;align-items:center;gap:9px;text-decoration:none;color:#47606f;padding:8px 9px;border-radius:9px;font-size:.88rem;font-weight:650}
+.side-nav a:hover,.side-nav a.active{color:var(--navy);background:var(--soft)}
+.nav-num{font:700 .7rem ui-monospace,monospace;color:#748b96}
+.side-note{margin-top:15px;border-top:1px solid var(--line);padding:13px 8px 3px;color:#587181;font-size:.8rem}
+.content{min-width:0}
+section{scroll-margin-top:18px;margin-bottom:24px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,3vw,31px);box-shadow:0 5px 18px rgba(16,37,56,.035)}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}
+.section-index{display:flex;align-items:center;gap:11px}
+.index-badge{flex:0 0 39px;height:39px;border-radius:12px;display:grid;place-items:center;background:var(--teal2);color:#08736c;font-weight:850}
+.index-badge.gold{background:var(--gold2);color:#916012}
+.index-badge.blue{background:#e9f0fa;color:#345f9a}
+.index-badge.coral{background:var(--coral2);color:#a34639}
+h2{font-size:clamp(1.55rem,2.5vw,2.1rem);letter-spacing:-.03em;line-height:1.15;margin:0;color:var(--navy)}
+h3{font-size:1.16rem;line-height:1.3;color:var(--navy);margin:25px 0 10px}
+h4{font-size:.98rem;color:var(--navy);margin:16px 0 6px}
+p{margin:9px 0 13px}
+.lede{font-size:1.04rem;color:#435f6e;max-width:850px}
+.small{font-size:.88rem;color:var(--muted)}
+.micro{font-size:.77rem;color:#718693}
+.badge{display:inline-flex;align-items:center;white-space:nowrap;border-radius:999px;padding:5px 9px;font-size:.75rem;font-weight:800;letter-spacing:.02em}
+.badge.high{background:#fff1d6;color:#885a12}
+.badge.pass{background:#e0f2ed;color:#176d61}
+.badge.module{background:#e9eff4;color:#516b79}
+.callout{border-left:4px solid var(--teal);background:#eff8f6;padding:13px 15px;border-radius:0 11px 11px 0;margin:15px 0;color:#274e50}
+.callout.gold{border-left-color:var(--gold);background:#fff8e9;color:#5d4b2d}
+.callout.coral{border-left-color:var(--coral);background:#fff3f0;color:#65423d}
+.callout strong{color:var(--navy)}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.info-card{border:1px solid var(--line);background:#fbfdfe;border-radius:13px;padding:14px}
+.info-card h4{margin:0 0 6px}
+.info-card p{margin:0;color:#536c7a;font-size:.9rem}
+.tag-row{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+.tag{display:inline-flex;padding:4px 8px;border-radius:7px;background:#edf3f5;color:#4b6370;font-size:.76rem;font-weight:700}
+.question{display:grid;grid-template-columns:30px 1fr;gap:11px;align-items:start;border:1px solid var(--line);padding:13px 14px;border-radius:12px;background:#fff;margin:9px 0}
+.question .qnum{height:27px;width:27px;border-radius:8px;background:#edf3f5;color:#536d7a;display:grid;place-items:center;font:750 .78rem ui-monospace,monospace}
+.question p{margin:1px 0 0;color:#233e4e;font-weight:650}
+.qmeta{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.flow-wrap{background:linear-gradient(180deg,#fbfdfe,#f4f8fa);border:1px solid var(--line);padding:12px;border-radius:14px;overflow:hidden}
+.flow-wrap svg{display:block;width:100%;height:auto}
+.diagram-caption{font-size:.79rem;color:#6d828f;margin:8px 3px 1px}
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0 0}
+.legend span{font-size:.75rem;color:#5b717e;display:flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid #8aa0aa}
+.legend .ex{background:#fff}.legend .pr{background:#14394f;border-color:#14394f}.legend .st{background:#e8f4f2;border-color:#8ac9bc}
+.steps-line{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;counter-reset:step}
+.step-chip{position:relative;padding:11px 12px;border-radius:11px;background:#f1f6f7;border:1px solid #e0e9ec;color:#385362;font-size:.82rem;font-weight:700}
+.step-chip:before{counter-increment:step;content:counter(step,decimal-leading-zero);display:block;color:#148078;font:800 .7rem ui-monospace,monospace;margin-bottom:3px}
+.two-col{display:grid;grid-template-columns:1.03fr .97fr;gap:15px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;margin:12px 0}
+table{border-collapse:collapse;width:100%;min-width:570px;font-size:.87rem}
+th{text-align:left;color:#4a6573;background:#f0f5f7;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+th,td{padding:10px 12px;border-bottom:1px solid #e2eaed;vertical-align:top}
+tr:last-child td{border-bottom:0}
+td{color:#38515f}
+td strong{color:#1b394a}
+td code,code.inline{background:#edf3f5;border-radius:5px;padding:2px 5px;color:#185c5a;font-size:.86em}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#102b3d;color:#e3f2f4;border-radius:12px;padding:15px 17px;font-size:.87rem;line-height:1.62;margin:10px 0}
+pre .comment{color:#9cc7c4}
+dl.defs{display:grid;grid-template-columns:155px 1fr;margin:8px 0}
+dl.defs dt,dl.defs dd{padding:8px 10px;border-bottom:1px solid #e7eef0;margin:0}
+dl.defs dt{font-weight:750;color:#315267}
+dl.defs dd{color:#536b78}
+.check-list{padding-left:1.15rem}
+.check-list li{margin:6px 0;color:#405c6b}
+.check-list li::marker{color:#16857d}
+details{border:1px solid var(--line);border-radius:12px;padding:0 13px;margin:10px 0;background:#fff}
+details summary{cursor:pointer;list-style:none;font-weight:720;color:#29495b;padding:12px 21px 12px 0;position:relative}
+details summary::-webkit-details-marker{display:none}
+details summary:after{content:"+";position:absolute;right:0;top:9px;color:var(--teal);font-size:1.2rem;font-weight:500}
+details[open] summary:after{content:"−"}
+details .detail-body{padding:0 0 12px;color:#516a77}
+details .detail-body p:first-child{margin-top:0}
+details .detail-body ul{margin:5px 0 5px;padding-left:20px}
+.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:13px 0}
+.time-card{border-top:3px solid var(--teal);background:#f5f9fa;padding:12px;border-radius:0 0 11px 11px}
+.time-card strong{font-size:1.05rem;color:var(--navy)}
+.time-card span{display:block;color:#536d7b;font-size:.83rem;margin-top:4px}
+.loop{display:flex;align-items:stretch;gap:7px;overflow:auto;padding:6px 2px 11px;margin:10px 0}
+.loop-item{min-width:122px;max-width:160px;flex:1;border:1px solid #dce7ea;background:#f7fafb;border-radius:11px;padding:10px;text-align:center;font-size:.79rem;color:#385565;font-weight:700}
+.loop-arrow{align-self:center;color:#158178;font-size:1.2rem;font-weight:800}
+.loop-return{font-size:.77rem;color:#168178;font-weight:750;margin:-4px 0 6px;text-align:right}
+.six-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:15px 0}
+.six-card{min-height:118px;border-radius:13px;padding:13px;border:1px solid #dce7ea;background:#f9fbfc;position:relative}
+.six-card .snum{font:800 .72rem ui-monospace,monospace;color:#13877f}
+.six-card h4{margin:4px 0;font-size:1rem}
+.six-card p{margin:0;font-size:.84rem;color:#58707d}
+.six-card .ex{display:block;font-size:.78rem;color:#284e59;margin-top:8px;font-weight:650}
+.attr-flow{display:grid;grid-template-columns:1fr 25px 1fr 25px 1fr 25px 1fr;align-items:center;gap:5px;margin:14px 0}
+.attr-node{border:1px solid #dce7e9;background:#f8fbfc;border-radius:10px;padding:9px;text-align:center;color:#34505f;font-size:.8rem;font-weight:750}
+.attr-node.em{background:#e3f4f1;border-color:#a6d8cf;color:#176d67}
+.attr-arrow{text-align:center;color:#168178;font-weight:850;font-size:1.1rem}
+.matrix{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:12px 0}
+.matrix div{border-radius:9px;background:#f4f8f9;padding:9px;color:#455f6c;font-size:.82rem}
+.matrix strong{display:block;color:#193c50;margin-bottom:3px}
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stage{border:1px solid var(--line);border-radius:13px;padding:13px;background:#fbfdfe}
+.stage .stage-no{color:#13877f;font:800 .72rem ui-monospace,monospace}
+.stage h4{margin:3px 0 5px}
+.stage p{font-size:.84rem;color:#596f7c;margin:0}
+.exam-answer{border:1px solid #cce4de;background:#f1faf7;border-radius:14px;padding:16px;margin:12px 0}
+.exam-answer .label{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:#18786d;font-weight:850}
+.exam-answer blockquote{margin:7px 0 0;font-size:1rem;font-weight:700;color:#213e4c}
+.quiz-note{background:#fff8ea;border:1px solid #f0dfbd;border-radius:12px;padding:12px 14px;color:#665330;font-size:.87rem}
+.progress-panel{border:1px solid var(--line);border-radius:14px;background:#fbfdfe;padding:14px;margin:14px 0}
+.progress-top{display:flex;justify-content:space-between;gap:10px;font-weight:750;color:#365263;font-size:.87rem}
+.progress-track{height:8px;border-radius:99px;background:#e7eef0;overflow:hidden;margin:9px 0}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#17867d,#62bda9);transition:width .25s}
+.check-row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.done-check{accent-color:#13877f;width:17px;height:17px}
+.footer{color:#718490;font-size:.78rem;text-align:center;padding:20px 10px 0}
+.sources-list{columns:2;column-gap:28px;padding-left:20px}
+.sources-list li{break-inside:avoid;margin:0 0 8px}
+.sources-list a{font-weight:650}
+.focus{display:inline-flex;gap:6px;align-items:center;font-size:.75rem;font-weight:750;color:#587381}
+.focus input{accent-color:#13877f}
+.print-hint{font-size:.78rem;color:#6a7f8b}
+hr{border:0;border-top:1px solid var(--line);margin:21px 0}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.sidebar{position:static}.side-card{padding:10px}.side-nav{display:flex;overflow:auto;gap:4px}.side-nav a{white-space:nowrap}.side-note{display:none}.hero-art{display:none}.two-col{grid-template-columns:1fr}}
+@media(max-width:700px){.topbar{padding:14px 15px 0}.hero{padding:12px 15px 17px;margin-top:8px}.hero-inner{padding:28px 23px;border-radius:19px}.layout{padding:0 15px 35px}.grid-2,.grid-3{grid-template-columns:1fr}.six-grid{grid-template-columns:repeat(2,1fr)}.steps-line{grid-template-columns:repeat(2,1fr)}.timeline{grid-template-columns:1fr}.stages{grid-template-columns:1fr}.attr-flow{grid-template-columns:1fr}.attr-arrow{transform:rotate(90deg)}.matrix{grid-template-columns:1fr}.sources-list{columns:1}.panel{padding:20px 16px}.topbar .brand-label{display:none}.top-actions .btn{padding:8px 10px}.section-head{align-items:flex-start}}
+@media print{
+  body{background:white;color:#111;font-size:10pt}
+  .topbar,.sidebar,.top-actions,.hero-art,.progress-panel,.focus,.skip{display:none!important}
+  .hero{margin:0;padding:0;max-width:none}.hero-inner{box-shadow:none;border-radius:0;padding:20px 22px;background:#18394e!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .layout{display:block;max-width:none;padding:0 12px}
+  .panel{box-shadow:none;padding:16px;border:1px solid #bbb;break-inside:avoid}
+  section{break-inside:avoid-page}
+  details{break-inside:avoid}details:not([open]) .detail-body{display:block}
+  a{color:#174f58;text-decoration:none}
+  pre{white-space:pre-wrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .flow-wrap,.index-badge,.badge,.tag,.step-chip,.time-card,.six-card,.stage,.exam-answer,.callout{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .footer{padding-bottom:0}
+}
+</style>
+<style id="field-guide-redesign">
+:root{
+  color-scheme:light;
+  --ink:#202923;--muted:#58645b;--navy:#1f3028;--navy2:#30483b;
+  --teal:#bd5636;--teal2:#f4e7dd;--gold:#9a741e;--gold2:#f5edcf;
+  --coral:#b84636;--coral2:#f7e5df;--line:#d9d2c3;--paper:#fffdf7;
+  --wash:#f5f0e5;--soft:#eee8d9;--shadow:0 18px 44px rgba(35,43,36,.09);
+  --acid:#d7ed62;--heading:#202923;--card:#fbf8ef;--field:#f3eee2;
+  --focus:#a53f22;--max:1360px;
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ink:#e7eadf;--muted:#b8c1b3;--navy:#17231c;--navy2:#d1dbca;
+  --teal:#ff9b70;--teal2:#39271f;--gold:#e9cf76;--gold2:#332e1e;
+  --coral:#ff9280;--coral2:#382321;--line:#3a453b;--paper:#1b221d;
+  --wash:#131915;--soft:#27312a;--shadow:0 18px 50px rgba(0,0,0,.25);
+  --acid:#d7ed62;--heading:#f0f2e9;--card:#202922;--field:#171e19;
+  --focus:#ffad84;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:108px}
+body{
+  color:var(--ink);
+  background-color:var(--wash);
+  background-image:linear-gradient(rgba(98,88,65,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(98,88,65,.035) 1px,transparent 1px),radial-gradient(ellipse at 86% 0%,rgba(189,86,54,.09),transparent 33rem);
+  background-size:24px 24px,24px 24px,auto;
+  font-family:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.68;
+}
+:root[data-theme="dark"] body{
+  background-image:linear-gradient(rgba(222,230,207,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(222,230,207,.035) 1px,transparent 1px),radial-gradient(ellipse at 86% 0%,rgba(255,155,112,.09),transparent 33rem);
+}
+a{color:var(--teal);text-decoration-thickness:1.5px;text-underline-offset:3px}
+a:hover{color:var(--focus)}
+button{font:inherit}
+h1,h2,h3,h4,.brand,.section-head,.side-title,.btn{font-family:"Space Grotesk","DM Sans",sans-serif}
+code,pre,.mono,.nav-num,.step-chip:before,.six-card .snum,.stage .stage-no{font-family:"DM Mono",ui-monospace,monospace}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+button,a,summary,input{touch-action:manipulation}
+.skip{position:fixed;left:12px;top:10px;z-index:200;background:var(--paper);color:var(--heading);padding:10px 16px;border:2px solid var(--focus);border-radius:8px;transform:translateY(-160%);transition:transform .18s ease}
+.skip:focus{left:12px;top:10px;transform:translateY(0)}
+.topbar{
+  max-width:none;position:sticky;top:0;z-index:60;margin:0;padding:10px max(22px,calc((100vw - var(--max))/2 + 28px));
+  background:color-mix(in srgb,var(--wash) 90%,transparent);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.brand{gap:12px;color:var(--heading);font-size:.92rem}
+.brand-mark{width:42px;height:42px;border-radius:12px;background:var(--navy);color:var(--acid);font:700 1rem "DM Mono",monospace;box-shadow:4px 4px 0 var(--teal)}
+.brand-label{letter-spacing:.01em}
+.top-actions{gap:8px}
+.btn,.theme-toggle{min-height:44px;border:1px solid var(--line);background:var(--paper);color:var(--heading);padding:9px 14px;border-radius:10px;cursor:pointer;font-weight:700;font-size:.86rem;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.btn:hover,.theme-toggle:hover{border-color:var(--teal);background:var(--card);transform:translateY(-1px)}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:var(--acid)}
+.btn.primary:hover{filter:brightness(1.12)}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.icon{width:18px;height:18px;display:block;flex:none}
+.icon-sprite{position:absolute;width:0;height:0;overflow:hidden}
+.hero{max-width:var(--max);margin:22px auto 25px;padding:0 28px}
+.hero-inner{
+  min-height:300px;position:relative;overflow:hidden;padding:clamp(30px,5vw,58px) clamp(24px,5vw,62px);
+  border:1px solid rgba(255,255,255,.08);border-radius:5px 30px 5px 30px;
+  background:linear-gradient(116deg,#1b2b23 0%,#263b30 66%,#614334 140%);color:#f5f2e5;
+  box-shadow:var(--shadow);
+}
+.hero-inner:before{content:"FIELD NOTES / 03—04";position:absolute;right:28px;top:22px;color:rgba(244,241,222,.62);font:500 .66rem "DM Mono",monospace;letter-spacing:.12em}
+.hero-inner:after{content:"";position:absolute;width:410px;height:410px;border:1px solid rgba(215,237,98,.33);border-radius:50%;right:-110px;top:-242px;box-shadow:0 0 0 36px rgba(215,237,98,.04),0 0 0 74px rgba(255,255,255,.025),0 0 0 112px rgba(255,255,255,.02)}
+.eyebrow{color:var(--acid);font:500 .75rem "DM Mono",monospace;letter-spacing:.09em}
+.eyebrow .dot{width:9px;height:9px;background:var(--acid);box-shadow:0 0 0 5px rgba(215,237,98,.14)}
+.hero h1{position:relative;z-index:1;max-width:750px;font-family:"Space Grotesk",sans-serif;font-size:clamp(2.5rem,6.5vw,5.5rem);font-weight:600;line-height:.98;letter-spacing:-.065em;margin:19px 0 17px}
+.hero p{position:relative;z-index:1;max-width:670px;color:#d8dfd3;font-size:1.08rem}
+.hero-bottom{position:relative;z-index:1;margin-top:26px}
+.pill{min-height:35px;border:1px solid rgba(246,244,225,.25);border-radius:4px;color:#f5f2e5;background:rgba(255,255,255,.045);font:500 .74rem "DM Mono",monospace}
+.pill strong{color:var(--acid)}
+.hero-art{right:7%;bottom:35px;width:235px;height:130px;opacity:.95}
+.layout{max-width:var(--max);padding:0 28px 62px;grid-template-columns:242px minmax(0,1fr);gap:25px}
+.sidebar{top:88px}
+.side-card{background:var(--paper);border-color:var(--line);border-radius:5px 16px 5px 16px;padding:14px 12px;box-shadow:var(--shadow)}
+.side-title{color:var(--muted);font:500 .69rem "DM Mono",monospace;letter-spacing:.12em;padding:6px 9px 10px}
+.side-nav{gap:3px}
+.side-nav a{min-height:44px;color:var(--muted);padding:8px 10px;border-radius:7px;font-size:.87rem}
+.side-nav a:hover,.side-nav a.active{color:var(--heading);background:var(--soft)}
+.nav-num{color:var(--teal);font-size:.69rem}
+.side-note{color:var(--muted);border-color:var(--line);line-height:1.55}
+.panel{background:var(--paper);border-color:var(--line);border-radius:5px 20px 5px 20px;padding:clamp(20px,3.3vw,36px);box-shadow:var(--shadow)}
+section{scroll-margin-top:110px;margin-bottom:22px}
+.section-head{margin-bottom:22px}
+.index-badge{flex-basis:43px;height:43px;border-radius:7px;background:var(--teal2);color:var(--teal);font:700 .86rem "DM Mono",monospace}
+.index-badge.gold{background:var(--gold2);color:var(--gold)}
+.index-badge.blue{background:var(--soft);color:var(--navy2)}
+.index-badge.coral{background:var(--coral2);color:var(--coral)}
+h2{color:var(--heading);font-weight:600;letter-spacing:-.045em}
+h3{color:var(--heading);font-weight:600;letter-spacing:-.025em}
+h4{color:var(--heading);font-weight:600}
+p{max-width:78ch}
+.lede{color:var(--muted);font-size:1.07rem}
+.small,.micro,.print-hint,.footer{color:var(--muted)}
+.badge.high{background:var(--gold2);color:var(--gold)}
+.badge.pass{background:var(--teal2);color:var(--teal)}
+.badge.module{background:var(--soft);color:var(--muted)}
+.callout{border-left-color:var(--teal);background:var(--teal2);color:var(--ink)}
+.callout.gold{border-left-color:var(--gold);background:var(--gold2);color:var(--ink)}
+.callout.coral{border-left-color:var(--coral);background:var(--coral2);color:var(--ink)}
+.callout strong,.question p,.question .qnum,.info-card h4,.info-card p{color:var(--heading)}
+.grid-2,.grid-3{gap:14px}
+.info-card,.question,.progress-panel,.exam-answer{background:var(--card);border-color:var(--line);color:var(--ink)}
+.info-card p,.qmeta,.progress-top{color:var(--muted)}
+.question p{font-size:.97rem}
+.question .qnum{background:var(--soft)}
+.flow-wrap{background:var(--field);border-color:var(--line);padding:15px}
+.diagram-caption{color:var(--muted);font-size:.84rem;line-height:1.55}
+.legend span{color:var(--muted)}
+.legend .pr{background:var(--navy);border-color:var(--navy)}
+.step-chip,.tag,.matrix div,.stage,.six-card,.time-card,.loop-item{background:var(--card);border-color:var(--line);color:var(--ink)}
+.step-chip:before,.six-card .snum,.stage .stage-no{color:var(--teal)}
+.table-wrap{border-color:var(--line)}
+th{background:var(--soft);color:var(--muted)}
+th,td{border-color:var(--line)}
+td{color:var(--ink)}
+td strong{color:var(--heading)}
+td code,code.inline{background:var(--soft);color:var(--teal)}
+dl.defs dt,dl.defs dd{border-color:var(--line)}
+dl.defs dt{color:var(--heading)}
+dl.defs dd,.check-list li{color:var(--muted)}
+details{background:var(--card);border-color:var(--line)}
+details summary{min-height:48px;display:flex;align-items:center;color:var(--heading);padding:10px 30px 10px 0}
+details summary:after{color:var(--teal);top:10px}
+details .detail-body{color:var(--muted)}
+.time-card{border-top-color:var(--teal)}
+.time-card strong,.matrix strong{color:var(--heading)}
+.time-card span{color:var(--muted)}
+.timeline{grid-template-columns:repeat(4,minmax(0,1fr))}
+.loop-item{min-height:72px}
+.loop-arrow,.loop-return{color:var(--teal)}
+.attr-node{background:var(--card);border-color:var(--line);color:var(--heading)}
+.attr-node.em{background:var(--teal2);border-color:var(--teal);color:var(--heading)}
+.exam-answer{border-color:var(--teal);background:var(--teal2)}
+.exam-answer .label{color:var(--teal)}
+.exam-answer blockquote{color:var(--heading)}
+.quiz-note{background:var(--gold2);border-color:var(--gold);color:var(--ink)}
+.progress-track{background:var(--soft)}
+.progress-fill{background:linear-gradient(90deg,var(--teal),var(--acid))}
+.done-check,.focus input{accent-color:var(--teal)}
+.focus{color:var(--muted);min-height:44px}
+input[type="checkbox"]{width:20px;height:20px}
+hr{border-color:var(--line)}
+.mobile-summary{display:none}
+.architecture-foundations{margin-top:18px}
+.architecture-foundations summary{font-family:"Space Grotesk",sans-serif}
+.architecture-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:6px 0 12px}
+.architecture-grid article{padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--field)}
+.architecture-grid h4{margin:0 0 5px;font-size:.92rem}
+.architecture-grid p{margin:0;font-size:.86rem}
+.theme-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.mobile-jump{display:none}
+.forecast-list,.dictionary-grid,.driver-grid,.clash-grid,.compare-grid,.scenario-list{margin:14px 0;padding:0;list-style:none}
+.forecast-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.forecast-card{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;align-content:start;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.forecast-no{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--soft);color:var(--teal);font:700 .85rem "DM Mono",monospace}
+.forecast-card:first-child,.forecast-card:nth-child(2){border-color:color-mix(in srgb,var(--gold) 48%,var(--line));background:linear-gradient(145deg,var(--gold2),var(--card) 72%)}
+.forecast-card h3{margin:0 0 9px;font-size:1.02rem;line-height:1.42;letter-spacing:-.015em}
+.forecast-card p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.5}
+.forecast-card .badge{margin-bottom:8px}
+.dictionary-grid,.driver-grid,.clash-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dictionary-card,.driver-card,.clash-card,.compare-card{min-width:0;padding:15px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.dictionary-card h4,.driver-card h4,.clash-card h4,.compare-card h4{margin:0 0 6px;font-size:1rem}
+.dictionary-card p,.clash-card p,.compare-card p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.55}
+.dictionary-card .dictionary-example{display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+.dictionary-example strong{font:500 .67rem "DM Mono",monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal)}
+.dictionary-example code{overflow-wrap:anywhere}
+.driver-card{display:grid;gap:9px}
+.driver-card h4{display:flex;align-items:center;gap:8px;color:var(--heading)}
+.driver-card h4 .driver-type{font:500 .65rem "DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.driver-card p{margin:0;color:var(--muted);font-size:.9rem;line-height:1.55}
+.driver-card .driver-row{padding-top:9px;border-top:1px solid var(--line)}
+.driver-card .driver-row strong{display:block;margin-bottom:2px;color:var(--heading);font-size:.78rem}
+.clash-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.clash-card{padding:14px}
+.clash-card .response{margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+.clash-card .response strong{display:block;margin-bottom:3px;color:var(--heading);font-size:.79rem}
+.compare-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.compare-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.compare-card h4{grid-column:1/-1;margin-bottom:0;color:var(--teal)}
+.compare-card p{font-size:.86rem}
+.compare-card p strong{display:block;margin-bottom:3px;color:var(--heading);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+.scenario-list{display:grid;gap:7px}
+.scenario-list>div{display:grid;grid-template-columns:minmax(112px,.32fr) minmax(0,1fr);gap:12px;padding:11px 13px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.scenario-list dt{font-weight:750;color:var(--heading)}
+.scenario-list dd{margin:0;color:var(--muted);line-height:1.5}
+.table-wrap[role="region"]{max-width:100%;overscroll-behavior-inline:contain;scrollbar-color:var(--teal) var(--soft)}
+.table-wrap[role="region"]:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.table-scroll-note{display:none}
+@media(max-width:980px){
+  .layout{grid-template-columns:1fr;gap:14px}
+  .sidebar{position:sticky;top:76px;z-index:45}
+  .side-card{box-shadow:0 8px 18px rgba(35,43,36,.08)}
+  .side-nav{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;scrollbar-width:thin}
+  .side-nav a{scroll-snap-align:start;white-space:nowrap}
+  .side-note{display:none}
+  .hero-art{display:block}
+  .two-col{grid-template-columns:1fr}
+  .timeline{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stages,.architecture-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+  body{font-size:16px;line-height:1.68}
+  .topbar{padding:8px 12px;gap:5px 10px;flex-wrap:wrap}
+  .brand{flex:1;min-width:0;gap:9px;font-size:.84rem}
+  .brand-mark{width:38px;height:38px;flex:none}
+  .top-actions{width:100%;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .btn,.theme-toggle{min-width:0;min-height:44px;padding:7px 5px;font-size:.74rem;white-space:normal;line-height:1.15}
+  .theme-toggle{gap:4px}
+  .icon{width:16px;height:16px}
+  .hero{padding:10px 12px 14px;margin:11px auto 12px}
+  .hero-inner{min-height:0;padding:30px 21px 24px;border-radius:4px 22px 4px 22px}
+  .hero-inner:before{right:16px;top:12px;font-size:.57rem}
+  .hero h1{font-size:clamp(2.45rem,12vw,4rem);margin-top:20px}
+  .hero p{font-size:1rem}
+  .hero-art{display:none}
+  .hero-bottom{gap:7px;margin-top:19px}
+  .pill{font-size:.67rem;padding:5px 8px}
+  .layout{padding:0 12px 40px;gap:12px}
+  .sidebar{top:110px;margin:0 -2px}
+  .side-card{padding:7px 8px;border-radius:6px 12px 6px 12px}
+  .side-title{padding:3px 6px 6px}
+  .side-nav{gap:4px;padding-bottom:3px}
+  .side-nav a{min-height:44px;padding:8px 10px;font-size:.8rem}
+  .panel{padding:21px 16px;border-radius:4px 16px 4px 16px}
+  section{scroll-margin-top:168px;margin-bottom:14px}
+  .section-head{gap:10px;margin-bottom:16px}
+  .section-index{gap:9px}
+  .index-badge{flex-basis:38px;height:38px}
+  h2{font-size:clamp(1.45rem,7vw,1.8rem)}
+  h3{font-size:1.12rem;margin-top:22px}
+  .lede{font-size:1rem}
+  .grid-2,.grid-3,.architecture-grid,.stages{grid-template-columns:1fr}
+  .six-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .six-card{min-height:0;padding:12px}
+  .six-card p{font-size:.86rem}
+  .steps-line{grid-template-columns:1fr 1fr}
+  .timeline,.stages{grid-template-columns:1fr}
+  .attr-flow{grid-template-columns:1fr;gap:4px}
+  .attr-arrow{transform:rotate(90deg);height:22px}
+  .matrix{grid-template-columns:1fr}
+  .sources-list{columns:1}
+  .table-wrap{margin-inline:-4px}
+  table{min-width:540px;font-size:.86rem}
+  th,td{padding:10px}
+  .flow-wrap{padding:12px}
+  .flow-wrap > svg{display:none}
+  .mobile-summary{display:block;margin-top:7px;color:var(--heading);font-size:.95rem}
+  .mobile-summary strong{color:var(--teal)}
+  .diagram-caption{font-size:.85rem}
+  .loop{gap:5px}
+  .loop-item{min-width:118px}
+  dl.defs{grid-template-columns:1fr}
+  dl.defs dt{border-bottom:0;padding-bottom:1px}
+  dl.defs dd{padding-top:1px}
+  pre{font-size:.82rem;padding:13px}
+  .exam-answer{padding:14px}
+  .check-row{align-items:flex-start}
+  details{padding-inline:12px}
+}
+/* Phone-first reading layout: keep the page in one readable column, with generous type and controls. */
+@media(max-width:700px){
+  html,body{width:100%;max-width:100%;min-width:0}
+  body{font-size:17px;line-height:1.68;overflow-x:clip}
+  .topbar{width:100%;max-width:none;min-width:0;display:grid;grid-template-columns:1fr;gap:8px;padding:max(8px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) 9px max(14px,env(safe-area-inset-left))}
+  .brand{display:flex;min-width:0;gap:10px;font-size:.9rem;line-height:1.2}
+  .brand-mark{width:36px;height:36px;border-radius:10px;font-size:.9rem}
+  .topbar .brand-label{display:block;min-width:0;font-size:.88rem;overflow-wrap:anywhere}
+  .top-actions{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .btn,.theme-toggle{display:flex;justify-content:center;align-items:center;gap:5px;min-width:0;min-height:48px;padding:7px 5px;border-radius:10px;font-size:.77rem;line-height:1.2;text-align:center;white-space:normal}
+  .icon{width:17px;height:17px}
+  .hero{width:100%;max-width:none;margin:10px 0 13px;padding:0 max(14px,env(safe-area-inset-right)) 0 max(14px,env(safe-area-inset-left))}
+  .hero-inner{width:100%;max-width:none;min-width:0;min-height:0;padding:27px 19px 19px;border-radius:5px 20px 5px 20px}
+  .hero-inner:before{right:14px;top:12px;font-size:.58rem}
+  .hero h1{font-size:clamp(2.15rem,9.4vw,2.8rem);line-height:1.02;letter-spacing:-.055em;margin:20px 0 12px;max-width:12ch}
+  .hero p{font-size:1rem;line-height:1.52;max-width:48ch}
+  .hero-art{display:none}
+  .hero-bottom{gap:6px;margin-top:15px}
+  .pill{min-height:34px;padding:6px 8px;font-size:.67rem}
+  .hero-bottom .pill:last-child{display:none}
+  .layout{display:block;width:100%;max-width:none;min-width:0;padding:0 max(14px,env(safe-area-inset-right)) max(36px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+  .sidebar{position:static;top:auto;margin:0 0 12px;min-width:0}
+  .side-card{padding:10px;border-radius:5px 14px 5px 14px;box-shadow:none}
+  .side-title,.side-nav,.side-note{display:none}
+  .mobile-jump{display:grid;grid-template-columns:1fr;gap:5px;color:var(--muted);font:500 .68rem "DM Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+  .mobile-jump select{width:100%;min-height:50px;padding:9px 42px 9px 13px;border:1px solid var(--line);border-radius:9px;background:var(--paper);color:var(--heading);font:600 1rem "DM Sans",sans-serif;letter-spacing:normal;text-transform:none}
+  .content,.panel,section{min-width:0;max-width:100%}
+  .panel{padding:20px 16px;border-radius:5px 16px 5px 16px}
+  section{scroll-margin-top:112px;margin-bottom:12px}
+  .section-head{display:flex;flex-direction:column;align-items:flex-start;gap:9px;margin-bottom:15px}
+  .section-index{min-width:0;align-items:flex-start;gap:9px}
+  .section-index>div{min-width:0}
+  .index-badge{flex-basis:36px;height:36px;font-size:.8rem}
+  h2{font-size:clamp(1.5rem,7.3vw,1.9rem);line-height:1.12}
+  h3{font-size:1.15rem;line-height:1.3;margin-top:21px}
+  h4{font-size:1rem}
+  .small,.micro{font-size:.94rem;line-height:1.5}
+  .lede{font-size:1.04rem;line-height:1.58}
+  .badge{font-size:.77rem;min-height:30px;white-space:normal;line-height:1.2}
+  .callout,.quiz-note{padding:13px 14px;font-size:.98rem;line-height:1.55}
+  .grid-2,.grid-3,.architecture-grid,.stages,.dictionary-grid,.driver-grid,.compare-grid{grid-template-columns:1fr}
+  .forecast-list{grid-template-columns:1fr;gap:9px}
+  .forecast-card{grid-template-columns:38px minmax(0,1fr);gap:10px;padding:14px}
+  .forecast-no{width:36px;height:36px}
+  .forecast-card h3{font-size:1rem;line-height:1.46}
+  .forecast-card p,.dictionary-card p,.driver-card p,.clash-card p,.compare-card p{font-size:.96rem;line-height:1.58}
+  .dictionary-card,.driver-card,.clash-card,.compare-card{padding:14px}
+  .clash-grid{grid-template-columns:1fr;gap:8px}
+  .compare-card{grid-template-columns:minmax(0,1fr);gap:8px}
+  .compare-card h4{grid-column:auto}
+  .compare-card p+p{padding-top:8px;border-top:1px solid var(--line)}
+  .scenario-list>div{grid-template-columns:1fr;gap:3px;padding:12px}
+  .scenario-list dt{font-size:.94rem}
+  .scenario-list dd{font-size:.97rem}
+  .six-grid{grid-template-columns:1fr;gap:9px}
+  .six-card{min-height:0;padding:15px}
+  .six-card h4{font-size:1.05rem}
+  .six-card p,.six-card .ex{font-size:.96rem;line-height:1.55}
+  .steps-line{grid-template-columns:1fr 1fr;gap:8px}
+  .step-chip{font-size:.91rem;line-height:1.4}
+  .timeline,.stages{grid-template-columns:1fr;gap:9px}
+  .stage p{font-size:.96rem;line-height:1.55}
+  .attr-flow{grid-template-columns:1fr;gap:4px}
+  .attr-node{font-size:.96rem;padding:11px}
+  .attr-arrow{transform:rotate(90deg);height:22px}
+  .matrix{grid-template-columns:1fr}
+  .sources-list{columns:1;padding-left:20px;font-size:.96rem}
+  .flow-wrap{padding:11px}
+  .flow-wrap>svg{display:none}
+  .mobile-summary{display:block;margin-top:8px;color:var(--heading);font-size:1rem;line-height:1.55}
+  .diagram-caption{font-size:.92rem;line-height:1.5}
+  .loop{display:grid;grid-template-columns:minmax(0,1fr);gap:5px;overflow:visible;padding:6px 0}
+  .loop-item{min-width:0;max-width:none;width:100%;font-size:.92rem;padding:11px}
+  .loop-arrow{transform:rotate(90deg);justify-self:center;line-height:1}
+  dl.defs{grid-template-columns:1fr}
+  dl.defs dt{border-bottom:0;padding:9px 10px 0;font-size:1rem}
+  dl.defs dd{padding:2px 10px 10px;font-size:.96rem}
+  pre{font-size:.9rem;line-height:1.55;padding:13px;overflow-wrap:anywhere}
+  .exam-answer{padding:14px}
+  .exam-answer blockquote{font-size:1.02rem;line-height:1.55}
+  .check-row{align-items:flex-start;gap:12px}
+  .check-row label{min-height:44px;display:flex;align-items:center;gap:9px;font-size:.95rem}
+  input[type="checkbox"]{width:22px;height:22px;flex:none}
+  details{padding-inline:13px}
+  details summary{font-size:1rem;line-height:1.45;padding-top:14px;padding-bottom:14px}
+  .table-wrap{margin:12px 0;max-width:100%}
+}
+@media(max-width:380px){
+  .topbar{padding-inline:12px}
+  .top-actions{gap:5px}
+  .btn,.theme-toggle{font-size:.72rem;padding-inline:3px}
+  .theme-toggle{gap:3px}
+  .layout{padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  .hero{padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}
+  .panel{padding:17px 13px}
+  .section-index{gap:7px}
+  .index-badge{flex-basis:33px;height:33px}
+  .forecast-card{grid-template-columns:32px minmax(0,1fr);gap:8px;padding:12px}
+  .forecast-no{width:31px;height:31px;font-size:.76rem}
+  .steps-line{grid-template-columns:1fr}
+}
+@media(max-width:380px){
+  .top-actions{grid-template-columns:1fr 1fr}
+  .top-actions .btn.primary{grid-column:span 2}
+  .six-grid,.steps-line{grid-template-columns:1fr}
+  .brand-label{font-size:.8rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media(forced-colors:active){
+  :focus-visible{outline:3px solid Highlight}
+  .btn,.theme-toggle,.side-card,.panel,.info-card,.question,details{border:1px solid CanvasText}
+}
+@media print{
+  :root,:root[data-theme="dark"]{color-scheme:light;--ink:#111;--muted:#333;--heading:#111;--paper:#fff;--card:#fff;--field:#fff;--line:#bbb;--wash:#fff}
+  .topbar,.sidebar,.top-actions,.hero-art,.progress-panel,.focus,.skip{display:none!important}
+  .hero-inner{border-radius:0}
+  .mobile-summary{display:block}
+  .flow-wrap > svg{display:block}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to study guide</a>
+<svg class="icon-sprite" aria-hidden="true" focusable="false">
+  <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M20.4 15.1A8.5 8.5 0 0 1 8.9 3.6 8.6 8.6 0 1 0 20.4 15.1Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+</svg>
+<div class="topbar">
+  <div class="brand"><span class="brand-mark">SD</span><span class="brand-label">Software Design • Exam Focus</span></div>
+  <div class="top-actions">
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Dark mode" aria-pressed="false"><svg class="icon" id="themeIcon" aria-hidden="true"><use href="#icon-moon"></use></svg><span>Dark mode</span></button>
+    <button class="btn" id="expandBtn" type="button">Expand all</button>
+    <button class="btn primary" type="button" onclick="window.print()">Print / Save PDF</button>
+  </div>
+</div>
+<div class="theme-status" id="themeStatus" role="status" aria-live="polite"></div>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="dot"></span> Module 3 + Module 4 · pass-focused guide</div>
+    <h1>Software Design Practices</h1>
+    <p>Pass-focused long-answer prep for SSA/SD and DFDs, data dictionaries, ADD, JSP/JSD, and quality-attribute scenarios.</p>
+    <div class="hero-bottom">
+      <span class="pill"><strong>4</strong> study sections</span>
+      <span class="pill"><strong>6</strong> merged exam prompts</span>
+      <span class="pill">Inline diagrams · print-ready</span>
+    </div>
+    <svg class="hero-art" viewBox="0 0 240 130" aria-hidden="true">
+      <g fill="none" stroke="#a5e4d9" stroke-width="1.4" opacity=".8">
+        <rect x="10" y="42" width="54" height="40" rx="8"/><rect x="92" y="14" width="58" height="38" rx="8"/><rect x="92" y="78" width="58" height="38" rx="8"/><rect x="177" y="43" width="53" height="40" rx="8"/>
+        <path d="M64 56L91 34M64 69l27 25M150 34l27 21M150 96l27-23"/>
+        <circle cx="37" cy="62" r="5" fill="#a5e4d9"/><circle cx="121" cy="33" r="4" fill="#a5e4d9"/><circle cx="121" cy="97" r="4" fill="#a5e4d9"/><circle cx="203" cy="63" r="5" fill="#a5e4d9"/>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" aria-label="Study guide navigation">
+    <div class="side-card">
+      <div class="side-title">Study sections</div>
+      <label class="mobile-jump" for="sectionJump">Jump to a topic
+        <select id="sectionJump" aria-label="Jump to a study section">
+          <option value="" selected>Choose a section…</option>
+          <option value="#forecast">00 · Exam forecast</option>
+          <option value="#ssa">01 · SSA/SD + DFD</option>
+          <option value="#dictionary">02 · Data dictionary</option>
+          <option value="#add">03 · ADD</option>
+          <option value="#jackson">04 · JSP + JSD</option>
+          <option value="#qas">05 · Quality scenarios</option>
+          <option value="#sources">06 · Sources & videos</option>
+        </select>
+      </label>
+      <nav class="side-nav">
+        <a href="#forecast"><span class="nav-num">00</span> Exam forecast</a>
+        <a href="#ssa"><span class="nav-num">01</span> SSA/SD + DFD</a>
+        <a href="#dictionary"><span class="nav-num">02</span> Data dictionary</a>
+        <a href="#add"><span class="nav-num">03</span> ADD</a>
+        <a href="#jackson"><span class="nav-num">04</span> JSP + JSD</a>
+        <a href="#qas"><span class="nav-num">05</span> Six-part scenario</a>
+        <a href="#sources"><span class="nav-num">06</span> Sources & videos</a>
+      </nav>
+      <div class="side-note">Forecast is based on the highlighted syllabus topics and their textbook structure. It cannot guarantee the actual paper.</div>
+    </div>
+  </aside>
+
+  <main class="content" id="main">
+    <section id="forecast">
+      <div class="panel">
+        <div class="section-head">
+          <div class="section-index"><span class="index-badge gold">00</span><div><h2>What to prepare first</h2><div class="small">Ranked from the lecturer’s emphasis; repeated variants are combined.</div></div></div>
+          <span class="badge high">Highest yield: DFD + dictionary</span>
+        </div>
+        <p class="lede">The VIT syllabus and the David Budgen textbook line up with the design-method topics you were told to focus on. The strongest pass-first preparation is to practice one full structured-analysis case, then learn the shorter theory answers below.</p>
+        <div class="quiz-note"><strong>Forecast, not a promise:</strong> there is no past paper here to calculate actual odds. “Most likely” means the topic fits a natural 10/15-mark question and is explicitly highlighted by your lecturer.</div>
+
+        <ol class="forecast-list" aria-label="Likely long-answer questions, ranked by lecturer emphasis">
+          <li class="forecast-card"><span class="forecast-no" aria-hidden="true">01</span><div><span class="badge high">15 marks · highest yield</span><h3>Explain SSA/SD using DFDs. Show how a system is decomposed and balanced, then illustrate with the Home Safety and Security case.</h3><p>Answer path: context → lower-level DFD → process specification → design mapping.</p></div></li>
+          <li class="forecast-card"><span class="forecast-no" aria-hidden="true">02</span><div><span class="badge high">15 marks · drawing practice</span><h3>Construct context and lower-level DFDs for a given system; explain leveling, balancing and functional primitives.</h3><p>Be ready to draw, label and explain every data flow.</p></div></li>
+          <li class="forecast-card"><span class="forecast-no" aria-hidden="true">03</span><div><span class="badge pass">10–15 marks</span><h3>Define and construct a data dictionary; explain its entries and notation.</h3><p>Cover name, alias, where-used/how-used, composition and logical constraints.</p></div></li>
+          <li class="forecast-card"><span class="forecast-no" aria-hidden="true">04</span><div><span class="badge pass">15 marks</span><h3>Explain ADD, architectural drivers and its steps; apply them to a system.</h3><p>Trace requirement → driver → design decision → evaluation.</p></div></li>
+          <li class="forecast-card"><span class="forecast-no" aria-hidden="true">05</span><div><span class="badge pass">10–15 marks</span><h3>Explain JSP and JSD representations, processes and heuristics; compare them.</h3><p>Keep program design from data structures (JSP) distinct from event-based system modeling (JSD).</p></div></li>
+          <li class="forecast-card"><span class="forecast-no" aria-hidden="true">06</span><div><span class="badge pass">10–15 marks</span><h3>Explain the six parts of a quality-attribute scenario and formulate one for a given system.</h3><p>Name all six parts and include a measurable response.</p></div></li>
+        </ol>
+
+        <div class="exam-answer">
+          <div class="label">One combined question worth preparing</div>
+          <blockquote>“For a Home Safety and Security System, draw and decompose the DFD, construct its data dictionary, identify architectural drivers, apply ADD to propose an architecture, and specify one quality-attribute scenario.”</blockquote>
+        </div>
+
+        <div class="progress-panel">
+          <div class="progress-top"><span>Your revision progress</span><span id="progressLabel">0 of 4 sections</span></div>
+          <div class="progress-track" role="progressbar" aria-label="Study sections completed" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="check-row">
+            <label><input class="done-check" type="checkbox" data-topic="ssa"> SSA/SD</label>
+            <label><input class="done-check" type="checkbox" data-topic="add"> ADD</label>
+            <label><input class="done-check" type="checkbox" data-topic="jackson"> JSP/JSD</label>
+            <label><input class="done-check" type="checkbox" data-topic="qas"> QAS</label>
+            <span class="print-hint">Progress stays in this browser; it is not sent anywhere.</span>
+          </div>
+        </div>
+        <div class="tag-row"><span class="tag">Module 3: SSA/SD · JSP · JSD</span><span class="tag">Module 4: ADD · quality attributes</span><span class="tag">Study the lecturer’s five topics first</span></div>
+        <div class="callout gold"><strong>Which source to follow:</strong> For architecture, ADD and quality-attribute scenarios, this guide follows Cervantes and Kazman’s <em>Designing Software Architectures: A Practical Approach</em> (2016), the supplied book. For Module 3 methods that the book does not cover in detail, it follows the supplied Module 3 and SSAD lecture decks. Use the lecturer’s DFD and dictionary notation if it differs from a textbook convention.</div>
+      </div>
+    </section>
+
+    <section id="ssa">
+      <div class="panel">
+        <div class="section-head">
+          <div class="section-index"><span class="index-badge">01</span><div><h2>SSA/SD and DFD decomposition</h2><div class="small">The main long-answer and drawing topic</div></div></div>
+          <span class="badge module">Module 3</span>
+        </div>
+        <div class="exam-answer">
+          <div class="label">Likely wording</div>
+          <blockquote>“Explain Structured Systems Analysis and Structured Design. Describe DFD representation, decomposition and balancing, and illustrate the process using a suitable system.”</blockquote>
+        </div>
+        <p><strong>Structured Systems Analysis (SSA)</strong> builds a problem-oriented, functional model: what data enters, how processes transform it, where data is stored, and what leaves the system. A DFD does not itself prescribe a program hierarchy or execution order; levelling organizes detail across diagrams. <strong>Structured Design (SD)</strong> then converts the analysis into a modular, call-and-return solution, commonly shown with a structure chart. In short: SSA emphasizes <em>what</em> the system must do; SD organizes <em>how</em> software modules will do it.</p>
+
+        <div class="grid-2">
+          <div class="info-card"><h4>DFD building blocks</h4><p><strong>External entity</strong> supplies or receives data. <strong>Process</strong> transforms data. <strong>Data flow</strong> is labeled data in motion. <strong>Data store</strong> holds data for later use.</p></div>
+          <div class="info-card"><h4>Supporting representations</h4><p>DFDs are supported by a data dictionary and process specifications. Leaf-process logic can use structured English, decision tables or decision trees. SD commonly uses a structure chart.</p></div>
+        </div>
+
+        <h3>From system boundary to functional primitive</h3>
+        <div class="steps-line" aria-label="DFD decomposition stages">
+          <div class="step-chip">Context diagram</div>
+          <div class="step-chip">Top-level DFD</div>
+          <div class="step-chip">Decompose selected processes</div>
+          <div class="step-chip">Primitive + mini-spec</div>
+        </div>
+        <div class="callout"><strong>Balancing rule:</strong> when a process is expanded, preserve the data that crosses its boundary. Its lower-level diagram must account for its parent-level inputs and outputs. “Level 0” numbering varies across texts; use the convention your lecturer expects.</div>
+        <p class="small"><strong>Keep the notation straight:</strong> DFD arrows represent data moving between processes, stores and external entities. They do not mean that one process calls another. DFD levelling is functional decomposition, not machine flowcharting.</p>
+
+        <h3>Home Safety and Security System: context diagram</h3>
+        <p class="small">Illustrative scope: sensors report events; the homeowner changes modes and views alerts; a monitoring service receives alarm reports.</p>
+        <figure class="flow-wrap">
+          <svg viewBox="0 0 960 300" role="img" aria-label="Context DFD for the Home Safety and Security System">
+            <defs>
+              <marker id="arrowA" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="#168178"/></marker>
+              <marker id="arrowB" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0L9 4.5L0 9z" fill="#c38324"/></marker>
+            </defs>
+            <rect x="18" y="112" width="175" height="70" rx="12" fill="#fff" stroke="#8aa0aa" stroke-width="2"/>
+            <text x="105" y="143" text-anchor="middle" font-size="17" font-weight="700" fill="#17394d">Homeowner</text>
+            <text x="105" y="164" text-anchor="middle" font-size="12" fill="#617985">external entity</text>
+
+            <rect x="23" y="20" width="165" height="61" rx="12" fill="#fff" stroke="#8aa0aa" stroke-width="2"/>
+            <text x="105" y="48" text-anchor="middle" font-size="16" font-weight="700" fill="#17394d">Sensors</text>
+            <text x="105" y="67" text-anchor="middle" font-size="12" fill="#617985">door · motion · smoke</text>
+
+            <rect x="363" y="91" width="237" height="108" rx="18" fill="#14394f" stroke="#14394f" stroke-width="2"/>
+            <text x="481" y="132" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">0 · Home Safety</text>
+            <text x="481" y="157" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">and Security System</text>
+            <text x="481" y="180" text-anchor="middle" font-size="12" fill="#b9d2dc">whole system as one process</text>
+
+            <rect x="764" y="112" width="177" height="70" rx="12" fill="#fff" stroke="#8aa0aa" stroke-width="2"/>
+            <text x="852" y="143" text-anchor="middle" font-size="16" font-weight="700" fill="#17394d">Monitoring service</text>
+            <text x="852" y="164" text-anchor="middle" font-size="12" fill="#617985">external system</text>
+
+            <path d="M193 130 C255 104 302 105 363 119" fill="none" stroke="#168178" stroke-width="2.5" marker-end="url(#arrowA)"/>
+            <text x="279" y="97" text-anchor="middle" font-size="12" fill="#37616a">arm / disarm / config</text>
+            <path d="M363 173 C302 195 253 194 193 165" fill="none" stroke="#c38324" stroke-width="2.5" marker-end="url(#arrowB)"/>
+            <text x="278" y="218" text-anchor="middle" font-size="12" fill="#8b661e">status / alert / history</text>
+
+            <path d="M188 68 C256 66 299 90 363 111" fill="none" stroke="#168178" stroke-width="2.5" marker-end="url(#arrowA)"/>
+            <text x="276" y="58" text-anchor="middle" font-size="12" fill="#37616a">sensor events / health</text>
+            <path d="M600 116 C660 91 708 82 764 126" fill="none" stroke="#168178" stroke-width="2.5" marker-end="url(#arrowA)"/>
+            <text x="681" y="83" text-anchor="middle" font-size="12" fill="#37616a">alarm report</text>
+            <path d="M764 168 C703 212 652 204 600 178" fill="none" stroke="#c38324" stroke-width="2.5" marker-end="url(#arrowB)"/>
+            <text x="679" y="228" text-anchor="middle" font-size="12" fill="#8b661e">acknowledgement</text>
+          </svg>
+          <figcaption class="diagram-caption">At context level, show the boundary and external data exchanges. Internal processes and stores are introduced only when the system process is decomposed.<span class="mobile-summary"><strong>Mobile flow:</strong> Homeowner → system: arm/disarm, configuration and history request. System → homeowner: status, alerts and history. Sensors → system: events and health. System ↔ monitoring service: alarm report and acknowledgement.</span></figcaption>
+        </figure>
+
+        <h3>Level 1: divide the system into processes</h3>
+        <p>One reasonable decomposition is five processes. In an exam drawing, number the processes and label every data flow. Keep the diagram readable; a “3–7 bubbles” rule is a useful decomposition heuristic in some teaching materials, not a universal law.</p>
+        <figure class="flow-wrap">
+          <svg viewBox="0 0 1020 360" role="img" aria-label="Level 1 DFD flow for the home safety system">
+            <defs>
+              <marker id="arrC" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#168178"/></marker>
+              <marker id="arrD" markerWidth="8" markerHeight="8" refX="6.5" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#9c7b3a"/></marker>
+            </defs>
+            <style>
+              .pbox{fill:#14394f;stroke:#14394f;stroke-width:1.5}.ebox{fill:#fff;stroke:#8aa0aa;stroke-width:1.7}.sbox{fill:#e8f4f2;stroke:#80bcb0;stroke-width:1.5}
+              .pt{font:700 14px system-ui,sans-serif;fill:#fff;text-anchor:middle}.et{font:700 13px system-ui,sans-serif;fill:#18394e;text-anchor:middle}.st{font:700 12px system-ui,sans-serif;fill:#2c665f;text-anchor:middle}
+              .lab{font:11px system-ui,sans-serif;fill:#4c6875;text-anchor:middle}.data{fill:none;stroke:#168178;stroke-width:2;marker-end:url(#arrC)}.read{fill:none;stroke:#9c7b3a;stroke-width:1.8;stroke-dasharray:5 4;marker-end:url(#arrD)}
+            </style>
+            <rect class="ebox" x="10" y="117" width="125" height="52" rx="10"/><text class="et" x="72" y="147">Sensors</text>
+            <rect class="pbox" x="165" y="103" width="175" height="80" rx="13"/><text class="pt" x="252" y="132">2.0 Capture and</text><text class="pt" x="252" y="153">validate event</text>
+            <rect class="pbox" x="385" y="103" width="175" height="80" rx="13"/><text class="pt" x="472" y="132">3.0 Assess event</text><text class="pt" x="472" y="153">and threat</text>
+            <rect class="pbox" x="605" y="103" width="175" height="80" rx="13"/><text class="pt" x="692" y="132">4.0 Generate alarm</text><text class="pt" x="692" y="153">and notifications</text>
+            <rect class="ebox" x="835" y="117" width="170" height="52" rx="10"/><text class="et" x="920" y="147">Homeowner / monitor</text>
+            <path class="data" d="M135 143H165"/><text class="lab" x="150" y="129">event</text>
+            <path class="data" d="M340 143H385"/><text class="lab" x="362" y="128">validated event</text>
+            <path class="data" d="M560 143H605"/><text class="lab" x="582" y="128">threat decision</text>
+            <path class="data" d="M780 143H835"/><text class="lab" x="807" y="128">alert / status</text>
+
+            <rect class="pbox" x="175" y="247" width="165" height="68" rx="12"/><text class="pt" x="257" y="273">1.0 Manage</text><text class="pt" x="257" y="294">commands and modes</text>
+            <rect class="pbox" x="615" y="247" width="165" height="68" rx="12"/><text class="pt" x="697" y="273">5.0 Record events</text><text class="pt" x="697" y="294">and provide history</text>
+            <rect class="sbox" x="382" y="245" width="170" height="46" rx="9"/><text class="st" x="467" y="274">D1 · mode / zone config</text>
+            <rect class="sbox" x="10" y="247" width="128" height="46" rx="9"/><text class="st" x="74" y="275">D2 · sensor registry</text>
+            <rect class="sbox" x="835" y="247" width="170" height="46" rx="9"/><text class="st" x="920" y="275">D3 · event / alarm log</text>
+            <path class="read" d="M252 183V216H74V247"/><text class="lab" x="154" y="211">sensor details</text>
+            <path class="read" d="M472 183V245"/><text class="lab" x="510" y="218">read rules</text>
+            <path class="read" d="M697 183V247"/><text class="lab" x="738" y="218">write event</text>
+            <path class="read" d="M780 281H835"/><text class="lab" x="806" y="270">history data</text>
+          </svg>
+          <figcaption class="diagram-caption">Abbreviated Level 1 view: the full diagram should also show homeowner commands reaching 1.0, configuration updates, event-log writes and history responses.<span class="mobile-summary"><strong>Mobile flow:</strong> Sensor events → capture/validate → assess threat → generate alarm/notification. Commands update the mode/configuration store. Responses and event details are written to the event log; history requests read it.</span></figcaption>
+        </figure>
+
+        <div class="grid-3">
+          <div class="info-card"><h4>1.0 Manage modes</h4><p>Accept authorized mode/configuration commands and update the zone or arming configuration.</p></div>
+          <div class="info-card"><h4>2.0–3.0 Detect and assess</h4><p>Validate sensor reports, look up sensor details and apply the current zone/mode rules.</p></div>
+          <div class="info-card"><h4>4.0–5.0 Respond and record</h4><p>Send alarm/notification data, record outcomes and return requested event history.</p></div>
+        </div>
+
+        <details>
+          <summary>How the DFD is divided and checked</summary>
+          <div class="detail-body">
+            <ol class="check-list">
+              <li>Set the boundary and list external entities and their inputs/outputs.</li>
+              <li>Draw one context process for the whole system.</li>
+              <li>Identify the system’s major functions and expand the context process into a top-level DFD.</li>
+              <li>Explode only processes that need more detail; preserve the parent’s incoming and outgoing flows.</li>
+              <li>Continue until a leaf function can be described as a simple algorithm; write a mini-spec for it.</li>
+              <li>Cross-check coverage against requirements and the dictionary; remove unsupported flows and missing transformations.</li>
+            </ol>
+            <p><strong>DFDs do not show:</strong> execution order, timing, or detailed decision logic. Add a mini-spec, state/behavior model or control-flow representation if those details matter.</p>
+          </div>
+        </details>
+        <details>
+          <summary>SSA/SD heuristics from the Module 3 lecture</summary>
+          <div class="detail-body">
+            <ul>
+              <li>Start with system inputs and outputs because they are often clearest in the requirements; work inward from the boundary, or outward from the central functions when that is more useful.</li>
+              <li>Use consistent, meaningful labels for every process and flow.</li>
+              <li>Keep exception and error handling out of the first functional model when it would obscure the normal data transformations; add it during design refinement.</li>
+              <li>Do not turn a DFD into a flowchart: model data movement and transformations, not machine operation sequence.</li>
+              <li>DFD levelling and the choice of a central transform are guided by heuristics; justify a clear, balanced decomposition rather than claiming one universal split.</li>
+            </ul>
+          </div>
+        </details>
+
+        <h3>From DFD to structure chart</h3>
+        <div class="attr-flow" aria-label="Transform analysis">
+          <div class="attr-node">Input<br><span class="micro">afferent branch</span></div><div class="attr-arrow">→</div>
+          <div class="attr-node em">Logical transform<br><span class="micro">central processing</span></div><div class="attr-arrow">→</div>
+          <div class="attr-node">Output<br><span class="micro">efferent branch</span></div><div class="attr-arrow">→</div>
+          <div class="attr-node">Structure chart<br><span class="micro">modules + interfaces</span></div>
+        </div>
+        <div class="grid-2">
+          <div class="info-card"><h4>Transform analysis</h4><p>Use when data follows a transformation pipeline. Identify input, central transformation and output portions; map them to modules and refine by factoring.</p></div>
+          <div class="info-card"><h4>Transaction analysis</h4><p>Use when a request/event type selects a different path. Add a transaction centre, then one branch per transaction type—for example, sensor event, mode command or history request.</p></div>
+        </div>
+        <div class="callout gold"><strong>How the DFD is divided:</strong> transaction analysis separates the top-level model into tractable submodels for distinct event or request types. The SSAD case-study deck shows the partition boundary as a dotted line; data flows can cross it, so shared data must remain explicit. Apply transform analysis to each transaction DFD, then merge the resulting structure charts and add a top-level selector where needed.</div>
+        <div class="callout gold"><strong>Structure-chart mapping:</strong> the central transform becomes the controlling/main module; more abstract operations sit higher, while concrete device input/output procedures sit near the bottom. DFD data-flow arcs become module invocation/control links, with required data passed through interfaces. Aim for cohesive modules and low coupling, then merge transaction charts, add a selector if needed and rationalize duplicated work.</div>
+      </div>
+    </section>
+
+    <section id="dictionary">
+      <div class="panel">
+        <div class="section-head">
+          <div class="section-index"><span class="index-badge">02</span><div><h2>Data Dictionary construction</h2><div class="small">A likely stand-alone question, already connected to the DFD case</div></div></div>
+          <span class="badge pass">10–15 marks</span>
+        </div>
+        <div class="exam-answer">
+          <div class="label">Likely wording</div>
+          <blockquote>“Define a Data Dictionary. Explain its contents, notation and construction. Construct dictionary entries for the data flows and stores in a given system.”</blockquote>
+        </div>
+        <p>A <strong>data dictionary</strong> is a structured catalogue of the data named in the analysis model. It defines data flows, data stores and their component data items. It gives analysts and developers a shared vocabulary and supports consistency checks across the DFD hierarchy.</p>
+
+        <h3>Typical entry fields</h3>
+        <div class="dictionary-grid" aria-label="Typical data dictionary entry fields">
+          <article class="dictionary-card"><h4>Name</h4><p>Preferred unique term used consistently in the DFD.</p><div class="dictionary-example"><strong>Example</strong><code>SENSOR_EVENT</code></div></article>
+          <article class="dictionary-card"><h4>Alias</h4><p>Alternative names found in requirements or user language.</p><div class="dictionary-example"><strong>Example</strong><span>Detector report</span></div></article>
+          <article class="dictionary-card"><h4>Where-used / how-used</h4><p>Processes or stores using the item, and whether it is read, created or updated.</p><div class="dictionary-example"><strong>Example</strong><span>Created by 2.0; consumed by 3.0</span></div></article>
+          <article class="dictionary-card"><h4>Content</h4><p>Composition of a composite flow or store.</p><div class="dictionary-example"><strong>Example</strong><code>sensor_id + event_type + event_time</code></div></article>
+          <article class="dictionary-card"><h4>Logical constraints</h4><p>Meaning, allowed categories, dependencies or rules needed to interpret the data.</p><div class="dictionary-example"><strong>Example</strong><span>event_type is one of the domain event categories</span></div></article>
+        </div>
+        <div class="callout"><strong>Abstraction rule from the course text:</strong> keep definitions at the problem level. Explain what data means and how it is composed; do not make the dictionary a physical database schema or specify byte layouts and storage formats unless the problem explicitly requires them.</div>
+
+        <h3>Notation to memorize</h3>
+        <dl class="defs">
+          <dt><code>=</code></dt><dd>“is defined as” or “is composed of”</dd>
+          <dt><code>+</code></dt><dd>components occur together / concatenation</dd>
+          <dt><code>(item)</code></dt><dd>optional item</dd>
+          <dt><code>{item}</code></dt><dd>repeated item</dd>
+          <dt><code>[A | B]</code></dt><dd>choose one of the alternatives</dd>
+          <dt><code>** comment **</code></dt><dd>comment or explanation</dd>
+          <dt><code>@key</code></dt><dd>identifier/key field, where the notation is used</dd>
+        </dl>
+        <div class="callout coral"><strong>Notation caution:</strong> dictionary conventions differ between texts. In the Yourdon-style convention shown here, parentheses mean optional and square brackets enclose alternatives. If your lecturer’s notes define the symbols differently, reproduce that convention in the exam.</div>
+
+        <h3>Worked entries: Home Safety and Security System</h3>
+        <pre><code>SENSOR_EVENT = sensor_id + zone_id + event_type + event_time + reading
+event_type = [DOOR_OPEN | WINDOW_OPEN | MOTION | SMOKE | CO | PANIC]
+
+SENSOR_RECORD = @sensor_id + zone_id + sensor_type + location + enabled_flag
+SENSOR_REGISTRY = {SENSOR_RECORD}
+
+USER_COMMAND = user_id + command + command_time + (zone_id)
+command = [ARM | DISARM | CHANGE_PROFILE | REQUEST_HISTORY]
+
+ALARM_REPORT = event_id + alarm_type + zone_id + event_time + response_status
+EVENT_LOG = {event_id + SENSOR_EVENT + threat_level + action_taken}</code></pre>
+
+        <details>
+          <summary>How to construct the dictionary from a DFD</summary>
+          <div class="detail-body">
+            <ol class="check-list">
+              <li>Collect every data item named in the DFDs, process specifications and other analysis descriptions.</li>
+              <li>Define composite items in terms of their component items and explain elementary items by their logical meaning and necessary domain rules.</li>
+              <li>Record aliases and where/how the item is used.</li>
+              <li>Use one name consistently, and check each flow’s input/output composition against the processes and stores it touches.</li>
+              <li>Keep the dictionary synchronized when a DFD is changed.</li>
+            </ol>
+            <p>The dictionary defines <em>what the data means and contains</em>. A process mini-spec defines <em>what a leaf process does</em>.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="add">
+      <div class="panel">
+        <div class="section-head">
+          <div class="section-index"><span class="index-badge gold">03</span><div><h2>Attribute-Driven Design (ADD)</h2><div class="small">The core Module 4 architecture method</div></div></div>
+          <span class="badge module">Module 4</span>
+        </div>
+        <div class="exam-answer">
+          <div class="label">Likely wording</div>
+          <blockquote>“Explain ADD, define architectural drivers, and discuss the ADD steps with a suitable case study.”</blockquote>
+        </div>
+        <p><strong>Attribute-Driven Design (ADD)</strong> is an iterative method for translating architectural drivers into software structures and design decisions. The supplied book gives the detailed <strong>ADD 3.0</strong> process below. It treats architecture design as a series of design rounds, with focused iterations that address prioritized drivers and produce structures, decisions and views.</p>
+
+        <div class="timeline" aria-label="ADD history">
+          <div class="time-card"><strong>2000 · ADD 1.0</strong><span>First published as Architecture-Based Design (ABD).</span></div>
+          <div class="time-card"><strong>2006 · ADD 2.0</strong><span>Linked quality-attribute scenarios to structures through tactics and patterns.</span></div>
+          <div class="time-card"><strong>2013 · practical bridge</strong><span>The authors use “ADD 2.5” informally for framework guidance; it is not a separately official version.</span></div>
+          <div class="time-card"><strong>ADD 3.0 · supplied book</strong><span>Refines the method using practice: purpose, reuse, implementation options, analysis and documentation.</span></div>
+        </div>
+
+        <h3>Inputs and architectural drivers</h3>
+        <p>First clarify the <strong>design purpose</strong>: an early estimate, an exploratory prototype, or design for construction and release can require different levels of detail. Then review the primary functionality, prioritized quality-attribute scenarios, constraints, architectural concerns and—when evolving a system—its existing design. Drivers are the requirements and concerns selected to shape architectural choices.</p>
+        <div class="grid-3">
+          <div class="info-card"><h4>Primary functionality</h4><p>Important use cases or capabilities that require a structural solution.</p></div>
+          <div class="info-card"><h4>Quality attributes</h4><p>Prioritized, measurable scenarios for performance, availability, security, modifiability and other qualities.</p></div>
+          <div class="info-card"><h4>Constraints</h4><p>Technology, policy, budget, integration, regulatory or deployment limits.</p></div>
+          <div class="info-card"><h4>Architectural concerns</h4><p>Internal needs such as testability that may matter even when stakeholders did not state them as requirements.</p></div>
+          <div class="info-card"><h4>Existing architecture</h4><p>For a brownfield system, inspect the elements and decisions that are already in place.</p></div>
+          <div class="info-card"><h4>Purpose</h4><p>Decide whether the design is for estimation, risk exploration, a project increment or a releasable system.</p></div>
+        </div>
+
+        <h3>ADD 3.0 process: the book’s answer sequence</h3>
+        <div class="stages" aria-label="Eight steps of ADD 3.0">
+          <div class="stage"><span class="stage-no">STEP 1</span><h4>Review inputs</h4><p>Confirm the design purpose, key use cases, prioritized quality scenarios, constraints, concerns and existing design, if any.</p></div>
+          <div class="stage"><span class="stage-no">STEP 2</span><h4>Set the iteration goal</h4><p>Select the prioritized drivers this design iteration will address; record the goal in the design backlog.</p></div>
+          <div class="stage"><span class="stage-no">STEP 3</span><h4>Choose elements to refine</h4><p>Select the elements involved in those drivers. Refine by decomposition, combination or improvement.</p></div>
+          <div class="stage"><span class="stage-no">STEP 4</span><h4>Choose design concepts</h4><p>Select suitable reference architectures, patterns, deployment patterns, tactics, frameworks, technologies or external components.</p></div>
+          <div class="stage"><span class="stage-no">STEP 5</span><h4>Instantiate and connect</h4><p>Create architectural elements, allocate responsibilities, establish relationships and define their interfaces.</p></div>
+          <div class="stage"><span class="stage-no">STEP 6</span><h4>Sketch views and decisions</h4><p>Capture the structures and record significant decisions with their rationale so they can be communicated and reviewed.</p></div>
+          <div class="stage"><span class="stage-no">STEP 7</span><h4>Analyze and review</h4><p>Check whether the design meets the iteration goal and advances the overall design purpose; invite another perspective where possible.</p></div>
+          <div class="stage"><span class="stage-no">STEP 8</span><h4>Iterate if necessary</h4><p>Use risk and driver priority to decide what remains. Address critical drivers or establish that the design is good enough for its purpose.</p></div>
+        </div>
+        <div class="callout gold"><strong>Sequence nuance:</strong> the book lists driver selection before element refinement, but explains that Steps 2 and 3 can be reversed in some contexts, such as starting from a reference architecture. Keep the overall ADD 3.0 steps distinct from older ADD 2.0 summaries.</div>
+
+        <h3>Case application: Home Safety and Security System</h3>
+        <div class="driver-grid" aria-label="Home safety architecture drivers and decisions">
+          <article class="driver-card"><h4><span class="driver-type">Availability</span> Internet is lost during a smoke event</h4><div class="driver-row"><strong>Decision</strong><p>Keep event assessment and alarm activation on the home hub; queue remote alerts.</p></div><div class="driver-row"><strong>Check</strong><p>Confirm that local alarm response continues without cloud access.</p></div></article>
+          <article class="driver-card"><h4><span class="driver-type">Performance</span> Intrusion needs fast response</h4><div class="driver-row"><strong>Decision</strong><p>Give alarm events a short, direct processing path and priority over history/report requests.</p></div><div class="driver-row"><strong>Check</strong><p>Measure sensor-event-to-siren delay under expected load.</p></div></article>
+          <article class="driver-card"><h4><span class="driver-type">Security</span> An unauthorized user tries to disarm</h4><div class="driver-row"><strong>Decision</strong><p>Authenticate commands, authorize mode changes and record denied attempts.</p></div><div class="driver-row"><strong>Check</strong><p>Test denied commands and verify audit records.</p></div></article>
+          <article class="driver-card"><h4><span class="driver-type">Modifiability</span> A new sensor type is introduced</h4><div class="driver-row"><strong>Decision</strong><p>Use sensor adapters to normalize device-specific reports into a common event format.</p></div><div class="driver-row"><strong>Check</strong><p>Check whether a new adapter can be added without changing threat rules.</p></div></article>
+          <article class="driver-card"><h4><span class="driver-type">Constraint</span> Hub and sensors have limited resources</h4><div class="driver-row"><strong>Decision</strong><p>Choose lightweight local processing and define backup-power behavior.</p></div><div class="driver-row"><strong>Check</strong><p>Compare resource use and backup run-time with agreed requirements.</p></div></article>
+        </div>
+        <div class="callout"><strong>Exam tip:</strong> Do not stop after listing steps. Show the chain <strong>requirement → driver → design decision → component responsibility/interface → verification</strong> for at least two drivers.</div>
+        <details>
+          <summary>ADD 3.0 compared with ADD 2.0</summary>
+          <div class="detail-body">
+            <p>ADD 3.0 is an evolution of ADD 2.0, not a wholly different method. ADD 2.0 was useful for selecting and combining tactics and patterns to address quality-attribute scenarios, but gave less guidance on starting a design, choosing a design purpose, reusing reference architectures, addressing implicit concerns, or connecting abstractions to implementation choices.</p>
+            <p>ADD 3.0 makes design purpose and input review explicit; permits critical requirements to guide element selection; encourages short iterations and possible implementation spikes, reference-architecture and framework reuse, and concrete implementation options; and makes analysis, view sketches, decisions and rationale explicit. The book calls “ADD 2.5” its own informal label for an intermediate practical revision, not a separate official version. ADD 3.0 is the version detailed by the supplied book and reflected in the Module 4 slides.</p>
+          </div>
+        </details>
+        <details class="architecture-foundations">
+          <summary>Architecture foundations: the short answer that strengthens an ADD response</summary>
+          <div class="detail-body">
+            <p><strong>Software architecture</strong> is the set of structures needed to reason about a system: its software elements, the relationships among them, and properties of both. Architecture design makes decisions that translate needs and constraints into solution structures. Its scope is distinct from later element-interaction design (detailed collaborations and interfaces) and element-internals design (the inside of an individual element).</p>
+            <div class="architecture-grid">
+              <article><h4>Why architecture matters</h4><p>It enables or inhibits driving qualities, supports early prediction and change analysis, communicates hard-to-change decisions, constrains implementation, shapes teams, and supports prototypes, cost/schedule reasoning, reuse and complexity control.</p></article>
+              <article><h4>Architect’s work</h4><p>Lead, communicate and negotiate; maintain technical and project skills; analyze risk and trade-offs; prioritize drivers; choose and justify concepts; allocate responsibilities; review decisions and check conformance.</p></article>
+              <article><h4>Design artifacts</h4><p>Sketch views of structures and record decisions with rationale during design; refine and formalize documentation as the design matures.</p></article>
+              <article><h4>Exam connection</h4><p>Use the architecture definition, then trace a prioritized scenario into a design decision, an element/interface and a way to analyze or verify it.</p></article>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="jackson">
+      <div class="panel">
+        <div class="section-head">
+          <div class="section-index"><span class="index-badge blue">04</span><div><h2>JSP and JSD</h2><div class="small">Jackson methods: structure the program, then model the event-driven system</div></div></div>
+          <span class="badge module">Module 3</span>
+        </div>
+        <div class="exam-answer">
+          <div class="label">Likely wording</div>
+          <blockquote>“Explain JSP and JSD, including their model, representation forms, processes and heuristics. Compare the two methods.”</blockquote>
+        </div>
+        <p>Michael Jackson’s methods focus on the subject matter and the ordering of data/events before the software structure. <strong>JSP</strong> is chiefly a program-design method for sequential input and output streams. <strong>JSD</strong> extends the approach to model real-world entities and their time-ordered event histories at system level.</p>
+
+        <div class="grid-2">
+          <div class="info-card"><h4>Memory hook: JSP</h4><p><strong>Program structure</strong> is derived from the structures of the input and output data streams.</p></div>
+          <div class="info-card"><h4>Memory hook: JSD</h4><p><strong>System model</strong> begins with entities and events in the real world, then adds functions and implementation decisions.</p></div>
+        </div>
+
+        <h3>JSP: representations and process</h3>
+        <p>JSP describes data structures with three constructs: <strong>sequence</strong>, <strong>selection</strong> and <strong>iteration</strong>. The design compares the structures of input and output streams, identifies correspondences, and merges them into a program structure.</p>
+        <div class="flow-wrap">
+          <div class="stages">
+            <div class="stage"><span class="stage-no">INPUT</span><h4>Data Structure Diagram</h4><p>Describe the records and their sequence, choices and repetitions.</p></div>
+            <div class="stage"><span class="stage-no">MERGE</span><h4>Correspondence</h4><p>Match related input/output items; identify where data is transformed or generated.</p></div>
+            <div class="stage"><span class="stage-no">OUTPUT</span><h4>Program Structure Diagram</h4><p>Derive the program hierarchy and place operations at suitable nodes.</p></div>
+          </div>
+          <div class="attr-flow" aria-label="JSP input-output structure mapping">
+            <div class="attr-node">Input stream<br><span class="micro">DSD</span></div><div class="attr-arrow">→</div>
+            <div class="attr-node em">Match + merge<br><span class="micro">sequence · choice · repetition</span></div><div class="attr-arrow">→</div>
+            <div class="attr-node">Output stream<br><span class="micro">DSD</span></div><div class="attr-arrow">→</div>
+            <div class="attr-node">Program structure<br><span class="micro">PSD</span></div>
+          </div>
+        </div>
+        <div class="matrix">
+          <div><strong>Sequence</strong>Components occur in order.</div>
+          <div><strong>Selection</strong>One alternative is chosen.</div>
+          <div><strong>Iteration</strong>A component repeats.</div>
+        </div>
+
+        <details>
+          <summary>JSP heuristics and structure clashes</summary>
+          <div class="detail-body">
+            <ul>
+              <li>Represent the actual input and output structures faithfully; do not distort them just to simplify implementation.</li>
+              <li>Establish input/output correspondences before allocating operations.</li>
+              <li>Recognize clashes rather than forcing unrelated structures into a single traversal.</li>
+            </ul>
+            <div class="clash-grid" aria-label="JSP structure clashes and responses">
+              <article class="clash-card"><h4>Boundary clash</h4><p>Input and output groups start or end at different boundaries.</p><p class="response"><strong>Typical response</strong>Split into processes and communicate at suitable common units.</p></article>
+              <article class="clash-card"><h4>Ordering clash</h4><p>Corresponding items occur in different orders.</p><p class="response"><strong>Typical response</strong>Use an intermediate structure, buffer or reorder the data.</p></article>
+              <article class="clash-card"><h4>Interleaving clash</h4><p>Several entity-specific sequences are interwoven.</p><p class="response"><strong>Typical response</strong>Separate streams into entity processes, then coordinate or recombine results.</p></article>
+            </div>
+          </div>
+        </details>
+
+        <h3>JSD: model, representations and six steps</h3>
+        <p>The JSD model focuses on real-world entities, the events/actions they participate in, the time ordering of those events, and the attributes that change as events occur. Functions such as reports are added after the model is defined.</p>
+        <div class="stages">
+          <div class="stage"><span class="stage-no">COURSE PHASE 1</span><h4>Modeling</h4><p>Identify entities and actions, then describe the time-ordering of each entity’s actions and relevant attributes.</p></div>
+          <div class="stage"><span class="stage-no">COURSE PHASE 2</span><h4>Network</h4><p>Turn entity models into communicating processes and add functions that produce required system outputs.</p></div>
+          <div class="stage"><span class="stage-no">COURSE PHASE 3</span><h4>Implementation</h4><p>Introduce system timing and map the abstract process network to schedulers, modules and physical resources.</p></div>
+        </div>
+        <p class="small">The course deck’s three phases map to the six textbook steps: <strong>Entity/Action → Entity Structure → Initial Model → Function → System Timing → Implementation.</strong></p>
+        <h4>JSD representation forms used in the course</h4>
+        <div class="grid-3">
+          <div class="info-card"><h4>Entity Structure Diagram (ESD)</h4><p>Shows an entity’s actions and their sequence, selection or repetition in its life history.</p></div>
+          <div class="info-card"><h4>System Specification Diagram (SSD)</h4><p>Also called a network diagram; shows entity and function processes and how they communicate.</p></div>
+          <div class="info-card"><h4>System Implementation Diagram (SID)</h4><p>Maps the abstract process network to a realizable implementation, including scheduling; processes may be combined to fit available resources.</p></div>
+        </div>
+
+        <h4>Illustrative Zone entity history</h4>
+        <pre><code>ZONE_LIFE = REGISTER + {ZONE_SESSION}
+ZONE_SESSION = [ARMED_SESSION | DISARMED_SESSION]
+ARMED_SESSION = ARM + {SENSOR_EVENT} + DISARM
+SENSOR_EVENT = [DOOR_OPEN | MOTION | SMOKE | CO]
+ALARM_RESPONSE = ALARM_RAISED + (ALARM_ACKNOWLEDGED) + ALARM_RESET</code></pre>
+        <p class="small">This is a simplified event-history sketch. In a real JSD model, define the entities, event meanings, attributes and ordering constraints from the actual requirements.</p>
+
+        <details>
+          <summary>JSD heuristics and exam comparison</summary>
+          <div class="detail-body">
+            <ul>
+              <li>Start from relevant real-world events, not only from a feature list.</li>
+              <li>Make each entity’s event order explicit; define attribute changes through the events that cause them.</li>
+              <li>Build the real-world model first; add functions/reporting processes around information in the model.</li>
+              <li>Model process communication and timing before settling implementation and scheduling.</li>
+            </ul>
+            <div class="compare-grid" aria-label="JSP and JSD compared">
+              <article class="compare-card"><h4>Primary scope</h4><p><strong>JSP</strong>Program design</p><p><strong>JSD</strong>System development</p></article>
+              <article class="compare-card"><h4>Starting point</h4><p><strong>JSP</strong>Input/output data streams</p><p><strong>JSD</strong>Real-world entities and events</p></article>
+              <article class="compare-card"><h4>Main structure</h4><p><strong>JSP</strong>DSDs merged into a PSD</p><p><strong>JSD</strong>Entity structures and process network</p></article>
+              <article class="compare-card"><h4>Best fit</h4><p><strong>JSP</strong>Sequential data processing</p><p><strong>JSD</strong>Time-ordered, event-oriented domains</p></article>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="qas">
+      <div class="panel">
+        <div class="section-head">
+          <div class="section-index"><span class="index-badge coral">05</span><div><h2>Six parts of a quality-attribute scenario</h2><div class="small">The phrase “six parts of quality attributes” most likely points here</div></div></div>
+          <span class="badge module">Module 4</span>
+        </div>
+        <div class="exam-answer">
+          <div class="label">Likely wording</div>
+          <blockquote>“What is a quality-attribute scenario? Explain its six parts and formulate a concrete scenario for a suitable system.”</blockquote>
+        </div>
+        <div class="callout coral"><strong>Terminology:</strong> these are the six parts of a <em>quality-attribute scenario</em>—not six quality attributes. Performance, availability, security, modifiability and usability are examples of quality attributes.</div>
+        <p>A quality-attribute scenario turns a vague requirement into a specific, testable statement about system behavior. Its core is a <strong>stimulus–response pair</strong>, with a response measure; source, artifact and environment complete the description. Memorize the six labels in the supplied book’s order and give a concrete value for each.</p>
+        <div class="six-grid">
+          <div class="six-card"><span class="snum">01</span><h4>Source</h4><p>Who or what generated the event?</p><span class="ex">Smoke sensor</span></div>
+          <div class="six-card"><span class="snum">02</span><h4>Stimulus</h4><p>What event or condition needs a response?</p><span class="ex">Reading crosses the smoke threshold</span></div>
+          <div class="six-card"><span class="snum">03</span><h4>Artifact</h4><p>Which system part is affected?</p><span class="ex">Local alarm subsystem</span></div>
+          <div class="six-card"><span class="snum">04</span><h4>Environment</h4><p>Under what operating condition?</p><span class="ex">Mains power and internet are unavailable</span></div>
+          <div class="six-card"><span class="snum">05</span><h4>Response</h4><p>What should the system do?</p><span class="ex">Sound local alarm; queue remote alert</span></div>
+          <div class="six-card"><span class="snum">06</span><h4>Response measure</h4><p>How will success be judged?</p><span class="ex">Alarm within 1 second; backup for 30 minutes</span></div>
+        </div>
+        <div class="attr-flow" aria-label="Quality attribute scenario story">
+          <div class="attr-node">Who?<br><span class="micro">source</span></div><div class="attr-arrow">→</div>
+          <div class="attr-node">What happens?<br><span class="micro">stimulus</span></div><div class="attr-arrow">→</div>
+          <div class="attr-node em">Affected part + conditions<br><span class="micro">artifact / environment</span></div><div class="attr-arrow">→</div>
+          <div class="attr-node">What + how well?<br><span class="micro">response / measure</span></div>
+        </div>
+        <h3>Complete example: availability</h3>
+        <dl class="scenario-list" aria-label="Availability quality-attribute scenario, by part">
+          <div><dt>Source</dt><dd>Smoke sensor</dd></div>
+          <div><dt>Stimulus</dt><dd>Reports a reading above the configured smoke threshold</dd></div>
+          <div><dt>Artifact</dt><dd>Local alarm subsystem</dd></div>
+          <div><dt>Environment</dt><dd>Mains power and internet service are unavailable</dd></div>
+          <div><dt>Response</dt><dd>Activate the local audible alarm and queue a remote notification</dd></div>
+          <div><dt>Response measure</dt><dd>Audible alarm activates within 1 second and runs for at least 30 minutes on backup power; queued notice is sent within 30 seconds after connectivity returns.</dd></div>
+        </dl>
+        <div class="callout gold"><strong>Write it as a sentence:</strong> “When a smoke sensor reports a reading above its configured threshold while mains power and internet service are unavailable, the local alarm subsystem activates the audible alarm within 1 second, continues for at least 30 minutes on backup power, and sends its queued remote notification within 30 seconds after connectivity returns.”</div>
+        <p class="small">The numeric thresholds above are illustrative. Real targets must be agreed with stakeholders. The exam point is to make the response measurable, rather than saying only “quickly” or “reliably.”</p>
+        <details>
+          <summary>Exam extension: prioritize scenarios and connect them to architecture</summary>
+          <div class="detail-body">
+            <p>Rank each scenario on two separate dimensions: <strong>importance to system success</strong> (customer/stakeholder view) and <strong>technical risk</strong> (architect’s view), using low, medium and high. Address high/high, high/medium and medium/high scenarios first.</p>
+            <p>A utility tree organizes Utility → quality attributes → system-specific refinements → concrete scenario leaves; prioritize the leaves. A facilitated Quality Attribute Workshop (QAW) helps stakeholders elicit, refine, prioritize and agree on these scenarios. In ADD, selected scenarios become drivers that guide design choices and later analysis.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section id="last-minute">
+      <div class="panel">
+        <div class="section-head">
+          <div class="section-index"><span class="index-badge">✓</span><div><h2>Last-minute recall card</h2><div class="small">Use these as the opening skeletons for long answers</div></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="info-card"><h4>SSA/SD</h4><p>Context DFD → balanced hierarchy + dictionary/P-Specs → transaction partitions → transform each → merge structure charts.</p></div>
+          <div class="info-card"><h4>Data dictionary</h4><p>Define each named data item’s abstract meaning, composition, aliases and use; keep physical storage detail out unless required.</p></div>
+          <div class="info-card"><h4>ADD 3.0</h4><p>Review inputs → select drivers/goal → refine elements → choose concepts → instantiate/interfaces → sketch/rationale → analyze → iterate by risk.</p></div>
+          <div class="info-card"><h4>JSP / JSD</h4><p>JSP: input/output structures to program. JSD: real-world entities/events to system process network.</p></div>
+          <div class="info-card"><h4>Quality scenario</h4><p>Source → stimulus → artifact → environment → response → response measure.</p></div>
+          <div class="info-card"><h4>For 15 marks</h4><p>Define the method, draw a labeled representation, explain its steps, apply it to one case, then state a strength or limitation.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="panel">
+        <div class="section-head">
+          <div class="section-index"><span class="index-badge">↗</span><div><h2>Sources and video review</h2><div class="small">Primary and course-aligned references used for this guide</div></div></div>
+        </div>
+        <ul class="sources-list">
+          <li><strong>Primary authority for Module 4:</strong> Humberto Cervantes and Rick Kazman, <em>Designing Software Architectures: A Practical Approach</em>, Addison-Wesley, 2016, Chapters 1–3 (especially architectural drivers, quality-attribute scenarios and the ADD 3.0 process). This is the supplied book.</li>
+          <li><strong>Course sources for Module 3:</strong> supplied Module 3 lecture deck and “Structured Systems Analysis and Structured Design” Home Safety case-study deck. The attached architecture book does not cover SSA/SD, the dictionary, JSP or JSD in detail.</li>
+          <li><a href="https://chennai.vit.ac.in/files/M.Tech-SE-Curriculum-2019-2020-Mar19.pdf" target="_blank" rel="noreferrer">VIT Chennai · M.Tech Software Engineering curriculum</a> — names the Home Safety SSADM case study and David Budgen’s <em>Software Design</em>.</li>
+          <li><a href="https://api.pageplace.de/preview/DT0400.9781405890250_A24651132/preview-9781405890250_A24651132.pdf" target="_blank" rel="noreferrer">David Budgen · <em>Software Design</em>, 2nd edition preview</a> — chapter structure for SSA/SD, JSP and JSD.</li>
+          <li><a href="https://archive.nptel.ac.in/content/storage2/courses/108105057/Pdf/Lesson-36.pdf" target="_blank" rel="noreferrer">NPTEL / IIT Kharagpur · Structured analysis and design</a> — DFD decomposition, balancing, dictionary and structured-design mapping.</li>
+          <li><a href="https://citeseerx.ist.psu.edu/document?doi=fb9a2c0e0446666d31538209412a8e61c835182e&amp;repid=rep1&amp;type=pdf" target="_blank" rel="noreferrer">Ed Yourdon · <em>Just Enough Structured Analysis</em></a> — data-dictionary notation.</li>
+          <li><a href="https://www.sei.cmu.edu/library/attribute-driven-design-method-collection/" target="_blank" rel="noreferrer">SEI · Attribute-Driven Design collection</a> and <a href="https://www.sei.cmu.edu/library/add-30-rethinking-drivers-and-decisions-in-the-design-process/" target="_blank" rel="noreferrer">ADD 3.0 history</a>.</li>
+          <li><a href="https://insights.sei.cmu.edu/documents/734/2004_005_001_14396.pdf" target="_blank" rel="noreferrer">SEI · Quality-attribute scenario, six-part definition</a>.</li>
+          <li><a href="https://userweb.cs.txstate.edu/~rp31/papersSP/JSPDDevt.pdf" target="_blank" rel="noreferrer">Michael Jackson · “The Jackson Development Methods”</a> — JSP/JSD models, process and heuristics.</li>
+        </ul>
+        <h3>Short video options</h3>
+        <div class="grid-2">
+          <div class="info-card"><h4>ADD 3.0</h4><p><a href="https://www.youtube.com/watch?v=d_gRoI3oHag" target="_blank" rel="noreferrer">Watch the SEI ADD 3.0 tutorial on YouTube</a>; includes the method’s history and a case study.</p></div>
+          <div class="info-card"><h4>Quality-attribute workshop</h4><p><a href="https://www.youtube.com/watch?v=fpmRmomTGXw" target="_blank" rel="noreferrer">Watch the SEI Quality Attribute Workshop webcast on YouTube</a>; useful context for scenario-based requirements.</p></div>
+        </div>
+        <div class="footer">Single-file study guide · diagrams and icons are inline SVG/CSS · Google Fonts load from the CDN when online. Core content remains available offline.</div>
+      </div>
+    </section>
+  </main>
+</div>
+<script>
+(function(){
+  var key="design-practices-study-progress-v1";
+  var boxes=Array.prototype.slice.call(document.querySelectorAll(".done-check"));
+  var fill=document.getElementById("progressFill");
+  var label=document.getElementById("progressLabel");
+  var bar=document.querySelector('[role="progressbar"]');
+  function getSaved(){
+    try{return JSON.parse(localStorage.getItem(key)||"{}")}catch(e){return {}}
+  }
+  function update(){
+    var count=0, saved={};
+    boxes.forEach(function(box){
+      saved[box.dataset.topic]=box.checked;
+      if(box.checked) count++;
+    });
+    var pct=Math.round(count/boxes.length*100);
+    fill.style.width=pct+"%";
+    label.textContent=count+" of "+boxes.length+" sections";
+    bar.setAttribute("aria-valuenow",String(count));
+    try{localStorage.setItem(key,JSON.stringify(saved))}catch(e){}
+  }
+  var saved=getSaved();
+  boxes.forEach(function(box){
+    box.checked=!!saved[box.dataset.topic];
+    box.addEventListener("change",update);
+  });
+  update();
+
+  var themeButton=document.getElementById("themeToggle");
+  var themeIcon=document.querySelector("#themeIcon use");
+  var themeStatus=document.getElementById("themeStatus");
+  function syncThemeButton(){
+    var dark=document.documentElement.dataset.theme==="dark";
+    themeButton.setAttribute("aria-pressed",dark?"true":"false");
+    themeIcon.setAttribute("href",dark?"#icon-sun":"#icon-moon");
+  }
+  syncThemeButton();
+  themeButton.addEventListener("click",function(){
+    var dark=document.documentElement.dataset.theme!=="dark";
+    document.documentElement.dataset.theme=dark?"dark":"light";
+    try{localStorage.setItem("design-guide-theme",dark?"dark":"light")}catch(e){}
+    document.querySelector('meta[name="theme-color"]').content=dark?"#131915":"#f5f0e5";
+    syncThemeButton();
+    themeStatus.textContent=dark?"Dark theme enabled":"Light theme enabled";
+  });
+
+  var expand=document.getElementById("expandBtn");
+  var expanded=false;
+  expand.addEventListener("click",function(){
+    expanded=!expanded;
+    document.querySelectorAll("details").forEach(function(d){d.open=expanded});
+    expand.textContent=expanded?"Collapse all":"Expand all";
+  });
+
+  var links=Array.prototype.slice.call(document.querySelectorAll(".side-nav a"));
+  var sections=links.map(function(a){return document.querySelector(a.getAttribute("href"))}).filter(Boolean);
+  var sectionJump=document.getElementById("sectionJump");
+  if(sectionJump){
+    sectionJump.addEventListener("change",function(){
+      var destination=this.value?document.querySelector(this.value):null;
+      if(destination){
+        var heading=destination.querySelector("h2");
+        if(heading){heading.setAttribute("tabindex","-1");heading.focus({preventScroll:true});}
+        destination.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+      }
+    });
+  }
+  if("IntersectionObserver" in window){
+    var observer=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          links.forEach(function(a){a.classList.toggle("active",a.getAttribute("href")==="#"+entry.target.id)});
+          if(sectionJump) sectionJump.value="#"+entry.target.id;
+        }
+      });
+    },{rootMargin:"-15% 0px -70% 0px"});
+    sections.forEach(function(s){observer.observe(s)});
+  }
+})();
+</script>
+</body>
+</html>
