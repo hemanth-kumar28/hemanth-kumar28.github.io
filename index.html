@@ -1,0 +1,3278 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Conservation Geography — Revision & Self-Testing</title>
+  <meta name="theme-color" content="#F3EEE1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      try {
+        var raw = localStorage.getItem("cg2026.v1");
+        var savedTheme = raw ? JSON.parse(raw).theme : null;
+        var theme = savedTheme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", theme === "dark" ? "#111A14" : "#F3EEE1");
+      } catch(e) {}
+    })();
+  </script>
+  <style>
+    /* 1. TOKENS */
+    :root {
+      color-scheme: light dark;
+      --bg: #F3EEE1;
+      --surface: #FBF8F0;
+      --surface-2: #EAE3D0;
+      --ink: #1E2A22;
+      --muted: #56625A;
+      --line: #D6CDB5;
+      --primary: #2F5D45;
+      --on-primary: #FFFFFF;
+      --primary-tint: #DDE8DF;
+      --accent: #C0642B;
+      --accent-text: #8F4418;
+      --correct: #23703F;
+      --on-correct: #FFFFFF;
+      --correct-tint: #DCEBDD;
+      --wrong: #A93222;
+      --on-wrong: #FFFFFF;
+      --wrong-tint: #F3DDD6;
+      --focus: #1F4FD8;
+
+      --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+      --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      
+      --shadow-card: 0 1px 0 rgba(0,0,0,.04), 0 10px 24px -14px rgba(30,42,34,.28);
+    }
+    :root[data-theme="dark"] {
+      --bg: #111A14;
+      --surface: #18231C;
+      --surface-2: #213027;
+      --ink: #ECE8DA;
+      --muted: #A5AFA2;
+      --line: #2D3C32;
+      --primary: #8CC9A5;
+      --on-primary: #0C1710;
+      --primary-tint: #20362A;
+      --accent: #E39A63;
+      --accent-text: #EDA877;
+      --correct: #7ED6A0;
+      --on-correct: #0C1710;
+      --correct-tint: #1C3427;
+      --wrong: #F29A88;
+      --on-wrong: #1B0B08;
+      --wrong-tint: #3A211C;
+      --focus: #8FB0FF;
+
+      --shadow-card: none;
+    }
+
+    /* 2. RESET & BASE */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      font-size: 16px;
+      font-optical-sizing: auto;
+      scroll-behavior: smooth;
+      scroll-padding-top: 125px;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      font-weight: 400;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    a {
+      color: var(--primary);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+    a:hover {
+      text-decoration-thickness: 2px;
+    }
+    button, input {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+      touch-action: manipulation;
+    }
+
+    /* 3. LAYOUT */
+    .container {
+      width: min(100% - 32px, 1040px);
+      margin-inline: auto;
+    }
+    .learn-reading {
+      max-width: 68ch;
+    }
+    .quiz-column {
+      max-width: 680px;
+      margin-inline: auto;
+    }
+
+    /* 4. COMPONENTS */
+    /* Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      z-index: 40;
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-right: max(0px, env(safe-area-inset-right));
+    }
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+      gap: 8px;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: var(--ink);
+      min-width: 0;
+    }
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .brand-sub {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .seg-control {
+      display: inline-flex;
+      background: var(--surface-2);
+      padding: 3px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+    }
+    .seg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      color: var(--muted);
+      transition: background 150ms ease-out, color 150ms ease-out;
+      touch-action: manipulation;
+    }
+    .seg-btn.active {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      color: var(--ink);
+      border: 1px solid transparent;
+      transition: background 150ms ease-out, border-color 150ms ease-out;
+      touch-action: manipulation;
+    }
+    .icon-btn:hover {
+      background: var(--surface-2);
+      border-color: var(--line);
+    }
+
+    /* Week Strip */
+    .week-strip {
+      position: sticky;
+      top: 56px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      z-index: 30;
+      padding: 8px 0;
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-right: max(0px, env(safe-area-inset-right));
+    }
+    .week-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      scroll-padding: 0 16px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 0 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .week-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      white-space: nowrap;
+      scroll-snap-align: center;
+      touch-action: manipulation;
+      transition: transform 150ms ease-out, border-color 150ms ease-out, background 150ms ease-out;
+    }
+    .chip:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .chip[aria-current="page"] {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid currentColor;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .status-dot.half {
+      background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+    }
+    .status-dot.filled {
+      background: currentColor;
+    }
+    .status-dot svg {
+      width: 8px;
+      height: 8px;
+      stroke: var(--surface);
+      stroke-width: 2.5;
+    }
+    .chip[aria-current="page"] .status-dot svg {
+      stroke: var(--primary);
+    }
+
+    /* Cards & Heroes */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+    }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .55;
+      background-image: repeating-radial-gradient(circle at 88% -10%, transparent 0 15px, var(--line) 15px 16px);
+      mask-image: linear-gradient(to bottom left, #000, transparent 70%);
+      -webkit-mask-image: linear-gradient(to bottom left, #000, transparent 70%);
+    }
+    .mono-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4.5vw, 2.75rem);
+      line-height: 1.15;
+      font-weight: 600;
+      margin-bottom: 12px;
+      overflow-wrap: break-word;
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      line-height: 1.25;
+      font-weight: 600;
+      margin-bottom: 16px;
+      overflow-wrap: break-word;
+    }
+    .big-idea {
+      font-size: 1.125rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      color: var(--ink);
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      text-decoration: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 150ms ease-out, transform 150ms ease-out, border-color 150ms ease-out;
+      border: 1px solid transparent;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      filter: brightness(1.08);
+    }
+    .btn-secondary {
+      background: var(--surface-2);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+    .btn-secondary:hover {
+      background: var(--bg);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--line);
+    }
+    .btn-ghost:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+    .btn[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+      transform: none;
+    }
+
+    /* Concept Cards */
+    .concepts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 32px;
+    }
+    .concept-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      transition: outline 200ms ease;
+    }
+    .concept-card.highlight {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+    }
+    .concept-term {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .concept-body {
+      font-size: 1rem;
+      margin-bottom: 14px;
+      color: var(--ink);
+    }
+    .trap-box {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font-size: 0.9375rem;
+    }
+    .trap-label {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-text);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .q-tag {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--muted);
+      background: var(--surface-2);
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+    }
+    .q-tag:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-tint);
+    }
+
+    /* 5. LEARNING MODE: QUIZZES, ANSWERS, NAVIGATION */
+    .learn-hero .hero-meta {
+      margin-top: 8px;
+    }
+    .learn-page-header-pager {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .page-step-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 38px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      touch-action: manipulation;
+      transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+    }
+    .page-step-btn:hover {
+      background: var(--primary-tint);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .page-step-btn.page-step-next {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .page-step-btn.page-step-next:hover {
+      filter: brightness(1.08);
+      color: var(--on-primary);
+    }
+    .page-step-btn.disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .page-step-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      line-height: 1.25;
+    }
+    .page-step-pill {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--primary);
+      letter-spacing: 0.06em;
+    }
+    .page-step-sub {
+      font-size: 0.6875rem;
+      color: var(--muted);
+    }
+    .learn-jump-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding: 10px 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .learn-jump-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+      padding: 2px 0;
+      flex: 1;
+    }
+    .learn-jump-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .jump-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+      touch-action: manipulation;
+    }
+    .jump-chip:hover, .jump-chip:focus-visible {
+      border-color: var(--primary);
+      background: var(--primary-tint);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .jump-chip.notes-jump {
+      background: var(--primary-tint);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .learn-quizzes-section {
+      margin-top: 8px;
+      margin-bottom: 32px;
+    }
+    .learn-section-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .learn-questions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .learn-q-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: var(--shadow-card);
+      scroll-margin-top: 130px;
+      transition: outline 200ms ease, box-shadow 200ms ease;
+    }
+    .learn-q-card.highlight {
+      outline: 3px solid var(--primary);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 4px var(--primary-tint);
+      animation: highlightPulse 2s ease-out;
+    }
+    @keyframes highlightPulse {
+      0% { box-shadow: 0 0 0 8px var(--primary); }
+      70% { box-shadow: 0 0 0 4px var(--primary-tint); }
+      100% { box-shadow: var(--shadow-card); }
+    }
+    .learn-q-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .learn-q-num {
+      color: var(--primary);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      margin: 0;
+    }
+    .learn-q-topic {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--surface-2);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      border: 1px solid var(--line);
+      margin: 0;
+      color: var(--muted);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+    }
+    .learn-q-topic:hover, .learn-q-topic:focus-visible {
+      background: var(--primary-tint);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .learn-q-stem {
+      font-family: var(--font-body);
+      font-size: 1.1875rem;
+      font-weight: 500;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      color: var(--ink);
+    }
+    .learn-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .learn-opt-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      min-height: 48px;
+      padding: 10px 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 1.0625rem;
+      line-height: 1.4;
+      user-select: none;
+    }
+    .learn-opt-item.is-correct {
+      border: 2px solid var(--correct);
+      background: var(--correct-tint);
+      font-weight: 500;
+    }
+    .learn-opt-item.is-other {
+      opacity: 0.85;
+    }
+    .learn-opt-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      min-width: 30px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-top: 1px;
+    }
+    .learn-opt-item.is-correct .learn-opt-badge {
+      background: var(--correct);
+      color: var(--on-correct);
+      border-color: var(--correct);
+    }
+    .learn-opt-text {
+      flex: 1;
+      padding-top: 2px;
+    }
+    .learn-correct-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: var(--correct);
+      color: var(--on-correct);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .learn-correct-pill svg {
+      width: 14px;
+      height: 14px;
+      stroke-width: 2.5;
+    }
+    .learn-rationale-card {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+    .learn-rationale-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--correct);
+      margin-bottom: 6px;
+    }
+    .learn-rationale-text {
+      font-size: 0.9375rem;
+      line-height: 1.55;
+      color: var(--ink);
+    }
+    .learn-trap-note {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--line);
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    /* Page Done Card */
+    .learn-page-done-card {
+      margin-top: 32px;
+      margin-bottom: 32px;
+      padding: 24px 20px;
+      border-radius: 14px;
+      background: var(--surface);
+      border: 2px solid var(--correct);
+      box-shadow: 0 4px 16px -4px rgba(35, 112, 63, 0.15);
+      text-align: center;
+    }
+    .page-done-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--correct-tint);
+      margin-bottom: 12px;
+    }
+    .page-done-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+    .page-done-sub {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .page-done-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+    }
+    .page-done-next-btn {
+      font-size: 1rem;
+      padding: 12px 24px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .concepts-accordion {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface);
+      overflow: hidden;
+      scroll-margin-top: 130px;
+    }
+    .concepts-accordion-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+      background: var(--surface);
+      font-weight: 600;
+      transition: background 150ms ease;
+    }
+    .concepts-accordion-summary::-webkit-details-marker {
+      display: none;
+    }
+    .concepts-accordion-summary:hover {
+      background: var(--surface-2);
+    }
+    .concepts-accordion-body {
+      padding: 20px;
+      border-top: 1px solid var(--line);
+      background: var(--bg);
+    }
+    .concepts-accordion-arrow {
+      width: 18px;
+      height: 18px;
+      transition: transform 200ms ease;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+    .concepts-accordion[open] .concepts-accordion-arrow {
+      transform: rotate(180deg);
+    }
+
+    /* Learn Nav Links */
+    .learn-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 32px;
+      margin-bottom: 48px;
+    }
+
+    /* Back to Top FAB */
+    .back-to-top-fab {
+      position: fixed;
+      right: 20px;
+      bottom: 80px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      z-index: 45;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 200ms ease, transform 200ms ease, background 150ms ease;
+      touch-action: manipulation;
+    }
+    .back-to-top-fab.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .back-to-top-fab:hover {
+      background: var(--surface-2);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .back-to-top-fab:active {
+      transform: scale(0.94);
+    }
+
+    /* Mobile Bottom Navigation Bar */
+    .mobile-bottom-bar {
+      display: none;
+    }
+
+    /* Quiz Start Cards */
+    .start-modes {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .mode-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      cursor: pointer;
+      transition: border-color 150ms ease-out, background 150ms ease-out;
+    }
+    .mode-card:hover {
+      border-color: var(--primary);
+    }
+    .mode-card.selected {
+      border-color: var(--primary);
+      border-width: 2px;
+      padding: 15px;
+      background: var(--primary-tint);
+    }
+    .mode-radio {
+      margin-top: 4px;
+    }
+    .mode-title {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .mode-desc {
+      font-size: 0.9375rem;
+      color: var(--muted);
+    }
+    .secondary-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    /* Quiz Screen */
+    .quiz-progress-wrap {
+      margin-bottom: 24px;
+    }
+    .quiz-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 200ms ease-out;
+    }
+    .question-stem {
+      font-family: var(--font-body);
+      font-size: 1.1875rem;
+      font-weight: 500;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      outline: none;
+    }
+    .options-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .opt-label {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 56px;
+      padding: 12px 16px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 150ms ease-out, background 150ms ease-out, transform 150ms ease-out;
+    }
+    .opt-label:hover {
+      border-color: var(--primary);
+    }
+    .opt-label.selected {
+      border: 2px solid var(--primary);
+      padding: 11px 15px;
+      background: var(--primary-tint);
+    }
+    .opt-label.correct {
+      border-color: var(--correct);
+      background: var(--correct-tint);
+    }
+    .opt-label.wrong {
+      border-color: var(--wrong);
+      background: var(--wrong-tint);
+    }
+    .opt-label.dimmed {
+      opacity: 0.7;
+    }
+    .opt-label.locked {
+      cursor: default;
+      pointer-events: none;
+    }
+    .opt-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .opt-label.selected .opt-badge {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .opt-label.correct .opt-badge {
+      background: var(--correct);
+      color: var(--on-correct);
+      border-color: var(--correct);
+    }
+    .opt-label.wrong .opt-badge {
+      background: var(--wrong);
+      color: var(--on-wrong);
+      border-color: var(--wrong);
+    }
+    .opt-text {
+      flex: 1;
+      font-size: 1.0625rem;
+      line-height: 1.4;
+    }
+    .opt-feedback-icon {
+      margin-left: 8px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* Explanation Panel */
+    .explanation-panel {
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+    .explanation-panel.is-correct {
+      border-color: var(--correct);
+    }
+    .explanation-panel.is-wrong {
+      border-color: var(--wrong);
+    }
+    .exp-status {
+      font-family: var(--font-display);
+      font-size: 1.1875rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .exp-answer {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .exp-why {
+      font-size: 0.9375rem;
+      margin-bottom: 12px;
+    }
+
+    /* Action Bars */
+    .quiz-action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .quiz-container {
+        padding-bottom: 96px;
+      }
+      .quiz-action-bar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: var(--surface);
+        border-top: 1px solid var(--line);
+        padding: 12px max(16px, env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+        z-index: 50;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
+      }
+      .quiz-action-bar .btn {
+        flex: 1;
+      }
+    }
+
+    /* Results Screen */
+    .results-hero {
+      text-align: center;
+      padding: 32px 20px;
+    }
+    .score-ring-wrap {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 16px;
+    }
+    .score-ring-svg {
+      transform: rotate(-90deg);
+      width: 120px;
+      height: 120px;
+    }
+    .score-ring-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .score-num {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+    .score-pct {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .verdict-line {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .results-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .review-section {
+      margin-top: 32px;
+    }
+    .review-details {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .review-summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      user-select: none;
+      font-weight: 500;
+    }
+    .review-summary:hover {
+      background: var(--surface-2);
+    }
+    .review-content {
+      padding: 16px;
+      border-top: 1px solid var(--line);
+      background: var(--surface-2);
+      font-size: 0.9375rem;
+    }
+    .review-meta {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    /* 5. UTILITIES */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 16px;
+      background: var(--focus);
+      color: #FFF;
+      padding: 8px 16px;
+      border-radius: 4px;
+      z-index: 100;
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      transition: top 150ms ease;
+    }
+    .skip-link:focus {
+      top: 16px;
+      outline: 3px solid var(--on-primary);
+    }
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+    #app {
+      flex: 1;
+      padding-top: 24px;
+      padding-bottom: 48px;
+      outline: none;
+      animation: viewFade 200ms ease-out;
+    }
+    @keyframes viewFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .site-footer {
+      border-top: 1px solid var(--line);
+      padding: 24px 0;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: var(--surface);
+    }
+
+    /* 6. MEDIA QUERIES */
+    @media (min-width: 960px) {
+      .concepts-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .secondary-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+      .start-modes {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 20px, 1040px);
+      }
+      .card {
+        padding: 16px 14px;
+        border-radius: 12px;
+      }
+      .learn-container {
+        padding-bottom: 84px;
+      }
+      .learn-jump-bar {
+        padding: 8px 10px;
+        margin-bottom: 18px;
+      }
+      .learn-q-card {
+        padding: 16px 14px;
+        border-radius: 12px;
+      }
+      .learn-q-stem {
+        font-size: 1.0625rem;
+        margin-bottom: 14px;
+      }
+      .learn-opt-item {
+        padding: 9px 12px;
+        font-size: 0.95rem;
+        min-height: 46px;
+        gap: 10px;
+      }
+      .learn-opt-badge {
+        width: 26px;
+        height: 26px;
+        min-width: 26px;
+        font-size: 0.75rem;
+      }
+      .learn-correct-pill {
+        padding: 3px 8px;
+        font-size: 0.625rem;
+      }
+      .learn-rationale-card {
+        padding: 12px 14px;
+      }
+      .learn-rationale-header {
+        font-size: 0.6875rem;
+      }
+      .learn-rationale-text {
+        font-size: 0.875rem;
+      }
+      .concepts-accordion-summary {
+        padding: 14px 16px;
+      }
+      .concepts-accordion-body {
+        padding: 14px 12px;
+      }
+      .learn-nav-bar {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .learn-nav-bar > div {
+        width: 100%;
+        display: flex;
+        justify-content: stretch;
+      }
+      .learn-nav-bar .btn {
+        width: 100%;
+      }
+      .mobile-bottom-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background: var(--surface);
+        border-top: 1px solid var(--line);
+        padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+        z-index: 50;
+        box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .mobile-bar-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-height: 42px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        text-decoration: none;
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        touch-action: manipulation;
+        flex-shrink: 0;
+      }
+      .mobile-bar-btn.disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+      .mobile-bar-btn:active {
+        background: var(--primary-tint);
+      }
+      .mobile-bar-indicator {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        line-height: 1.2;
+      }
+      .mobile-bar-week {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .mobile-bar-sub {
+        font-size: 0.625rem;
+        color: var(--muted);
+      }
+      .mobile-bar-quiz {
+        background: var(--primary);
+        color: var(--on-primary);
+        border-color: var(--primary);
+      }
+      .mobile-bar-quiz:active {
+        filter: brightness(1.1);
+      }
+      .back-to-top-fab {
+        bottom: calc(66px + env(safe-area-inset-bottom));
+        right: 12px;
+        width: 40px;
+        height: 40px;
+      }
+      .learn-page-header-pager {
+        padding: 6px 10px;
+        margin-bottom: 16px;
+      }
+      .page-step-btn {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        min-height: 36px;
+      }
+      .learn-page-done-card {
+        padding: 20px 14px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+      }
+      .page-done-title {
+        font-size: 1.15rem;
+      }
+      .page-done-actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .page-done-actions .btn {
+        width: 100%;
+      }
+      .site-footer {
+        padding-bottom: calc(76px + env(safe-area-inset-bottom));
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-title {
+        font-size: 0.95rem;
+      }
+      .brand-sub {
+        display: none;
+      }
+      .seg-btn {
+        padding: 4px 8px;
+        font-size: 0.8125rem;
+        gap: 4px;
+      }
+      .icon-btn {
+        width: 38px;
+        height: 38px;
+      }
+      .hero h1 {
+        font-size: 1.5rem;
+      }
+      .big-idea {
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .mobile-bottom-bar {
+        padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+        gap: 4px;
+      }
+      .mobile-bar-btn {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+        min-height: 38px;
+        gap: 2px;
+      }
+      .mobile-bar-week {
+        font-size: 0.6875rem;
+      }
+      .mobile-bar-sub {
+        display: none;
+      }
+      .page-step-sub {
+        display: none;
+      }
+      .learn-page-header-pager {
+        padding: 4px 6px;
+        gap: 6px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .container {
+        width: min(100% - 12px, 1040px);
+      }
+      .card {
+        padding: 12px 10px;
+      }
+      .brand-title {
+        font-size: 0.875rem;
+      }
+      .seg-btn {
+        padding: 4px 6px;
+        font-size: 0.75rem;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* 7. PRINT */
+    @media print {
+      .site-header, .week-strip, .btn, .learn-nav-bar, .site-footer, .skip-link {
+        display: none !important;
+      }
+      body, .card {
+        background: #FFF !important;
+        color: #000 !important;
+        box-shadow: none !important;
+      }
+      .concept-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      #app {
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#app" class="skip-link">Skip to content</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#/learn/1" class="brand" aria-label="Conservation Geography home">
+        <span class="brand-title">Conservation Geography</span>
+        <span class="brand-sub">2026 · Weeks 1–12</span>
+      </a>
+      <div class="header-actions">
+        <nav class="seg-control" aria-label="Study Mode">
+          <a href="#/learn/1" id="nav-learn" class="seg-btn active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            Learn
+          </a>
+          <a href="#/quiz/1" id="nav-quiz" class="seg-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+            Quiz
+          </a>
+        </nav>
+        <button id="theme-btn" class="icon-btn" aria-label="Toggle dark mode">
+          <span id="theme-icon-wrap"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="week-strip" aria-label="Week navigation">
+    <div class="week-scroll" id="week-chips-row"></div>
+  </nav>
+
+  <main id="app" tabindex="-1"></main>
+
+  <div id="live" class="sr-only" aria-live="polite"></div>
+
+  <footer class="site-footer">
+    <div class="container">
+      Conservation Geography · Weeks 1–12 · Assignment 2026
+    </div>
+  </footer>
+
+  <!-- SCRIPT 1: DATA MODEL -->
+  <script>
+    const WEEKS = [
+      {
+        id: 1,
+        title: "Foundations: geography, ecology, conservation",
+        bigIdea: "Foundations of geography and ecology examine organism–environment relationships, systematic approaches, and conservation principles. Understanding movement, chemical interactions, and limiting factors provides the core framework for environmental protection.",
+        concepts: [
+          { id: "c1-1", term: "Migration", body: "Migration is the regular, seasonal movement of animals, typically along fixed routes between breeding and wintering grounds. It allows species to track seasonal resources and favorable climatic conditions.", trap: "Do not confuse migration with dispersal, which is random or one-way spreading, or translocation, which involves human relocation.", covers: ["w1q1"] },
+          { id: "c1-2", term: "Systematic Geography", body: "The systematic approach to geography studies specific phenomena or systems across the Earth as a whole. Alexander von Humboldt developed this approach to discover general physical laws.", trap: "Systematic geography is distinct from regional geography, which was primarily developed by Karl Ritter.", covers: ["w1q2"] },
+          { id: "c1-3", term: "Allelopathy", body: "Allelopathy is a biological phenomenon where plants release chemical compounds that inhibit the growth or survival of neighbouring vegetation. For example, teak trees can suppress vegetable crops growing beneath them.", trap: "Allelopathy involves biochemical inhibition between plants, unlike autophagy which is internal cellular degradation.", covers: ["w1q3"] },
+          { id: "c1-4", term: "Habitat Degradation", body: "Habitat degradation occurs when an ecosystem remains physically intact but declines in environmental quality. Pollution, such as sewage and plastic waste in lakes, reduces the population of organisms it can sustain.", trap: "Habitat degradation reduces habitat quality, whereas fragmentation physically breaks continuous habitat into isolated patches.", covers: ["w1q4"] },
+          { id: "c1-5", term: "Ecology", body: "Ecology is defined as the scientific study of relationships between organisms and their environments. It analyzes interactions among living organisms and their abiotic surroundings.", covers: ["w1q5"] },
+          { id: "c1-6", term: "Liebig's Law of the Minimum", body: "Liebig's law states that the rate of any biological process is governed by the single limiting factor in least supply relative to requirement. Growth is controlled not by total resources available, but by the scarcest essential resource.", trap: "Liebig's law focuses on the single minimum factor, whereas Shelford's law of tolerance considers the entire upper and lower range of environmental tolerance.", covers: ["w1q6"] },
+          { id: "c1-7", term: "Etymology of Conservation", body: "The word conservation is derived from Latin roots: 'con' meaning together, and 'servare' meaning to keep or preserve. Conservation literally means keeping things together in a preserved state.", covers: ["w1q7", "w1q8"] },
+          { id: "c1-8", term: "Climatology and Migration Factors", body: "Climatology is the study of long-term atmospheric patterns and is most closely related to meteorology. In human and animal geography, a good climate acts as a pull factor that attracts populations.", trap: "A pull factor attracts individuals to a favorable region, whereas a push factor drives them away from an unfavorable area.", covers: ["w1q9", "w1q10"] }
+        ],
+        questions: [
+          { id: "w1q1", n: 1, q: "The regular, seasonal movement of animals, often along fixed routes is called", options: ["translocation", "migration", "dispersal", "drifting"], answer: 1, why: "Migration is regular, seasonal animal movement, often along fixed routes. Dispersal is spread; translocation is human-moved." },
+          { id: "w1q2", n: 2, q: "The systematic approach to Geography was developed by:", options: ["Alexander von Humboldt", "Karl Ritter", "Rene Descartes", "Eratosthenes"], answer: 0, why: "Alexander von Humboldt developed the systematic approach to geography. Karl Ritter is linked to the regional approach." },
+          { id: "w1q3", n: 3, q: "I tried growing vegetables under my teak plantation, but the vegetable plants died out. I should be concerned about", options: ["autophagy", "allelophagy", "autopathy", "allelopathy"], answer: 3, why: "Allelopathy occurs when a plant (e.g. teak) releases biochemicals that inhibit the growth of neighbouring plants." },
+          { id: "w1q4", n: 4, q: "A lake still exists physically, but sewage and plastic waste reduce the number of fish it can support. This is best called:", options: ["Habitat degradation", "Habitat fragmentation", "Jump dispersal", "Secular dispersal"], answer: 0, why: "Habitat degradation means the habitat still physically exists but its ecological quality declines. Fragmentation involves splitting habitat into disconnected patches." },
+          { id: "w1q5", n: 5, q: "“Science of relationships between organisms and their environments” is the definition of:", options: ["conservation", "preservation", "environmentalism", "ecology"], answer: 3, why: "Ecology is the scientific study of relationships between organisms and their physical and biological environments." },
+          { id: "w1q6", n: 6, q: "\"The rate of any biological process is limited by that factor in least amount relative to requirement, so there is a single limiting factor.\" This is the statement for", options: ["Liebig’s law of the minimum", "Liebig’s law of the maximum", "Shelford’s law of tolerance", "Shelford’s law of intolerance"], answer: 0, why: "Liebig's law of the minimum states that the scarcest resource relative to need limits a biological process. Shelford's law concerns the range of tolerance." },
+          { id: "w1q7", n: 7, q: "In the word root for conservation, con stands for", options: ["together", "to keep", "house", "manage"], answer: 0, why: "In the Latin root for conservation, 'con' means together." },
+          { id: "w1q8", n: 8, q: "In the word root for conservation, servare stands for", options: ["together", "to keep", "house", "manage"], answer: 1, why: "The Latin 'servare' means to keep or guard. Conservation literally means keeping together." },
+          { id: "w1q9", n: 9, q: "The Geographical discipline of Climatology is most closely related to:", options: ["Geology", "Meteorology", "Hydrology", "Pedology"], answer: 1, why: "Climatology is most closely related to meteorology, analyzing long-term atmospheric patterns versus short-term weather." },
+          { id: "w1q10", n: 10, q: "Good climate is a", options: ["chemical factor", "demographic factor", "push factor", "pull factor"], answer: 3, why: "A favorable climate is a pull factor that attracts populations to a region, unlike push factors which drive them away." }
+        ]
+      },
+      {
+        id: 2,
+        title: "Earth's origin, interior, volcanoes, dating",
+        bigIdea: "Earth's structure, volcanic systems, and geological history are deciphered through planetary physics, seismic waves, and stratigraphic principles. Relative and absolute dating methods allow scientists to reconstruct deep time and geological formations.",
+        concepts: [
+          { id: "c2-1", term: "Volcanic Types", body: "Stratovolcanoes such as Mount Fuji are steep cones composed of alternating layers of hardened lava and tephra. In contrast, shield volcanoes like those in Hawaii feature broad, gentle slopes formed by low-viscosity basaltic lava.", covers: ["w2q1", "w2q5"] },
+          { id: "c2-2", term: "Mantle and Magma Generation", body: "The Earth's mantle is the primary source of magma that feeds volcanic eruptions and crustal formation. Heat and pressure within the upper mantle cause partial melting of silicate rocks.", covers: ["w2q2"] },
+          { id: "c2-3", term: "Geological Dating Methods", body: "Absolute dating provides numerical ages using techniques like radioisotope dating, thermoluminescence, and fission track analysis. Inclusion study is a relative dating principle which states that rock fragments within a host rock must be older than the host rock.", trap: "Inclusion study is a relative dating technique, whereas radioisotope and fission-track dating yield absolute ages in years.", covers: ["w2q3"] },
+          { id: "c2-4", term: "Planetesimals and Terrestrial Planets", body: "Planetesimals are small solid bodies formed from gas and dust in the early solar nebula that accrete to form planets. The terrestrial planets in our solar system consist of Mercury, Venus, Earth, and Mars.", covers: ["w2q4", "w2q8"] },
+          { id: "c2-5", term: "Seismic P Waves", body: "Primary (P) waves are longitudinal compressional waves that represent the fastest seismic waves. Because compression can propagate through any phase of matter, P waves travel through solids, liquids, and gases.", trap: "P waves are longitudinal and move through all states of matter, while S waves are transverse and cannot pass through liquids.", covers: ["w2q6"] },
+          { id: "c2-6", term: "Stratigraphic Principles", body: "The principle of fossil succession establishes that fossil assemblages succeed each other in a definite order and can age rocks across regions. The principle of lateral continuity states that sedimentary layers extend laterally in all directions until they thin out or terminate at basin edges.", covers: ["w2q7", "w2q9"] },
+          { id: "c2-7", term: "Flood Basalt Provinces", body: "Flood basalt provinces, such as the Deccan Traps in western India, are extensive areas covered by successive basalt lava flows from massive fissure eruptions. They represent immense volcanic episodes during Earth's history.", covers: ["w2q10"] }
+        ],
+        questions: [
+          { id: "w2q1", n: 1, q: "Mount Fuji is an example of", options: ["Shield volcano", "Stratovolcano", "Caldera", "Flood basalt province"], answer: 1, why: "Mount Fuji is a stratovolcano (composite cone) characterized by steep slopes of alternating hardened lava and tephra layers." },
+          { id: "w2q2", n: 2, q: "The main source of magma is", options: ["Crust", "Mantle", "Outer core", "Inner core"], answer: 1, why: "Magma mainly originates from partial melting within the Earth's mantle." },
+          { id: "w2q3", n: 3, q: "Which of these is not a method of absolute dating?", options: ["radioisotope dating", "thermoluminescence dating", "inclusion study", "fission track dating"], answer: 2, why: "Inclusion study is a relative dating principle (inclusions are older than host rock). Radioisotope, thermoluminescence, and fission track dating give absolute ages." },
+          { id: "w2q4", n: 4, q: "What are planetesimals?", options: ["Fully formed gas giants", "Fragments of continental crust", "Small bodies formed from gas and dust that can accrete into planets", "Layers of volcanic ash within a mountain"], answer: 2, why: "Planetesimals are small solid bodies formed from nebular gas and dust that accrete over time into planets." },
+          { id: "w2q5", n: 5, q: "Hawaiian volcanoes are an example of", options: ["Shield volcano", "Stratovolcano", "Caldera", "Flood basalt province"], answer: 0, why: "Hawaiian volcanoes are classic shield volcanoes built by successive layers of low-viscosity, runny basaltic lava." },
+          { id: "w2q6", n: 6, q: "Which of these is true about P waves?", options: ["They are longitudinal in nature", "They are transverse in nature", "They cannot move through gases", "They cannot move through liquids"], answer: 0, why: "Primary (P) waves are longitudinal compressional waves. They travel through solids, liquids, and gases." },
+          { id: "w2q7", n: 7, q: "Assemblage of fossils are unique to the time that they lived in, and so can be used to age rocks across a wide geographic distribution. This is known as", options: ["Principle of fossil succession", "Principle of original horizontality", "Principle of superposition", "Principle of cross-cutting relationships"], answer: 0, why: "The principle of fossil succession states that fossil assemblages succeed each other in a predictable order, allowing correlation across wide regions." },
+          { id: "w2q8", n: 8, q: "Which set contains only terrestrial planets?", options: ["Jupiter, Saturn, Uranus, Neptune", "Earth, Jupiter, Mars, Saturn", "Mercury, Venus, Uranus, Neptune", "Mercury, Venus, Earth, Mars"], answer: 3, why: "The terrestrial (rocky inner) planets in our solar system are Mercury, Venus, Earth, and Mars." },
+          { id: "w2q9", n: 9, q: "Within a depositional basin, strata are laterally continuous in all directions till the edge of the basin. This is known as", options: ["Principle of superposition", "Principle of original horizontality", "Principle of lateral continuity", "Principle of inclusions"], answer: 2, why: "The principle of lateral continuity states that layers of sediment initially extend sideways in all directions until they thin out or encounter a barrier." },
+          { id: "w2q10", n: 10, q: "Deccan traps are an example of", options: ["Shield volcano", "Stratovolcano", "Caldera", "Flood basalt province"], answer: 3, why: "The Deccan Traps in India are a large flood basalt province formed by extensive fissure eruptions." }
+        ]
+      },
+      {
+        id: 3,
+        title: "Minerals, rocks, weathering, landform controls",
+        bigIdea: "The lithosphere is shaped by minerals, rock cycles, and weathering processes interacting with external environmental controls. Exogenic processes gradually break down and deposit materials, while endogenic forces drive internal rock formation.",
+        concepts: [
+          { id: "c3-1", term: "Siliciclastic Sedimentary Rocks", body: "Siliciclastic rocks are clastic non-carbonate sedimentary rocks composed predominantly of silicate minerals and rock fragments. Common examples include mudrock, composed of fine silt and clay, and sandstone, composed of sand-sized grains.", covers: ["w3q1", "w3q8"] },
+          { id: "c3-2", term: "Chemical Weathering: Carbonation and Hydrolysis", body: "Chemical weathering alters mineral composition through chemical reactions. Carbonation occurs when dissolved carbon dioxide reacts with minerals such as limestone, while hydrolysis involves water reacting with minerals like feldspar to form clay.", trap: "Carbonation and hydrolysis are chemical weathering processes, whereas physical weathering involves mechanical breakdown without changing chemical composition.", covers: ["w3q2", "w3q4"] },
+          { id: "c3-3", term: "Inosilicate Minerals: Amphiboles and Pyroxenes", body: "Amphiboles are dark green or black inosilicate chain minerals that typically form elongated prismatic or needle-like crystals. They differ from pyroxenes, which form shorter, stubbier crystals with different cleavage angles.", covers: ["w3q3"] },
+          { id: "c3-4", term: "Exogenic vs Endogenic Processes", body: "Exogenic processes operate at or near the Earth's surface driven by solar energy and gravity, with deposition being a prime example. In contrast, volcanism, earthquakes, and plate tectonics are internal endogenic processes.", covers: ["w3q5"] },
+          { id: "c3-5", term: "Mineral Identification: Streak and Cleavage", body: "Streak is the colour of a mineral in powdered form, providing a more reliable diagnostic test than surface colour because it reduces the misleading effects of minor impurities. Cleavage is the tendency of a mineral to break along specific crystallographic planes producing flat surfaces.", trap: "Cleavage produces smooth planar surfaces along internal weaknesses, whereas fracture produces irregular, uneven breaks.", covers: ["w3q6", "w3q9"] },
+          { id: "c3-6", term: "Controls on Landform Development", body: "Landform evolution is governed by several external and internal factors. The stability of sea level acts as an independent control on base level, determining the ultimate limit of fluvial erosion and valley deepening.", covers: ["w3q7"] },
+          { id: "c3-7", term: "Magma Cooling and Igneous Texture", body: "The cooling rate of magma determines the crystal grain size of igneous rocks. Slow cooling deep beneath the surface allows crystals ample time to grow, producing coarse-grained igneous rocks.", covers: ["w3q10"] }
+        ],
+        questions: [
+          { id: "w3q1", n: 1, q: "Mudrock is an example of", options: ["siliciclastic rock", "carbonate rock", "evaporite rock", "phosphatic rock"], answer: 0, why: "Mudrock is a fine-grained siliciclastic sedimentary rock composed of clay- and silt-sized silicate mineral particles." },
+          { id: "w3q2", n: 2, q: "Carbonation is an example of", options: ["chemical weathering", "physical weathering", "biological weathering", "none of the above"], answer: 0, why: "Carbonation is a chemical weathering process where dissolved carbon dioxide reacts with minerals such as limestone." },
+          { id: "w3q3", n: 3, q: "“green or black coloured inosilicate minerals forming prism or needle-like crystals” is a description of", options: ["amphiboles", "feldspar", "mica", "pyroxene"], answer: 0, why: "Amphiboles are dark green or black inosilicate chain minerals forming prismatic to needle-like crystals. Pyroxenes are shorter and stubbier." },
+          { id: "w3q4", n: 4, q: "Hydrolysis is an example of", options: ["chemical weathering", "physical weathering", "biological weathering", "none of the above"], answer: 0, why: "Hydrolysis is chemical weathering where water chemically reacts with rock-forming minerals, such as feldspar weathering into clay." },
+          { id: "w3q5", n: 5, q: "Which of these is an example of exogenic process?", options: ["volcanism", "earthquake", "plate tectonics", "deposition"], answer: 3, why: "Deposition is an exogenic (surface) process driven by solar energy and gravity. Volcanism, earthquakes, and plate tectonics are internal endogenic processes." },
+          { id: "w3q6", n: 6, q: "Which statement best explains why streak is often more useful than surface colour for mineral identification?", options: ["Streak measures the density of the mineral", "Surface colour never changes in minerals", "Streak shows the colour of the powdered mineral and may reduce the effect of minor impurities", "Streak reveals the age of the mineral"], answer: 2, why: "Streak reveals the true color of a powdered mineral and is consistent, whereas surface color is easily altered by minor impurities." },
+          { id: "w3q7", n: 7, q: "Which factor is listed as an independent control over landform development?", options: ["Mineral streak", "Crystal habit", "Knife-blade hardness", "Stability of sea level"], answer: 3, why: "The stability of sea level (ultimate base level) serves as an independent control governing erosion and regional landform evolution." },
+          { id: "w3q8", n: 8, q: "Sandstone is an example of", options: ["siliciclastic rock", "carbonate rock", "evaporite rock", "phosphatic rock"], answer: 0, why: "Sandstone is a siliciclastic sedimentary rock composed predominantly of sand-sized silicate grains." },
+          { id: "w3q9", n: 9, q: "“tendency to break in given directions producing relatively plane surfaces” is known as", options: ["cleavage", "fracture", "lustre", "streak"], answer: 0, why: "Cleavage is the tendency of a crystal to split along specific crystallographic planes. Fracture produces irregular, non-planar surfaces." },
+          { id: "w3q10", n: 10, q: "Slow cooling of magma results in", options: ["smooth grained sedimentary rocks", "coarse grained sedimentary rocks", "smooth grained igneous rocks", "coarse grained igneous rocks"], answer: 3, why: "Slow cooling deep underground gives mineral crystals time to grow large, yielding coarse-grained igneous rocks." }
+        ]
+      },
+      {
+        id: 4,
+        title: "Atmosphere, weather and climate change",
+        bigIdea: "Atmospheric structure, pressure systems, and air masses dictate climate dynamics and global weather patterns. Responses to climate change include mitigation strategies to curb emissions and adaptation actions to manage ongoing regional impacts.",
+        concepts: [
+          { id: "c4-1", term: "Climate Change Mitigation", body: "Mitigation refers to actions designed to limit the magnitude of climate change by reducing greenhouse gas emissions or enhancing sinks. Carbon sequestration in geological sites permanently traps carbon dioxide, serving as a primary mitigation option.", trap: "Mitigation addresses the root causes of climate change (such as reducing emissions), whereas adaptation focuses on adjusting to its impacts.", covers: ["w4q1"] },
+          { id: "c4-2", term: "Isobars and Sea Level Correction", body: "Atmospheric pressure is caused by the weight of the air column above the measurement point. Because pressure decreases rapidly with altitude, observed pressure values are converted to standard sea level before drawing isobars on weather charts.", covers: ["w4q2", "w4q9"] },
+          { id: "c4-3", term: "Climate Change Adaptation and Drought Response", body: "In response to recurrent droughts in protected reserves like Mudumalai, constructing artificial water holes and replenishing them via tankers is implemented as an adaptation strategy to support wildlife water availability during climate stress.", covers: ["w4q3"] },
+          { id: "c4-4", term: "Genetic Banking and Resilience", body: "Surplus seed and sperm banking functions as a vital conservation adaptation option to facilitate ecological resilience. Maintaining broad genetic reservoirs ensures populations can recover and adapt after severe environmental disruptions.", covers: ["w4q4"] },
+          { id: "c4-5", term: "Atmospheric Layers: Stratosphere and Mesosphere", body: "Commercial and military jet flights typically cruise in the lower stratosphere to take advantage of smooth, stable air above tropospheric storms. Higher up in the cold mesosphere, noctilucent clouds form from ice crystals clinging to meteoric dust.", covers: ["w4q5", "w4q8"] },
+          { id: "c4-6", term: "Atmospheric Heat Transfer: Advection", body: "Advection is the horizontal transport of heat and atmospheric properties by moving air masses. This contrasts with vertical heat transfer through buoyant convective updrafts.", trap: "Advection transfers heat horizontally through wind, while convection transfers heat vertically through buoyant air movement.", covers: ["w4q6"] },
+          { id: "c4-7", term: "Climatological Averages and Air Masses", body: "The World Meteorological Organization defines standard climate normals using a classical averaging period of 30 years. Air masses are classified by their source regions; maritime tropical (mT) air is characterized as warm and moist.", covers: ["w4q7", "w4q10"] }
+        ],
+        questions: [
+          { id: "w4q1", n: 1, q: "Carbon sequestration in geological sites is an option for", options: ["mitigation", "adaptation", "both of these", "none of these"], answer: 0, why: "Geological carbon sequestration captures and permanently stores carbon dioxide deep underground to reduce emissions, serving as a mitigation strategy." },
+          { id: "w4q2", n: 2, q: "To reduce the effect of altitude, isobars are generally drawn after converting pressure values to", options: ["surface temperature level", "cloud base level", "tropopause level", "sea level"], answer: 3, why: "Atmospheric pressure decreases rapidly with altitude; converting pressure readings to standard sea level removes elevation differences." },
+          { id: "w4q3", n: 3, q: "Because of climate change, Mudumalai Tiger Reserve is suffering from frequent droughts. The management has built several artificial water holes for animals, and fills them up regularly with tankers. In the context of climate change, such an action would be called", options: ["adaptation", "mitigation", "deceleration", "maladaptation"], answer: 0, why: "In assignment solutions, providing artificial water holes and refilling them via tankers during severe droughts is classified as an adaptation measure to cope with climate stress." },
+          { id: "w4q4", n: 4, q: "Surplus seed and sperm banking is an adaptation option to facilitate", options: ["resistance to climate changes", "resilience to climate changes", "response to climate changes", "none of these"], answer: 1, why: "Surplus seed and sperm banking preserves genetic diversity, enhancing the resilience of populations to recover after severe disruptions." },
+          { id: "w4q5", n: 5, q: "Flights of jet planes typically occur in", options: ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"], answer: 1, why: "Commercial and military jets typically cruise in the lower stratosphere to take advantage of stable air above turbulent weather." },
+          { id: "w4q6", n: 6, q: "Heat movement through horizontal movement of air is called", options: ["convection", "radiation", "advection", "conduction"], answer: 2, why: "Advection is the transfer of heat and moisture through horizontal air movement. Convection is vertical movement." },
+          { id: "w4q7", n: 7, q: "The classical period for taking averages for climate is", options: ["10 years", "20 years", "30 years", "40 years"], answer: 2, why: "The standard classical period established by the World Meteorological Organization for climate normals is 30 years." },
+          { id: "w4q8", n: 8, q: "Noctilucent clouds are present in which layer?", options: ["Troposphere", "Stratosphere", "Mesosphere", "Thermosphere"], answer: 2, why: "Noctilucent (night-shining) clouds form at extremely high altitudes in the cold mesosphere." },
+          { id: "w4q9", n: 9, q: "Atmospheric pressure is mainly caused by", options: ["horizontal movement of clouds", "the weight of air above the point of measurement", "absorption of ultraviolet radiation", "seasonal movement of pressure belts"], answer: 1, why: "Atmospheric pressure is the force exerted by the weight of the column of air directly above the point of measurement." },
+          { id: "w4q10", n: 10, q: "Which of these air masses is generally warm and moist?", options: ["cP", "cT", "mP", "mT"], answer: 3, why: "Maritime tropical (mT) air masses originate over warm tropical oceans and are characteristically warm and moist." }
+        ]
+      },
+      {
+        id: 5,
+        title: "Oceans and the hydrosphere",
+        bigIdea: "Oceanic basins, physical oceanography, and hydrological cycles define marine habitats and ocean circulation. Density variations, tidal mechanics, and bathymetric divisions influence global biological productivity and nutrient transport.",
+        concepts: [
+          { id: "c5-1", term: "Abyssal Plains", body: "Abyssal plains are vast, nearly level plains on the deep ocean floor blanketed by thick layers of fine sediment, primarily pelagic clay and silt. Due to their immense geographic extent, abyssal plains constitute the single largest habitat on Earth.", covers: ["w5q1", "w5q2"] },
+          { id: "c5-2", term: "Mid-Oceanic Ridges and Submarine Canyons", body: "Mid-oceanic ridges form continuous underwater volcanic mountain chains that constitute the longest mountain ranges on Earth. Submarine canyons are steep, deep valleys carved into continental shelves and slopes, frequently channeling sediment from shallow to deep water.", covers: ["w5q3", "w5q8"] },
+          { id: "c5-3", term: "Continental Shelf Dynamics", body: "The continental shelf is a gently sloping seabed extending from the coast with a very low gradient of 0–1 degree. Shelves are among the most biologically productive marine zones because they receive ample sunlight throughout the water column and high terrestrial nutrient runoff.", covers: ["w5q4", "w5q9"] },
+          { id: "c5-4", term: "Tidal Range", body: "Tidal range is defined as the vertical difference between sea level at high tide and sea level at low tide. This range fluctuates based on lunar and solar gravitational alignment and local coastline geometry.", covers: ["w5q5"] },
+          { id: "c5-5", term: "Sublimation in the Hydrological Cycle", body: "Sublimation is the thermodynamic process wherein ice and snow transition directly into water vapour without melting into a liquid intermediate phase. It occurs extensively in arid, sunny, high-altitude alpine and polar environments.", covers: ["w5q6"] },
+          { id: "c5-6", term: "Seawater Density and Isohalines", body: "The density of ocean water with depth is determined primarily by three interrelated factors: hydrostatic pressure, salinity, and temperature. On oceanographic charts, lines connecting points of equal salinity are termed isohaline curves.", trap: "Isohalines connect points of equal salinity, whereas isotherms connect points of equal temperature and isopycnals connect points of equal density.", covers: ["w5q7", "w5q10"] }
+        ],
+        questions: [
+          { id: "w5q1", n: 1, q: "What type of sediment is commonly found over abyssal plains?", options: ["Coral fragments and gravel", "Basalt blocks and volcanic ash", "Sand and large pebbles", "Clay and silt"], answer: 3, why: "Abyssal plains are covered by thick blankets of fine pelagic clay and silt settled from the water column." },
+          { id: "w5q2", n: 2, q: "Which of these is the largest habitat on the Earth?", options: ["continental shelf", "continental slope", "guyot", "abyssal plain"], answer: 3, why: "The abyssal plain covers vast expanses of the deep ocean floor, making it the single largest habitat on Earth." },
+          { id: "w5q3", n: 3, q: "Which of these are the largest mountain ranges on Earth?", options: ["oceanic deep / trench", "mid-oceanic ridge", "seamount", "atoll"], answer: 1, why: "The mid-oceanic ridge system forms a continuous global underwater mountain chain over 65,000 km long, the largest on Earth." },
+          { id: "w5q4", n: 4, q: "Which factor helps explain why continental shelves are often highly productive?", options: ["They are the deepest parts of the ocean floor", "They are completely isolated from runoff", "They receive both light and nutrients", "They lack sediments and organisms"], answer: 2, why: "Continental shelves are shallow enough to receive sunlight throughout the photic zone and receive nutrient runoff from adjacent landmasses." },
+          { id: "w5q5", n: 5, q: "What is tidal range?", options: ["The horizontal movement of water parallel to the beach", "The difference between sea level at high tide and low tide", "The speed at which waves approach the coast", "The movement of cold water from deep ocean layers"], answer: 1, why: "Tidal range is the vertical difference in water height between sea level at high tide and low tide." },
+          { id: "w5q6", n: 6, q: "Which process converts ice and snow directly into water vapour?", options: ["Condensation", "Precipitation", "Snowmelt", "Sublimation"], answer: 3, why: "Sublimation is the direct phase change from solid ice or snow into gaseous water vapour without melting into liquid." },
+          { id: "w5q7", n: 7, q: "Which group of factors affects the density of ocean water with depth?", options: ["Runoff, tides and beach slope", "Hydrostatic pressure, salinity and temperature", "Wind speed, wave height and latitude only", "Sediment size, coral growth and river mouths"], answer: 1, why: "Ocean water density is governed by hydrostatic pressure, salinity, and water temperature." },
+          { id: "w5q8", n: 8, q: "“deep valleys, often cutting across continental shelves and slopes” is a description of", options: ["oceanic deep / trench", "mid-oceanic ridge", "guyot", "submarine canyon"], answer: 3, why: "Submarine canyons are steep, narrow V-shaped valleys incised into continental shelves and continental slopes." },
+          { id: "w5q9", n: 9, q: "Continental shelf has a gradient of", options: ["0-1 degree", "1-2 degree", "2-5 degree", "5-10 degree"], answer: 0, why: "Continental shelves are very gently inclined seaward platforms with an average gradient of about 0–1 degree." },
+          { id: "w5q10", n: 10, q: "Equal salinity curves are called", options: ["isopycnal curves", "isohaline curves", "isotherm curves", "isobuoyant curves"], answer: 1, why: "Isohaline curves join points of equal salinity in marine bodies (isotherms = temperature, isopycnals = density)." }
+        ]
+      },
+      {
+        id: 6,
+        title: "India: drainage, geology, climate",
+        bigIdea: "India's physiography features distinct drainage architectures, geological formations, and climatic drivers. The contrast between ancient Peninsular hard rock systems and younger Himalayan sedimentary belts governs river morphology and monsoon patterns.",
+        concepts: [
+          { id: "c6-1", term: "Western Ghats as Water Divide", body: "The Western Ghats act as a primary water divide in peninsular India, separating drainage basins such that water on opposite sides flows in different directions toward the Bay of Bengal or Arabian Sea.", covers: ["w6q1"] },
+          { id: "c6-2", term: "West-Flowing Rivers: Narmada and Tapi", body: "Unlike most major peninsular rivers that flow east, the Narmada and Tapi rivers flow westward through tectonic rift valleys and empty into the Arabian Sea.", covers: ["w6q6"] },
+          { id: "c6-3", term: "Drainage Patterns: Accordant and Discordant", body: "Accordant drainage conforms to the structural geology and topographic slope of the land, whereas discordant drainage cuts across structural relief without conforming to current rock resistance.", trap: "Accordant drainage follows the land's structure, whereas discordant drainage does not match the landscape structure.", covers: ["w6q2", "w6q4"] },
+          { id: "c6-4", term: "Dendritic Drainage Pattern", body: "Dendritic drainage is a branching, tree-like river network in which smaller tributary streams join a main channel at acute angles, typically forming over uniform geological substrate.", covers: ["w6q3"] },
+          { id: "c6-5", term: "Geology of Himalayas and Peninsular Rivers", body: "The Himalayas are primarily composed of folded marine sedimentary rocks. In contrast, Peninsular rivers have fixed, stable courses because they have cut deeply into ancient, rigid crystalline rocks.", covers: ["w6q5", "w6q8"] },
+          { id: "c6-6", term: "Climatic Controls and Köppen Classification", body: "India's climate is shaped by latitude, elevation, the Himalayas acting as a barrier to Siberian winds, and distance from the sea. In Köppen classification, 'F' designates polar frost climate.", trap: "In Köppen's polar system, F represents perpetual frost/ice, while T represents tundra.", covers: ["w6q7", "w6q9", "w6q10"] }
+        ],
+        questions: [
+          { id: "w6q1", n: 1, q: "The Western Ghats act as a water divide because", options: ["they prevent all rivers from reaching the sea", "water on opposite sides flows in different directions", "they cause all rivers to become seasonal", "they convert rivers into lakes"], answer: 1, why: "A water divide separates drainage basins such that water on opposite sides flows in different directions (east toward Bay of Bengal, west toward Arabian Sea)." },
+          { id: "w6q2", n: 2, q: "A river network that follows the structure and slope of the land is best described as", options: ["discordant", "antecedent", "accordant", "centripetal"], answer: 2, why: "Accordant drainage conforms to and reflects the structural geology and topographic slope of the landscape." },
+          { id: "w6q3", n: 3, q: "A tree-like river network in which smaller streams join a main channel is called", options: ["trellis drainage", "dendritic drainage", "centripetal drainage", "rectangular drainage"], answer: 1, why: "Dendritic drainage exhibits a branching, tree-like pattern where tributaries join the main river at acute angles." },
+          { id: "w6q4", n: 4, q: "A river system that does not match the present structure and relief of the landscape is called", options: ["discordant drainage", "dendritic drainage", "radial drainage", "parallel drainage"], answer: 0, why: "Discordant drainage cuts across geological structures and relief without correlating to current rock resistance." },
+          { id: "w6q5", n: 5, q: "The Himalayas are primarily comprised of", options: ["sedimentary rocks", "igneous rocks", "metamorphic rocks", "b and c"], answer: 0, why: "The Himalayas were formed by the uplift and folding of marine sedimentary strata originally deposited in the Tethys geosyncline." },
+          { id: "w6q6", n: 6, q: "Which pair of rivers is described as flowing westwards into the Arabian Sea?", options: ["Ganga and Yamuna", "Mahanadi and Godavari", "Narmada and Tapi", "Krishna and Kaveri"], answer: 2, why: "The Narmada and Tapi rivers flow westwards through rift valleys between mountain ranges and empty into the Arabian Sea." },
+          { id: "w6q7", n: 7, q: "Which of these are factors determining the climate of India?", options: ["distance from the sea", "altitude", "relief", "all of these"], answer: 3, why: "India's climate is determined by distance from the ocean, elevation/altitude, and topographic relief features (all of these)." },
+          { id: "w6q8", n: 8, q: "Peninsular rivers usually have fixed courses mainly because", options: ["they flow through newly formed mountains", "they carry very high sediment loads", "they are controlled only by monsoon winds", "their courses are cut into older, harder rocks"], answer: 3, why: "Peninsular rivers flow across the ancient, stable crystalline hard rock shield of the Deccan Plateau, preventing frequent course changes." },
+          { id: "w6q9", n: 9, q: "In Koeppen classification, which is polar frost temperature?", options: ["c", "d", "F", "T"], answer: 2, why: "In the Köppen classification, 'F' denotes polar frost climate (perpetual ice/snow), while 'T' denotes polar tundra." },
+          { id: "w6q10", n: 10, q: "Which of these are factors determining the climate of India?", options: ["the latitudinal extent", "the Himalayas forming a climatic divide", "distribution of land and water", "all of these"], answer: 3, why: "India's climate is shaped by latitudinal range, the Himalayas acting as a barrier to Siberian cold winds, and the distribution of land and water." }
+        ]
+      },
+      {
+        id: 7,
+        title: "Soils, succession and biodiversity",
+        bigIdea: "Soil genesis, ecological succession, and biodiversity indices reveal ecosystem resilience and structural dynamics. Disturbance regimes and weathering pathways determine community stability and pedological horizon formation.",
+        concepts: [
+          { id: "c7-1", term: "Arid Soils and Bangar", body: "Arid soils are sandy in texture, saline, poor in organic moisture, and characteristic of arid tracts in Rajasthan and Gujarat. Bangar represents older alluvial soil deposited above flood levels, distinct from younger floodplain khadar.", covers: ["w7q1", "w7q3"] },
+          { id: "c7-2", term: "Weathering: Cryofracturing and Carbonation", body: "Cryofracturing, or frost wedging, is physical weathering where repetitive freezing and expanding of water in fissures shatters rock. Carbonation is chemical weathering caused by acidic rainwater reacting with minerals.", covers: ["w7q2", "w7q9"] },
+          { id: "c7-3", term: "Biodiversity Metrics: Alpha, Beta, Gamma", body: "Alpha diversity measures the richness of species that exists locally within a single ecosystem or habitat. Gamma diversity measures overall species richness across different geographic regions or landscape scales.", trap: "Alpha diversity evaluates species richness within a single ecosystem, while gamma diversity encompasses total diversity across multiple geographies.", covers: ["w7q4", "w7q7"] },
+          { id: "c7-4", term: "Ecological Succession: Catastrophic Climax", body: "A catastrophic climax occurs when an ecological climax community is established or maintained by recurring natural catastrophic disturbances, such as frequent wildfires preventing succession to a deciduous forest.", covers: ["w7q5"] },
+          { id: "c7-5", term: "Intermediate Disturbance Hypothesis", body: "Species diversity is maximized at intermediate levels of disturbance. Moderate disturbances prevent aggressive competitive exclusion by dominant species while allowing pioneer and succession species to coexist.", covers: ["w7q6"] },
+          { id: "c7-6", term: "Soil Profile and Soil Structure", body: "A soil profile is the complete vertical arrangement of soil horizons from surface litter down to bedrock. Soil structure describes the physical arrangement and aggregation of solid soil particles and the pore spaces between them.", trap: "Soil structure refers to how soil particles are clumped together, whereas soil texture refers to the proportion of sand, silt, and clay particles.", covers: ["w7q8", "w7q10"] }
+        ],
+        questions: [
+          { id: "w7q1", n: 1, q: "Which soils are generally sandy, saline, low in moisture and commonly found in Rajasthan and Gujarat?", options: ["Forest soils", "Arid soils", "Peaty soils", "Red and yellow soils"], answer: 1, why: "Arid soils are sandy in texture, saline in nature, deficient in moisture and humus, and prevalent in arid parts of Rajasthan and Gujarat." },
+          { id: "w7q2", n: 2, q: "Cryofracturing is an example of", options: ["chemical weathering", "physical weathering", "biological weathering", "none of the above"], answer: 1, why: "Cryofracturing (frost wedging) is mechanical/physical weathering caused by the volume expansion of freezing water in rock cracks." },
+          { id: "w7q3", n: 3, q: "Bangar is a type of", options: ["black cotton soil", "alluvial soil", "saline soil", "red and yellow soil"], answer: 1, why: "Bangar represents older alluvium deposited in terraces above the annual flood plains of river systems." },
+          { id: "w7q4", n: 4, q: "\"the diversity that exists within an ecosystem\" is", options: ["alpha (α) biodiversity", "beta (β) biodiversity", "gamma (γ) biodiversity", "delta (δ) biodiversity"], answer: 0, why: "Alpha (α) biodiversity is the species richness and diversity measured locally within a single community or ecosystem." },
+          { id: "w7q5", n: 5, q: "A climax caused by wildfires is an example of", options: ["climatic climax", "edaphic climax", "disclimax", "catastrophic climax"], answer: 3, why: "A catastrophic climax occurs when an ecosystem is repeatedly reset and arrested by periodic catastrophic events like wildfires." },
+          { id: "w7q6", n: 6, q: "For more biodiversity, the level of disturbance should be", options: ["less", "intermediate", "more", "none of these"], answer: 1, why: "Under the intermediate disturbance hypothesis, moderate disturbance frequency allows both colonizing and competitive species to coexist." },
+          { id: "w7q7", n: 7, q: "\"the diversity that exists among different geographies\" is", options: ["alpha (α) biodiversity", "beta (β) biodiversity", "gamma (γ) biodiversity", "delta (δ) biodiversity"], answer: 2, why: "Gamma (γ) biodiversity is the total species diversity observed across different geographical regions or landscape units." },
+          { id: "w7q8", n: 8, q: "Vertical arrangement of soil horizons is called", options: ["soil texture", "soil structure", "soil profile", "soil science"], answer: 2, why: "A soil profile is the vertical section through soil showing all of its distinct layers (horizons) from surface to bed rock." },
+          { id: "w7q9", n: 9, q: "Carbonation is an example of", options: ["chemical weathering", "physical weathering", "biological weathering", "none of the above"], answer: 0, why: "Carbonation is chemical weathering resulting from carbonic acid reacting with soluble carbonate minerals." },
+          { id: "w7q10", n: 10, q: "Which soil property refers to the arrangement of solid soil parts and pore spaces between them?", options: ["Soil fertility", "Soil texture", "Soil horizon", "Soil structure"], answer: 3, why: "Soil structure describes how individual sand, silt, and clay particles clump and aggregate together relative to pore spaces." }
+        ]
+      },
+      {
+        id: 8,
+        title: "Conservation biology",
+        bigIdea: "Conservation biology balances in-situ habitat protection with ex-situ interventions to combat extinction risks and population genetics decline. Understanding ecological roles, trophic magnification, and major threat vectors informs reserve design.",
+        concepts: [
+          { id: "c8-1", term: "In-situ vs Ex-situ Conservation", body: "In-situ conservation preserves species within their natural habitats, as seen in wildlife sanctuaries, national parks, and biosphere reserves. Ex-situ conservation protects organisms outside their natural environments, such as seed banks and captive breeding centres.", covers: ["w8q1"] },
+          { id: "c8-2", term: "Inbreeding Depression and Restricted Range", body: "Inbreeding depression arises in small isolated populations when mating among close genetic relatives reduces fitness and expression of deleterious alleles. Species restricted to a single lake or localized habitat are vulnerable primarily due to their limited geographical range.", covers: ["w8q2", "w8q4"] },
+          { id: "c8-3", term: "Ecological Roles: Keystone and Umbrella Species", body: "Keystone species exert disproportionate regulatory control over ecosystem structure relative to their numerical abundance. The Asian elephant functions simultaneously as an umbrella species (large range), keystone species (forest engineer), and flagship species (charismatic cultural icon).", covers: ["w8q3", "w8q10"] },
+          { id: "c8-4", term: "Challenges of Ex-situ Conservation", body: "While ex-situ programs preserve critical germplasm, they face operational drawbacks: captive-bred individuals may struggle to adapt, forage, or avoid predators upon reintroduction to the wild.", covers: ["w8q5"] },
+          { id: "c8-5", term: "Species-Area Relationship and Biomagnification", body: "In the fundamental species-area relationship, 'S' denotes total species richness. Biomagnification occurs when persistent synthetic contaminants like DDD increase in concentration at successively higher trophic feeding levels.", covers: ["w8q6", "w8q7"] },
+          { id: "c8-6", term: "Reserve Prioritisation and the HIPPO Framework", body: "Conservation planning often prioritises regions where the level of human threat is very low to safeguard pristine habitats before degradation begins. The classic threat acronym HIPPO stands for Habitat loss, Invasive species, Pollution, Population growth, and Overharvesting.", trap: "In the HIPPO acronym, P stands for Pollution and Population, while pollination is an ecosystem service, not a threat.", covers: ["w8q8", "w8q9"] }
+        ],
+        questions: [
+          { id: "w8q1", n: 1, q: "Which of the following is listed as an ex-situ conservation method?", options: ["Wildlife sanctuary", "National park", "Seed bank", "Biosphere reserve"], answer: 2, why: "A seed bank preserves plant germplasm off-site (ex-situ), whereas sanctuaries, national parks, and biosphere reserves protect species in their natural habitats (in-situ)." },
+          { id: "w8q2", n: 2, q: "Which factor makes smaller populations especially vulnerable due to mating among close relatives?", options: ["Habitat displacement", "Eutrophication", "Inbreeding depression", "Carbon storage"], answer: 2, why: "Inbreeding depression occurs when closely related individuals mate in small populations, reducing genetic fitness and increasing recessive defects." },
+          { id: "w8q3", n: 3, q: "Which type of species plays a much greater ecological role than expected from its abundance?", options: ["Umbrella species", "Flagship species", "Least concern species", "Keystone species"], answer: 3, why: "Keystone species exert strong regulatory control on the balance of an entire ecosystem disproportionate to their numerical abundance." },
+          { id: "w8q4", n: 4, q: "A species found only in a single lake is rare mainly because of", options: ["high birth rate", "limited geographical range", "high adaptability", "large home range"], answer: 1, why: "Endemic species confined strictly to a single water body are inherently rare due to their extremely limited geographical range." },
+          { id: "w8q5", n: 5, q: "Which of the following is a disadvantage of ex-situ conservation?", options: ["It always protects the natural habitat of the species", "Captive-bred individuals may find reintroduction difficult", "It prevents all inbreeding risks automatically", "It can be planned for all species at the same time"], answer: 1, why: "A major drawback of ex-situ conservation is that individuals bred in captivity often struggle with foraging, predator avoidance, and acclimatisation upon release." },
+          { id: "w8q6", n: 6, q: "In the species-area relationship, what does “S” represent?", options: ["Size of the habitat", "Species richness", "Survival rate", "Stochastic pressure"], answer: 1, why: "In the mathematical species-area equation (S = c * A^z), 'S' denotes species richness (the number of species)." },
+          { id: "w8q7", n: 7, q: "In the Clear Lake example, DDD concentration increased from water to plankton, fish, and piscivorous birds. This illustrates", options: ["ecological redundancy", "habitat selection", "biomagnification", "ex-situ management"], answer: 2, why: "Biomagnification is the progressive accumulation and concentration of persistent toxins at successively higher trophic levels." },
+          { id: "w8q8", n: 8, q: "We prefer those areas for the creation of a conservation reserve where the level of threat is", options: ["very high", "medium", "very low", "non-existent"], answer: 2, why: "In conservation planning assignment keys, areas with very low levels of threat are preferred for reserve creation to secure stable, viable habitats." },
+          { id: "w8q9", n: 9, q: "The acronym HIPPO does not include", options: ["habitat loss", "invasive species", "pollination", "pollution"], answer: 2, why: "HIPPO stands for Habitat loss, Invasive species, Pollution, Population growth, and Overharvesting. Pollination is an ecological process, not a threat." },
+          { id: "w8q10", n: 10, q: "The elephant has a home range of several square kilometres, regulates the ecosystem by its habit of destructive feeding, and people can relate to this animal which is important for conservation. Given this background, the elephant can be called as", options: ["umbrella species", "keystone species", "flagship species", "all of the above"], answer: 3, why: "The elephant acts as an umbrella species (large range), keystone species (ecosystem modifier), and flagship species (charismatic cultural appeal)." }
+        ]
+      },
+      {
+        id: 9,
+        title: "Population, development, sustainability",
+        bigIdea: "Human geography examines population dynamics, demographic transitions, and carrying capacity models. Philosophical paradigms of environmental interaction and sustainability pillars provide benchmarks for resource distribution.",
+        concepts: [
+          { id: "c9-1", term: "Sex Ratio and Dependency Metrics", body: "The sex ratio is calculated as the female population divided by the male population, multiplied by 1000. The age dependency ratio compares economically dependent cohorts (children and elderly) against the working-age population.", covers: ["w9q1", "w9q3"] },
+          { id: "c9-2", term: "Possibilism in Human Geography", body: "Possibilism represents the philosophical view that the physical environment offers possibilities that human culture and agency actively modify—termed the humanising of nature.", trap: "Possibilism emphasizes human agency reshaping nature, whereas environmental determinism views human society as strictly governed by the environment.", covers: ["w9q2"] },
+          { id: "c9-3", term: "Population Growth Curves", body: "Under environmental resistance and carrying capacity limits, the logistic population growth equation yields a characteristic sigmoidal or S-shaped curve.", trap: "Logistic growth forms an S-shaped curve as population levels off at carrying capacity, unlike exponential growth which forms a J-shaped curve.", covers: ["w9q4"] },
+          { id: "c9-4", term: "Malthusian Checks: Positive vs Preventive", body: "Thomas Malthus classified population constraints into two categories: positive checks, which raise the death rate through events like war, famine, and disease; and preventive checks, which lower the birth rate through foresight and moral restraint.", covers: ["w9q5", "w9q9"] },
+          { id: "c9-5", term: "Economic Development and Sustainability Pillars", body: "Economic development is frequently evaluated in macro terms using gross domestic product (GDP) per capita. The core pillars of sustainable development encompass environmental sustainability, economic sustainability, and social sustainability.", covers: ["w9q6", "w9q7"] },
+          { id: "c9-6", term: "Demographic Transition and Working Cohorts", body: "The demographic transition model depicts society shifting from high birth and death rates to low birth and death rates as development advances. In demographic statistics, the working-age population is conventionally defined as ages 15–64.", covers: ["w9q8", "w9q10"] }
+        ],
+        questions: [
+          { id: "w9q1", n: 1, q: "Sex ratio is calculated as:", options: ["Female population divided by male population multiplied by 1000", "Male population divided by female population multiplied by 1000", "Total population divided by female population multiplied by 1000", "Working population divided by dependent population multiplied by 1000"], answer: 0, why: "In Indian demographic standards, sex ratio is defined as (number of females ÷ number of males) × 1000." },
+          { id: "w9q2", n: 2, q: "Which of these is commonly observed during humanising of nature?", options: ["environmental determinism", "possibilism", "neodeterminism", "stop and go determinism"], answer: 1, why: "Possibilism represents the humanising of nature, where human technology and choices reshape the natural physical environment." },
+          { id: "w9q3", n: 3, q: "The age dependency ratio compares dependent population with:", options: ["total female population", "working-age population", "urban population", "migrant population"], answer: 1, why: "The age dependency ratio compares non-working dependent age cohorts (0–14 and 65+) against the working-age population (15–64)." },
+          { id: "w9q4", n: 4, q: "The logistic growth equation curve is", options: ["I-shaped", "J-shaped", "S-shaped", "U-shaped"], answer: 2, why: "The logistic population growth curve follows a sigmoidal or S-shaped pattern as growth slows down upon approaching environmental carrying capacity." },
+          { id: "w9q5", n: 5, q: "Which of these is a positive check according to Malthus?", options: ["late marriage", "war", "celibacy", "moral restraint"], answer: 1, why: "Malthusian positive checks increase mortality rates directly; war, famine, and pestilence are classic positive checks." },
+          { id: "w9q6", n: 6, q: "Economic development is often measured in terms of:", options: ["age dependency ratio", "total land area", "GDP per capita", "sex ratio"], answer: 2, why: "Gross domestic product (GDP) per capita is the primary macroeconomic measure used to compare economic development across regions." },
+          { id: "w9q7", n: 7, q: "Which of these is not a pillar of sustainability?", options: ["environmental sustainability", "economic sustainability", "trans-boundary sustainability", "social sustainability"], answer: 2, why: "The three recognized pillars of sustainability are environmental, economic, and social. Trans-boundary sustainability is not a pillar." },
+          { id: "w9q8", n: 8, q: "The demographic transition sees a society move from", options: ["high birth rate, low death rate to low birth rate, high death rate", "low birth rate, high death rate to low birth rate, low death rate", "high birth rate, high death rate to low birth rate, low death rate", "high birth rate, high death rate to low birth rate, high death rate"], answer: 2, why: "Demographic transition describes the societal shift from high birth and high death rates to low birth and low death rates." },
+          { id: "w9q9", n: 9, q: "Which of these is a preventive check according to Malthus?", options: ["foresight", "vice", "misery", "flood"], answer: 0, why: "Preventive checks reduce birth rates through conscious human decisions such as foresight, delayed marriage, and moral restraint." },
+          { id: "w9q10", n: 10, q: "Which population group is generally treated as the working population?", options: ["0-15 years", "15-64 years", "65 years and above", "0-15 and 65 years and above"], answer: 1, why: "Demographers treat the population between the ages of 15 and 64 as the economically active working population." }
+        ]
+      },
+      {
+        id: 10,
+        title: "Resources, land use, emissions",
+        bigIdea: "Resource classification delineates reserves, potentials, and stocks across modern agriculture, forestry, and industry. Understanding anthropogenic emissions of nitrogen oxides and ammonia is critical for curbing environmental degradation.",
+        concepts: [
+          { id: "c10-1", term: "Deforestation and Soil Carbon Release", body: "Clearing forests contributes to carbon emissions not only from the combustion or harvesting of woody biomass, but also through rapid oxidation and breakdown of organic matter stored within the topsoil.", covers: ["w10q1"] },
+          { id: "c10-2", term: "Resource Typology: Potential, Reserve, and Stock", body: "Resources are categorized by availability and technological feasibility. Potential resources include untapped oil and fusion hydrogen; reserve resources are identified deposits held for the future; and stock resources are materials surveyed but currently unusable due to lack of technology.", covers: ["w10q2", "w10q4", "w10q6", "w10q7"] },
+          { id: "c10-3", term: "Infrastructure and Deforestation in Rondônia", body: "In the Brazilian Amazon state of Rondônia, highway and feeder road construction accelerated deforestation primarily by enabling easier human settlement, logging access, and agricultural expansion into previously impenetrable forest.", covers: ["w10q3"] },
+          { id: "c10-4", term: "Cropland vs Livestock Calorie Output", body: "Although dedicated cropland accounts for a significantly smaller land footprint than grazing pastures, it generates the vast majority of the global human calorie supply directly.", covers: ["w10q5"] },
+          { id: "c10-5", term: "Atmospheric Pollutants: Nitrogen Oxides and Ammonia", body: "Anthropogenic emissions vary distinctly by source: mobile sources like vehicular transport are the primary emitter of nitrogen oxides, whereas livestock animal manure is the predominant global source of atmospheric ammonia.", covers: ["w10q8", "w10q10"] },
+          { id: "c10-6", term: "Actual Resources", body: "Actual resources are those that have been thoroughly surveyed, quantified, and are actively being harvested and utilized in present economic activity, such as currently harvested forest timber.", covers: ["w10q9"] }
+        ],
+        questions: [
+          { id: "w10q1", n: 1, q: "When forests are cleared, carbon may be released not only from removed wood but also from", options: ["ocean sediments", "glaciers", "soil organic matter", "desert sand"], answer: 2, why: "Clearing forests exposes topsoil, causing rapid decomposition and release of stored carbon from soil organic matter." },
+          { id: "w10q2", n: 2, q: "Hydrogen for nuclear fusion comes under the category of", options: ["potential resources", "actual resources", "reserve resources", "stock resources"], answer: 0, why: "In resource classification schemes where unutilized energy sources with future potential are grouped as potential resources, hydrogen for nuclear fusion is categorized as a potential resource." },
+          { id: "w10q3", n: 3, q: "In the Rondonia rainforest example, road construction mainly contributed to forest loss by", options: ["increasing rainfall in cleared patches", "allowing easier human access into forest areas", "preventing agricultural plots from forming", "converting cropland back into forest"], answer: 1, why: "Road building in Rondônia provided access penetration corridors that facilitated logging, land clearance, and agricultural settlement." },
+          { id: "w10q4", n: 4, q: "Oil that has not been drilled can be categorised under", options: ["potential resources", "actual resources", "reserve resources", "stock resources"], answer: 0, why: "Oil reserves that have been identified and estimated but not yet extracted or drilled are categorized as potential resources." },
+          { id: "w10q5", n: 5, q: "Although cropland uses a smaller share of agricultural land than livestock, it contributes more to", options: ["global calorie supply", "mineral extraction", "groundwater recharge", "built-up land expansion"], answer: 0, why: "Direct human food crops on arable land produce the majority of global dietary energy and calories despite using less acreage than livestock pasture." },
+          { id: "w10q6", n: 6, q: "Low concentration ores come in the category of", options: ["potential resources", "actual resources", "reserve resources", "stock resources"], answer: 2, why: "Low-concentration ores that are surveyed and known but set aside until market demand or technological feasibility improves are classified as reserve resources." },
+          { id: "w10q7", n: 7, q: "“those resources that have been surveyed but we lack the technology to use them” is a definition of", options: ["potential resources", "actual resources", "reserve resources", "stock resources"], answer: 3, why: "Stock resources are materials surveyed in the environment that hold utility but cannot be utilized due to current technological limitations." },
+          { id: "w10q8", n: 8, q: "Which of these is the largest source of nitrogen oxides in the atmosphere?", options: ["electricity generation", "mobile sources", "industrial processes", "waste disposal"], answer: 1, why: "Mobile sources (automobiles, trucks, and transportation) constitute the largest single source of atmospheric nitrogen oxides (NOx)." },
+          { id: "w10q9", n: 9, q: "Timber from forests that is being harvested can be categorised under", options: ["potential resources", "actual resources", "reserve resources", "stock resources"], answer: 1, why: "Timber currently being surveyed, harvested, and utilized in commerce represents an actual (developed) resource." },
+          { id: "w10q10", n: 10, q: "Which of these is the largest source of ammonia (NH3) in the atmosphere?", options: ["animal manure", "mineral fertiliser", "crops and their decomposition", "human waste"], answer: 0, why: "Livestock waste and decomposing animal manure represent the largest global anthropogenic source of atmospheric ammonia emissions." }
+        ]
+      },
+      {
+        id: 11,
+        title: "Trade, transport and linear infrastructure",
+        bigIdea: "Trade theory, transportation networks, and linear infrastructure govern human commerce but fragment natural habitats. Engineering wildlife passages, regulating nocturnal light, and monitoring emissions alleviate ecological barriers.",
+        concepts: [
+          { id: "c11-1", term: "Economic Advantages: Absolute vs Comparative", body: "Absolute advantage refers to the capability of a producer to generate a good using fewer total inputs than a competitor. Comparative advantage is the ability to produce goods at a lower opportunity cost relative to others.", trap: "Absolute advantage measures input efficiency, whereas comparative advantage hinges on lower relative opportunity cost.", covers: ["w11q1", "w11q6"] },
+          { id: "c11-2", term: "Linear Infrastructure Mitigation", body: "Linear transport corridors fragment habitats, but their barrier effects can be mitigated using engineered crossings. Bridge underpasses, box culverts, and pipe culverts provide continuous passage for terrestrial and aquatic wildlife.", covers: ["w11q2"] },
+          { id: "c11-3", term: "Transport Modes and Capital Investment", body: "Constructing railway infrastructure demands substantially higher upfront financial investment, engineering technology, and grade stabilization than building standard road networks.", covers: ["w11q3"] },
+          { id: "c11-4", term: "Road Barrier Determinants", body: "The degree to which a road impedes animal movement is governed by road-edge characteristics, temporal factors, local biodiversity, traffic volume, vehicle velocity, and driver behavior.", covers: ["w11q4", "w11q5"] },
+          { id: "c11-5", term: "Maritime Condensation Nuclei and Nocturnal Disturbance", body: "Particulate dust and aerosols released from ocean-going vessels act as cloud condensation nuclei that form visible ship tracks. On roadways, nocturnal wildlife is heavily disturbed by vehicular headlamp illumination.", covers: ["w11q7", "w11q8"] },
+          { id: "c11-6", term: "Carnivore Dispersal and Urban Typology", body: "Young male apex predators disperse outward from their natal ranges to minimize territorial aggression and avoid deleterious inbreeding. In functional urban geography, historical university centers like Oxford are classified as educational towns.", covers: ["w11q9", "w11q10"] }
+        ],
+        questions: [
+          { id: "w11q1", n: 1, q: "“the ability to produce a good using fewer inputs than another producer” is", options: ["comparative advantage", "absolute advantage", "production advantage", "resource advantage"], answer: 1, why: "Absolute advantage describes the capability of an economic entity to produce a greater quantity of a good using fewer total inputs." },
+          { id: "w11q2", n: 2, q: "Which of these is / are example(s) of mitigation measures to mitigate impacts of linear infrastructure on wildlife?", options: ["bridge underpasses", "box culverts", "pipe culverts", "all of these"], answer: 3, why: "Bridge underpasses, box culverts, and pipe culverts are all structural engineering measures designed to allow wildlife passage across linear corridors." },
+          { id: "w11q3", n: 3, q: "Which mode of connection is described as requiring more money and technology to construct than roads?", options: ["Shipping lines", "Railways", "Inland waterways", "Footpaths"], answer: 1, why: "Railways require far more specialized engineering, strict grade leveling, signalling systems, and capital investment than basic roads." },
+          { id: "w11q4", n: 4, q: "Which of these is a factor governing barrier effect of roads?", options: ["road edge features", "time of day and year", "species diversity in the surroundings", "all of these"], answer: 3, why: "The ecological barrier effect of roads is influenced by physical edge features, traffic timing across diurnal/seasonal cycles, and local biodiversity." },
+          { id: "w11q5", n: 5, q: "Which of these is a factor governing barrier effect of roads?", options: ["traffic intensity", "speed of vehicles", "driver sensitivity", "all of these"], answer: 3, why: "Vehicle speed, traffic volume/intensity, and driver awareness/sensitivity directly dictate wildlife collision frequency and road avoidance." },
+          { id: "w11q6", n: 6, q: "“the ability to produce a good at a lower opportunity cost than another producer” is a definition of", options: ["real advantage", "monetary advantage", "comparative advantage", "opportunity advantage"], answer: 2, why: "Comparative advantage occurs when a producer can output a good at a lower relative opportunity cost compared to competitors." },
+          { id: "w11q7", n: 7, q: "Dust released from ships can help reveal ship movement because dust particles act as:", options: ["Fuel particles", "Noise absorbers", "Nuclei for condensation", "Ocean-current markers"], answer: 2, why: "Aerosols and fine particulate matter emitted in ship exhaust act as cloud condensation nuclei (CCN), creating bright linear ship tracks in clouds." },
+          { id: "w11q8", n: 8, q: "Which of the following is identified as a way in which roads disturb wildlife at night?", options: ["They reduce wind movement", "They increase soil moisture", "They create silent zones", "They cause light pollution through headlamps"], answer: 3, why: "Vehicular headlights cause artificial nocturnal light pollution, blinding animals, disrupting foraging, and altering nocturnal behavior." },
+          { id: "w11q9", n: 9, q: "Which statement best describes why young male tigers or leopards may need to move away from their natal area?", options: ["To avoid seasonal flooding", "To reduce conflict and avoid inbreeding", "To follow shipping routes", "To increase road density"], answer: 1, why: "Subadult male carnivores disperse outward from their birthplace to avoid territorial battles with dominant males and avoid inbreeding." },
+          { id: "w11q10", n: 10, q: "Oxford can best be categorised as", options: ["mining town", "garrison town", "educational town", "religious town"], answer: 2, why: "Oxford developed historically around its university colleges, making it a classic example of an educational town." }
+        ]
+      },
+      {
+        id: 12,
+        title: "Hazards, geospatial technology, valuation",
+        bigIdea: "Disaster risk reduction couples hazard probability with societal vulnerability, utilizing geospatial photogrammetry, remote sensing LiDAR, and environmental valuation techniques to quantify impacts and inform resilience.",
+        concepts: [
+          { id: "c12-1", term: "Hazard vs Vulnerability", body: "A hazard is a natural or anthropogenic event that can cause injury, property damage, and ecological loss. Vulnerability defines the socio-environmental factors that heighten an individual's or community's susceptibility to hazard impacts.", trap: "A hazard is the dangerous event itself, while vulnerability represents the susceptibility to harm from that event.", covers: ["w12q1", "w12q4"] },
+          { id: "c12-2", term: "LiDAR Range Calculation", body: "LiDAR measures distance by pulsing laser light and timing its round-trip reflection. Using distance = (speed of light × time) ÷ 2, a 0.00001 second pulse travel yields (3×10^8 m/s × 10^-5 s) ÷ 2 = 1500 meters.", covers: ["w12q2"] },
+          { id: "c12-3", term: "Photogrammetric Applications", body: "Photogrammetry is split into specialized branches: interpretive photogrammetry identifies qualitative features and land phenomena, while metric photogrammetry measures physical quantities such as forest cover acreage and pit dimensions.", trap: "Interpretive photogrammetry seeks qualitative understanding, whereas metric photogrammetry computes exact spatial measurements.", covers: ["w12q3", "w12q6"] },
+          { id: "c12-4", term: "Inertial Measurement Units (IMU)", body: "An Inertial Measurement Unit (IMU) is an essential airborne sensor combining accelerometers and gyroscopes to record pitch, roll, and heading, ensuring precision georeferencing of aerial images.", covers: ["w12q5"] },
+          { id: "c12-5", term: "GIS Components and Camera Geometry", body: "Geographic Information Systems depend on three core pillars: hardware, software, and humanware (skilled personnel). In aerial survey cameras, oblique photography intentionally tilts the optical axis between the vertical and horizontal.", covers: ["w12q7", "w12q9"] },
+          { id: "c12-6", term: "Environmental Valuation and Sensor Platforms", body: "The market price method evaluates ecosystem services through revealed willingness to pay in actual market transactions. For local terrestrial capture, ground-borne platforms operate at surface level with horizontal optical axes.", trap: "Market price relies on revealed willingness to pay in actual transactions, whereas contingent valuation relies on stated preferences from hypothetical surveys.", covers: ["w12q8", "w12q10"] }
+        ],
+        questions: [
+          { id: "w12q1", n: 1, q: "“The conditions determined by physical, social, economic and environmental factors or processes which increase the susceptibility of an individual, a community, assets or systems to the impacts of hazards.” is a definition for", options: ["hazard", "exposure", "vulnerability", "disaster"], answer: 2, why: "Vulnerability refers to internal factors and susceptibility that increase the potential for harm when exposed to hazardous events." },
+          { id: "w12q2", n: 2, q: "The time of flight for LiDAR is 0.00001 sec. Find the distance of the object from the instrument.", options: ["500 m", "1000 m", "1500 m", "2000 m"], answer: 2, why: "Distance = (speed of light × time) ÷ 2 = (300,000,000 m/s × 0.00001 s) ÷ 2 = 3000 ÷ 2 = 1500 metres." },
+          { id: "w12q3", n: 3, q: "Which application of photogrammetry focuses on understanding what is happening in an area rather than measuring quantities?", options: ["Metric application", "Radiometric application", "Interpretive application", "Fiducial application"], answer: 2, why: "Interpretive photogrammetry analyzes visual aerial elements to qualitatively interpret land phenomena rather than calculating measurements." },
+          { id: "w12q4", n: 4, q: "“A process, phenomenon or human activity that may cause loss of life, injury or other health impacts, property damage, social and economic disruption or environmental degradation.” is a definition for", options: ["hazard", "exposure", "vulnerability", "disaster"], answer: 0, why: "A hazard is a potentially damaging physical event, phenomenon, or human activity that can cause injury or destruction." },
+          { id: "w12q5", n: 5, q: "IMU stands for", options: ["Imperial metering unit", "Inertial metering unit", "Imperial measurement unit", "Inertial measurement unit"], answer: 3, why: "In navigation, remote sensing, and aerospace georeferencing, IMU stands for Inertial Measurement Unit." },
+          { id: "w12q6", n: 6, q: "Which application of photogrammetry is involved when the area of forest cover or the size of plantation pits is calculated?", options: ["Interpretive application", "Metric application", "Oblique application", "Passive application"], answer: 1, why: "Metric photogrammetry involves precise geometric computation of quantitative dimensions, distances, areas, and volumes." },
+          { id: "w12q7", n: 7, q: "Which component is essential in a GIS along with hardware and software?", options: ["Mirror system", "Humanware", "Shutter speed", "Focal length"], answer: 1, why: "A complete Geographic Information System requires hardware, software, data, procedures, and humanware (the operators and analysts)." },
+          { id: "w12q8", n: 8, q: "Which of these uses revealed willingness to pay?", options: ["market price method", "replacement cost method", "damage cost avoided method", "contingent valuation method"], answer: 0, why: "The market price method evaluates environmental goods using actual prices and quantities observed in real markets (revealed preference)." },
+          { id: "w12q9", n: 9, q: "Which camera-axis orientation is intentionally tilted between vertical and horizontal?", options: ["True vertical", "Near vertical", "Oblique", "Fiducial"], answer: 2, why: "Oblique photographs are taken with the optical axis deliberately tilted at an angle between vertical and horizontal." },
+          { id: "w12q10", n: 10, q: "Which platform normally uses cameras placed at ground level with a horizontal camera orientation?", options: ["Space-borne platform", "Air-borne platform", "Ground-borne platform", "Orbital platform"], answer: 2, why: "Ground-borne (terrestrial) platforms capture imagery from ground surface stations with horizontal or near-horizontal optical axes." }
+        ]
+      }
+    ];
+  </script>
+
+  <!-- SCRIPT 2: APPLICATION CODE -->
+  <script>
+    "use strict";
+
+    /* 1. CONSTANTS & HELPERS */
+    const STORAGE_KEY = "cg2026.v1";
+    let store = {
+      v: 1,
+      theme: "light",
+      mode: "practice",
+      lastRoute: "#/learn/1",
+      mixedCount: 20,
+      best: {},
+      attempts: {},
+      missed: []
+    };
+
+    let state = {
+      route: "",
+      quiz: null,
+      highlightQid: null
+    };
+
+    function esc(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+      }
+      return a;
+    }
+
+    function announce(msg) {
+      const live = document.getElementById("live");
+      if (live) live.textContent = msg;
+    }
+
+    function getQuestionById(qid) {
+      for (const w of WEEKS) {
+        for (const q of w.questions) {
+          if (q.id === qid) return { q, week: w };
+        }
+      }
+      return null;
+    }
+
+    /* 2. STORAGE */
+    function loadStore() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.v === 1) {
+            store = Object.assign(store, parsed);
+          }
+        }
+      } catch (e) {
+        console.warn("Storage read failed; fallback in-memory.", e);
+      }
+    }
+
+    function saveStore() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+      } catch (e) {
+        console.warn("Storage write failed.", e);
+      }
+    }
+
+    /* 3. DATA VALIDATION */
+    function validateData() {
+      const errors = [];
+      if (!Array.isArray(WEEKS) || WEEKS.length !== 12) {
+        errors.push(`Expected 12 weeks, got ${WEEKS ? WEEKS.length : 0}`);
+      }
+      const seenQids = new Set();
+      const coveredQids = new Set();
+
+      WEEKS.forEach((w, wIdx) => {
+        if (w.id !== wIdx + 1) errors.push(`Week index mismatch for week id ${w.id}`);
+        if (!Array.isArray(w.questions) || w.questions.length !== 10) {
+          errors.push(`Week ${w.id} has ${w.questions ? w.questions.length : 0} questions (expected 10)`);
+        }
+        w.questions.forEach((q, qIdx) => {
+          if (seenQids.has(q.id)) errors.push(`Duplicate question id: ${q.id}`);
+          seenQids.add(q.id);
+          if (!Array.isArray(q.options) || q.options.length !== 4) {
+            errors.push(`Question ${q.id} has ${q.options ? q.options.length : 0} options (expected 4)`);
+          }
+          if (typeof q.answer !== "number" || q.answer < 0 || q.answer > 3) {
+            errors.push(`Question ${q.id} has invalid answer index ${q.answer}`);
+          }
+        });
+        if (!Array.isArray(w.concepts) || w.concepts.length < 5) {
+          errors.push(`Week ${w.id} has insufficient concepts (${w.concepts ? w.concepts.length : 0})`);
+        }
+        w.concepts.forEach(c => {
+          if (Array.isArray(c.covers)) {
+            c.covers.forEach(id => coveredQids.add(id));
+          }
+        });
+      });
+
+      seenQids.forEach(qid => {
+        if (!coveredQids.has(qid)) {
+          errors.push(`Question ${qid} is not covered by any concept card.`);
+        }
+      });
+
+      if (errors.length > 0) {
+        console.error("Data validation failed:", errors);
+        const app = document.getElementById("app");
+        if (app) {
+          app.innerHTML = `
+            <div class="container" style="padding: 24px;">
+              <div style="background: #F8D7DA; color: #721C24; padding: 20px; border-radius: 8px; border: 1px solid #F5C6CB;">
+                <h2 style="font-family: monospace; font-size: 1.25rem; margin-bottom: 8px;">Data Validation Error</h2>
+                <ul style="padding-left: 20px;">
+                  ${errors.map(err => `<li>${esc(err)}</li>`).join("")}
+                </ul>
+              </div>
+            </div>`;
+        }
+        return false;
+      }
+      return true;
+    }
+
+    /* 4. ICONS (inline SVG) */
+    const ICONS = {
+      check: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
+      cross: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`,
+      sun: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`,
+      moon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`,
+      arrowRight: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`,
+      arrowLeft: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
+      arrowUp: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`,
+      chevronDown: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>`
+    };
+
+    /* 5. TEMPLATES & VIEWS */
+    function renderWeekChips(activeWeekId, currentView) {
+      const container = document.getElementById("week-chips-row");
+      if (!container) return;
+
+      container.innerHTML = WEEKS.map(w => {
+        const best = store.best[w.id];
+        const attempts = store.attempts[w.id] || 0;
+        let dotHtml = `<span class="status-dot"></span>`;
+        let statusText = "not attempted";
+
+        if (attempts > 0) {
+          if (best >= 7) {
+            dotHtml = `<span class="status-dot filled">${ICONS.check}</span>`;
+            statusText = `best score ${best} of 10`;
+          } else {
+            dotHtml = `<span class="status-dot half"></span>`;
+            statusText = `best score ${best !== undefined ? best : 0} of 10`;
+          }
+        }
+
+        const isCurrent = (activeWeekId === w.id);
+        const targetHash = currentView === "quiz" ? `#/quiz/${w.id}` : `#/learn/${w.id}`;
+
+        return `
+          <a href="${targetHash}" class="chip" ${isCurrent ? 'aria-current="page"' : ""} 
+             aria-label="Week ${w.id}, ${statusText}">
+            ${dotHtml}
+            <span>W${w.id}</span>
+          </a>
+        `;
+      }).join("");
+
+      const activeChip = container.querySelector('[aria-current="page"]');
+      if (activeChip) {
+        const targetLeft = activeChip.offsetLeft - (container.clientWidth - activeChip.clientWidth) / 2;
+        container.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+      }
+    }
+
+    function viewLearn(week, highlightQid) {
+      const prevWeek = week.id > 1 ? week.id - 1 : null;
+      const nextWeek = week.id < 12 ? week.id + 1 : null;
+      const weekPad = String(week.id).padStart(2, '0');
+      const letters = ["A", "B", "C", "D"];
+
+      return `
+        <div class="container learn-container">
+          <!-- Top Week Pager (1 week per page navigation) -->
+          <nav class="learn-page-header-pager" aria-label="Page navigation between weeks">
+            ${prevWeek ? `
+              <a href="#/learn/${prevWeek}" class="page-step-btn" aria-label="Previous Page: Week ${prevWeek}">
+                ${ICONS.arrowLeft} <span>Week ${prevWeek}</span>
+              </a>
+            ` : `
+              <span class="page-step-btn disabled" aria-disabled="true">
+                ${ICONS.arrowLeft} <span>Start</span>
+              </span>
+            `}
+
+            <div class="page-step-center">
+              <span class="page-step-pill">PAGE: WEEK ${week.id} OF 12</span>
+              <span class="page-step-sub">All 10 Quizzes Solved · No Clicking Required</span>
+            </div>
+
+            ${nextWeek ? `
+              <a href="#/learn/${nextWeek}" class="page-step-btn page-step-next" aria-label="Next Page: Week ${nextWeek}">
+                <span>Week ${nextWeek}</span> ${ICONS.arrowRight}
+              </a>
+            ` : `
+              <a href="#/learn/1" class="page-step-btn page-step-next" aria-label="Back to Week 1">
+                <span>Week 1 ↺</span>
+              </a>
+            `}
+          </nav>
+
+          <section class="card hero learn-hero">
+            <div class="mono-label">WEEK ${weekPad} / 12 · LEARNING MODE (ALL ANSWERS SHOWN)</div>
+            <h1>${esc(week.title)}</h1>
+            <p class="big-idea">${esc(week.bigIdea)}</p>
+            <div class="hero-meta">
+              <a href="#/quiz/${week.id}" class="btn btn-primary">
+                Take Week ${week.id} Quiz ${ICONS.arrowRight}
+              </a>
+              <span class="mono-label" style="margin: 0;">10 Quizzes with Answers Shown by Default</span>
+            </div>
+          </section>
+
+          <!-- Quick Jump Bar -->
+          <div class="learn-jump-bar" aria-label="Quick jump to question">
+            <span class="mono-label" style="margin: 0; white-space: nowrap; font-size: 0.6875rem;">JUMP TO:</span>
+            <div class="learn-jump-scroll">
+              ${week.questions.map(q => `
+                <button type="button" class="jump-chip" data-jump-to="q-${q.id}" aria-label="Jump to question ${q.n}">Q${q.n}</button>
+              `).join("")}
+              <button type="button" class="jump-chip notes-jump" data-jump-to="week-concepts" aria-label="Jump to study notes">Notes</button>
+            </div>
+          </div>
+
+          <!-- All 10 Quizzes with Answers Shown by Default -->
+          <section class="learn-quizzes-section" aria-label="Week ${week.id} quizzes and answers">
+            <div class="learn-section-title-row">
+              <div>
+                <h2 style="font-size: 1.35rem; margin-bottom: 4px;">All 10 Quizzes &amp; Solutions</h2>
+                <p style="font-size: 0.9375rem; color: var(--muted); margin-bottom: 0;">
+                  Showing verified answers and full explanations for Week ${week.id}. No clicking needed.
+                </p>
+              </div>
+              <span class="mono-label" style="white-space: nowrap;">10 / 10 SOLVED</span>
+            </div>
+
+            <div class="learn-questions-list">
+              ${week.questions.map(q => {
+                const correctLetter = letters[q.answer];
+                const correctText = q.options[q.answer];
+                const relatedConcept = week.concepts.find(c => c.covers && c.covers.includes(q.id));
+                const isTarget = (highlightQid === q.id);
+
+                return `
+                  <article class="learn-q-card ${isTarget ? 'highlight' : ''}" id="q-${q.id}" data-qid="${q.id}">
+                    <div class="learn-q-top-row">
+                      <span class="mono-label learn-q-num">QUESTION ${q.n} OF 10</span>
+                      ${relatedConcept ? `
+                        <button type="button" class="learn-q-topic" data-jump-to="concept-${relatedConcept.id}" title="Jump to concept notes">
+                          TOPIC: ${esc(relatedConcept.term)} ↗
+                        </button>
+                      ` : ''}
+                    </div>
+
+                    <h3 class="learn-q-stem">${esc(q.q)}</h3>
+
+                    <div class="learn-options-list">
+                      ${q.options.map((opt, oIdx) => {
+                        const isCorrect = (oIdx === q.answer);
+                        return `
+                          <div class="learn-opt-item ${isCorrect ? 'is-correct' : 'is-other'}">
+                            <span class="learn-opt-badge">${letters[oIdx]}</span>
+                            <span class="learn-opt-text">${esc(opt)}</span>
+                            ${isCorrect ? `
+                              <span class="learn-correct-pill">
+                                ${ICONS.check} Correct
+                              </span>
+                            ` : ''}
+                          </div>
+                        `;
+                      }).join("")}
+                    </div>
+
+                    <div class="learn-rationale-card">
+                      <div class="learn-rationale-header">
+                        ${ICONS.check}
+                        <span>CORRECT ANSWER: ${correctLetter} — ${esc(correctText)}</span>
+                      </div>
+                      <p class="learn-rationale-text">${esc(q.why)}</p>
+                      ${relatedConcept && relatedConcept.trap ? `
+                        <div class="learn-trap-note">
+                          <span class="trap-label">WATCH OUT</span>
+                          <div>${esc(relatedConcept.trap)}</div>
+                        </div>
+                      ` : ''}
+                    </div>
+                  </article>
+                `;
+              }).join("")}
+            </div>
+          </section>
+
+          <!-- End of Week Completion & Next Page Transition Card -->
+          <div class="learn-page-done-card">
+            <div class="page-done-header">
+              <span class="status-dot filled" style="width: 14px; height: 14px;">${ICONS.check}</span>
+              <span class="mono-label" style="color: var(--correct); font-weight: 600; margin: 0;">WEEK ${week.id} COMPLETED</span>
+            </div>
+            <h3 class="page-done-title">Finished all 10 quizzes for Week ${week.id}!</h3>
+            <p class="page-done-sub">Proceed to the next page for Week ${nextWeek || 1} or practice with self-testing.</p>
+            <div class="page-done-actions">
+              ${nextWeek ? `
+                <a href="#/learn/${nextWeek}" class="btn btn-primary page-done-next-btn">
+                  Next Page: Week ${nextWeek} ${ICONS.arrowRight}
+                </a>
+              ` : `
+                <a href="#/learn/1" class="btn btn-primary page-done-next-btn">
+                  All 12 Weeks Done! Back to Week 1 ↺
+                </a>
+              `}
+              <a href="#/quiz/${week.id}" class="btn btn-secondary">
+                Test in Quiz Mode
+              </a>
+            </div>
+          </div>
+
+          <!-- Key Concepts & Study Notes Accordion -->
+          <section class="concepts-accordion" id="week-concepts" style="margin-top: 32px; margin-bottom: 24px;">
+            <details>
+              <summary class="concepts-accordion-summary">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <h2 style="font-size: 1.25rem; margin: 0;">Key concepts &amp; study notes</h2>
+                  <span class="mono-label" style="margin: 0;">${week.concepts.length} CARDS</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span class="mono-label" style="margin: 0;">Toggle Notes</span>
+                  <span class="concepts-accordion-arrow">${ICONS.chevronDown}</span>
+                </div>
+              </summary>
+
+              <div class="concepts-accordion-body">
+                <div class="concepts-grid">
+                  ${week.concepts.map(c => {
+                    const coversList = c.covers || [];
+                    const coversAttr = coversList.join(" ");
+                    const isTarget = highlightQid && coversList.includes(highlightQid);
+
+                    return `
+                      <article class="concept-card ${isTarget ? 'highlight' : ''}" id="concept-${c.id}" data-covers="${coversAttr}">
+                        <h3 class="concept-term">${esc(c.term)}</h3>
+                        <p class="concept-body">${esc(c.body)}</p>
+                        ${c.trap ? `
+                          <div class="trap-box">
+                            <span class="trap-label">WATCH OUT</span>
+                            <div>${esc(c.trap)}</div>
+                          </div>
+                        ` : ''}
+                        <div class="card-footer">
+                          ${coversList.map(qid => {
+                            const qNum = qid.split('q')[1];
+                            return `<button type="button" class="q-tag" data-jump-to="q-${qid}" title="Jump to Question ${qNum}">Q${qNum}</button>`;
+                          }).join("")}
+                        </div>
+                      </article>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+            </details>
+          </section>
+
+          <!-- Bottom Week Navigation Links -->
+          <nav class="learn-nav-bar" aria-label="Week navigation links">
+            <div>
+              ${prevWeek ? `
+                <a href="#/learn/${prevWeek}" class="btn btn-secondary">
+                  ${ICONS.arrowLeft} Prev: Week ${prevWeek}
+                </a>
+              ` : `
+                <span class="btn btn-secondary" style="opacity: 0.4; pointer-events: none;">
+                  ${ICONS.arrowLeft} First Week
+                </span>
+              `}
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center;">
+              <span class="mono-label" style="margin: 0;">WEEK ${week.id} OF 12</span>
+              <a href="#/quiz/${week.id}" class="btn btn-secondary">Take Week ${week.id} Quiz</a>
+            </div>
+            <div>
+              ${nextWeek ? `
+                <a href="#/learn/${nextWeek}" class="btn btn-primary">
+                  Next: Week ${nextWeek} ${ICONS.arrowRight}
+                </a>
+              ` : `
+                <a href="#/learn/1" class="btn btn-secondary">
+                  Completed! Back to W1 ↺
+                </a>
+              `}
+            </div>
+          </nav>
+        </div>
+
+        <!-- Floating Back To Top Button -->
+        <button id="btn-back-to-top" class="back-to-top-fab" aria-label="Back to top">
+          ${ICONS.arrowUp}
+        </button>
+
+        <nav class="mobile-bottom-bar" aria-label="Mobile week quick navigation">
+          ${prevWeek ? `
+            <a href="#/learn/${prevWeek}" class="mobile-bar-btn" aria-label="Previous week, Week ${prevWeek}">
+              ${ICONS.arrowLeft} <span>W${prevWeek}</span>
+            </a>
+          ` : `
+            <span class="mobile-bar-btn disabled" aria-disabled="true">
+              ${ICONS.arrowLeft} <span>W1</span>
+            </span>
+          `}
+
+          <div class="mobile-bar-indicator">
+            <span class="mobile-bar-week">Week ${week.id} / 12</span>
+            <span class="mobile-bar-sub">10 Quizzes Solved</span>
+          </div>
+
+          <a href="#/quiz/${week.id}" class="mobile-bar-btn mobile-bar-quiz" aria-label="Take Week ${week.id} quiz">
+            <span>Quiz</span> ${ICONS.arrowRight}
+          </a>
+
+          ${nextWeek ? `
+            <a href="#/learn/${nextWeek}" class="mobile-bar-btn" aria-label="Next week, Week ${nextWeek}">
+              <span>W${nextWeek}</span> ${ICONS.arrowRight}
+            </a>
+          ` : `
+            <a href="#/learn/1" class="mobile-bar-btn" aria-label="Back to Week 1">
+              <span>W1 ↺</span>
+            </a>
+          `}
+        </nav>
+      `;
+    }
+
+    function viewQuizStart(kind, weekId) {
+      const week = kind === "week" ? WEEKS.find(w => w.id === weekId) : null;
+      const weekPad = week ? String(week.id).padStart(2, '0') : "00";
+      const best = week ? store.best[week.id] : null;
+      const attempts = week ? (store.attempts[week.id] || 0) : 0;
+      const statsStr = attempts > 0 ? `Best: ${best}/10 · Attempts: ${attempts}` : "Not attempted yet";
+
+      const title = kind === "week" 
+        ? `Quiz: ${week.title}`
+        : (kind === "mixed" ? "Mixed Practice Quiz" : "Retry Missed Questions");
+
+      const label = kind === "week" ? `WEEK ${weekPad} / 12` : "TEST PRACTICE";
+      const desc = kind === "week" 
+        ? "10 multiple-choice questions from this week's assignments." 
+        : (kind === "mixed" 
+            ? "Random sample of questions drawn from all 12 course weeks."
+            : `Retry questions you previously answered incorrectly (${store.missed.length} available).`);
+
+      const currentMode = store.mode || "practice";
+      const missedCount = store.missed.length;
+
+      return `
+        <div class="container quiz-column">
+          <section class="card hero">
+            <div class="mono-label">${label}</div>
+            <h1>${esc(title)}</h1>
+            <p style="margin-bottom: 16px; color: var(--muted);">${esc(desc)}</p>
+            ${kind === "week" ? `<div class="mono-label" style="margin-bottom: 24px;">${statsStr}</div>` : ""}
+
+            <div style="margin-bottom: 24px;">
+              <div class="mono-label" style="margin-bottom: 8px;">SELECT QUIZ MODE</div>
+              <div class="start-modes">
+                <div class="mode-card ${currentMode === 'practice' ? 'selected' : ''}" data-set-mode="practice" role="radio" aria-checked="${currentMode === 'practice'}" tabindex="0">
+                  <input type="radio" name="quiz_mode" value="practice" class="mode-radio" ${currentMode === 'practice' ? 'checked' : ''} tabindex="-1">
+                  <div>
+                    <div class="mode-title">Practice Mode</div>
+                    <div class="mode-desc">Check each answer immediately and read the rationale.</div>
+                  </div>
+                </div>
+                <div class="mode-card ${currentMode === 'exam' ? 'selected' : ''}" data-set-mode="exam" role="radio" aria-checked="${currentMode === 'exam'}" tabindex="0">
+                  <input type="radio" name="quiz_mode" value="exam" class="mode-radio" ${currentMode === 'exam' ? 'checked' : ''} tabindex="-1">
+                  <div>
+                    <div class="mode-title">Exam Mode</div>
+                    <div class="mode-desc">Answers and full explanations revealed at the end.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <button id="btn-start-quiz" class="btn btn-primary" data-start-kind="${kind}" data-start-week="${weekId || 1}">
+                Start Quiz ${ICONS.arrowRight}
+              </button>
+              ${kind === "week" ? `<a href="#/learn/${week.id}" class="btn btn-ghost">Review notes</a>` : ""}
+            </div>
+          </section>
+
+          ${kind === "week" ? `
+            <div class="secondary-cards">
+              <section class="card">
+                <div class="mono-label">PRACTICE ACROSS TOPICS</div>
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 8px;">Mixed practice</h3>
+                <p style="font-size: 0.9375rem; color: var(--muted); margin-bottom: 16px;">Test your knowledge across random questions from all 12 weeks.</p>
+                <div style="margin-bottom: 16px;">
+                  <span class="mono-label" style="display: block; margin-bottom: 6px;">QUESTION COUNT</span>
+                  <div class="seg-control" id="mixed-count-control">
+                    ${[10, 20, 40].map(cnt => `
+                      <button class="seg-btn ${store.mixedCount === cnt ? 'active' : ''}" data-set-count="${cnt}">
+                        ${cnt} Qs
+                      </button>
+                    `).join("")}
+                  </div>
+                </div>
+                <a href="#/quiz/mixed" class="btn btn-secondary" style="width: 100%;">
+                  Launch Mixed Practice
+                </a>
+              </section>
+
+              <section class="card">
+                <div class="mono-label">FOCUSED REVIEW</div>
+                <h3 style="font-family: var(--font-display); font-size: 1.15rem; margin-bottom: 8px;">Retry missed questions</h3>
+                <p style="font-size: 0.9375rem; color: var(--muted); margin-bottom: 16px;">
+                  ${missedCount === 0 ? "You currently have no recorded missed questions." : `${missedCount} question${missedCount > 1 ? 's' : ''} need review.`}
+                </p>
+                <a href="#/quiz/missed" class="btn btn-secondary ${missedCount === 0 ? 'disabled' : ''}" style="width: 100%;" ${missedCount === 0 ? 'tabindex="-1"' : ''}>
+                  Start Missed Quiz (${missedCount})
+                </a>
+              </section>
+            </div>
+          ` : ""}
+        </div>
+      `;
+    }
+
+    function viewQuestion(quiz) {
+      const qid = quiz.ids[quiz.idx];
+      const item = getQuestionById(qid);
+      if (!item) return `<div class="container"><p>Question not found.</p></div>`;
+
+      const { q, week } = item;
+      const total = quiz.ids.length;
+      const currentNum = quiz.idx + 1;
+      const selectedIdx = quiz.answers[qid];
+      const isChecked = Boolean(quiz.checked[qid]);
+      const answeredCount = Object.keys(quiz.answers).length;
+      const progressPct = (answeredCount / total) * 100;
+
+      let correctSoFar = 0;
+      quiz.ids.forEach(id => {
+        const it = getQuestionById(id);
+        if (it && quiz.checked[id] && quiz.answers[id] === it.q.answer) {
+          correctSoFar++;
+        }
+      });
+
+      const isMixedOrMissed = quiz.kind !== "week";
+
+      return `
+        <div class="container quiz-column quiz-container">
+          <div class="quiz-progress-wrap">
+            <div class="quiz-meta-row">
+              <span class="mono-label">Q ${currentNum} / ${total}</span>
+              ${quiz.mode === "practice" ? `<span class="mono-label">${correctSoFar} correct</span>` : ""}
+            </div>
+            <div class="progress-track" role="progressbar" aria-valuenow="${answeredCount}" aria-valuemin="0" aria-valuemax="${total}">
+              <div class="progress-fill" style="width: ${progressPct}%;"></div>
+            </div>
+          </div>
+
+          ${isMixedOrMissed ? `
+            <div class="mono-label" style="color: var(--primary);">SOURCE: WEEK ${week.id} · Q${q.n}</div>
+          ` : ""}
+
+          <h2 class="question-stem" id="q-stem" tabindex="-1">${esc(q.q)}</h2>
+
+          <div class="options-group" role="radiogroup" aria-labelledby="q-stem">
+            ${q.options.map((optText, oIdx) => {
+              const letter = ["A", "B", "C", "D"][oIdx];
+              let optClass = "opt-label";
+              let iconHtml = "";
+
+              if (selectedIdx === oIdx) optClass += " selected";
+              if (isChecked) {
+                optClass += " locked";
+                if (oIdx === q.answer) {
+                  optClass += " correct";
+                  iconHtml = `<span class="opt-feedback-icon" style="color: var(--correct);">${ICONS.check}<span class="sr-only">Correct</span></span>`;
+                } else if (selectedIdx === oIdx) {
+                  optClass += " wrong";
+                  iconHtml = `<span class="opt-feedback-icon" style="color: var(--wrong);">${ICONS.cross}<span class="sr-only">Your answer</span></span>`;
+                } else {
+                  optClass += " dimmed";
+                }
+              }
+
+              return `
+                <label class="${optClass}" data-opt-idx="${oIdx}">
+                  <input type="radio" name="opt" value="${oIdx}" class="sr-only" ${selectedIdx === oIdx ? 'checked' : ''} ${isChecked ? 'disabled' : ''}>
+                  <span class="opt-badge">${letter}</span>
+                  <span class="opt-text">${esc(optText)}</span>
+                  ${iconHtml}
+                </label>
+              `;
+            }).join("")}
+          </div>
+
+          ${isChecked && quiz.mode === "practice" ? `
+            <div class="explanation-panel ${selectedIdx === q.answer ? 'is-correct' : 'is-wrong'}">
+              <div class="exp-status" style="color: ${selectedIdx === q.answer ? 'var(--correct)' : 'var(--wrong)'};">
+                ${selectedIdx === q.answer ? 'Correct' : 'Not quite'}
+              </div>
+              <div class="exp-answer">
+                Answer: ${["A","B","C","D"][q.answer]} — ${esc(q.options[q.answer])}
+              </div>
+              <p class="exp-why">${esc(q.why)}</p>
+              <div>
+                <a href="#/learn/${week.id}/${q.id}" class="btn-ghost" style="font-size: 0.875rem; text-decoration: underline;">
+                  Open in notes (Week ${week.id})
+                </a>
+              </div>
+            </div>
+          ` : ""}
+
+          ${quiz.submitPrompt ? `
+            <div style="background: var(--surface-2); border: 1px solid var(--wrong); padding: 16px; border-radius: 10px; margin-bottom: 20px;">
+              <p style="font-weight: 500; margin-bottom: 12px; color: var(--wrong);">
+                ${total - answeredCount} unanswered question${(total - answeredCount) > 1 ? 's' : ''} — submit anyway?
+              </p>
+              <div style="display: flex; gap: 8px;">
+                <button id="btn-cancel-submit" class="btn btn-secondary">Go back</button>
+                <button id="btn-confirm-submit" class="btn btn-primary">Submit</button>
+              </div>
+            </div>
+          ` : ""}
+
+          <div class="quiz-action-bar">
+            ${quiz.mode === "exam" && quiz.idx > 0 ? `
+              <button id="btn-prev-question" class="btn btn-ghost" style="margin-right: auto;">
+                ${ICONS.arrowLeft} Back
+              </button>
+            ` : ""}
+
+            ${quiz.mode === "practice" ? (
+              !isChecked ? `
+                <button id="btn-check-answer" class="btn btn-primary" ${selectedIdx === undefined ? 'disabled' : ''}>
+                  Check answer
+                </button>
+              ` : `
+                <button id="btn-next-question" class="btn btn-primary">
+                  ${currentNum === total ? 'See results' : 'Next question'} ${ICONS.arrowRight}
+                </button>
+              `
+            ) : (
+              currentNum === total ? `
+                <button id="btn-submit-exam" class="btn btn-primary">
+                  Submit
+                </button>
+              ` : `
+                <button id="btn-next-question" class="btn btn-primary" ${selectedIdx === undefined ? 'disabled' : ''}>
+                  Next ${ICONS.arrowRight}
+                </button>
+              `
+            )}
+          </div>
+        </div>
+      `;
+    }
+
+    function viewResults(quiz) {
+      const total = quiz.ids.length;
+      let score = 0;
+      const missedIds = [];
+      const correctIds = [];
+
+      quiz.ids.forEach(qid => {
+        const item = getQuestionById(qid);
+        if (item) {
+          if (quiz.answers[qid] === item.q.answer) {
+            score++;
+            correctIds.push(qid);
+          } else {
+            missedIds.push(qid);
+          }
+        }
+      });
+
+      const pct = Math.round((score / total) * 100);
+      let verdict = "Revisit the notes first.";
+      if (pct >= 90) verdict = "Excellent. You're set.";
+      else if (pct >= 70) verdict = "Good. Review the misses.";
+      else if (pct >= 50) verdict = "Fair. Reread the notes.";
+
+      const circumference = 326.73;
+      const strokeDash = `${(pct / 100) * circumference} ${circumference}`;
+
+      const nextWeekId = quiz.kind === "week" && quiz.weekId < 12 ? quiz.weekId + 1 : null;
+
+      return `
+        <div class="container quiz-column">
+          <section class="card hero results-hero">
+            <div class="mono-label">QUIZ RESULTS</div>
+            <div class="score-ring-wrap">
+              <svg class="score-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--surface-2)" stroke-width="10" />
+                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--primary)" stroke-width="10"
+                        stroke-linecap="round" stroke-dasharray="${strokeDash}" />
+              </svg>
+              <div class="score-ring-text">
+                <span class="score-num">${score}/${total}</span>
+                <span class="score-pct">${pct}%</span>
+              </div>
+            </div>
+            <div class="verdict-line">${esc(verdict)}</div>
+            <div class="results-actions">
+              <button id="btn-retry-quiz" class="btn btn-primary">Retry quiz</button>
+              ${quiz.kind === "week" ? `
+                <a href="#/learn/${quiz.weekId}" class="btn btn-secondary">Review notes</a>
+                ${nextWeekId ? `<a href="#/learn/${nextWeekId}" class="btn btn-ghost">Next week (W${nextWeekId})</a>` : ''}
+              ` : `
+                <a href="#/quiz/${quiz.kind}" class="btn btn-secondary">New ${quiz.kind} set</a>
+              `}
+            </div>
+          </section>
+
+          <section class="review-section">
+            <h2 style="font-size: 1.25rem; margin-bottom: 16px;">Question review</h2>
+
+            ${missedIds.length > 0 ? `
+              <div style="margin-bottom: 24px;">
+                <div class="mono-label" style="color: var(--wrong); margin-bottom: 8px;">
+                  MISSED QUESTIONS (${missedIds.length})
+                </div>
+                ${missedIds.map(qid => renderReviewItem(qid, quiz.answers[qid], true)).join("")}
+              </div>
+            ` : ""}
+
+            ${correctIds.length > 0 ? `
+              <div>
+                <div class="mono-label" style="color: var(--correct); margin-bottom: 8px;">
+                  CORRECT QUESTIONS (${correctIds.length})
+                </div>
+                ${correctIds.map(qid => renderReviewItem(qid, quiz.answers[qid], false)).join("")}
+              </div>
+            ` : ""}
+          </section>
+        </div>
+      `;
+    }
+
+    function renderReviewItem(qid, userAnsIdx, isMissed) {
+      const item = getQuestionById(qid);
+      if (!item) return "";
+      const { q, week } = item;
+      const letters = ["A", "B", "C", "D"];
+
+      return `
+        <details class="review-details" ${isMissed ? 'open' : ''}>
+          <summary class="review-summary">
+            <span style="color: ${isMissed ? 'var(--wrong)' : 'var(--correct)'}; display: inline-flex;">
+              ${isMissed ? ICONS.cross : ICONS.check}
+            </span>
+            <span class="mono-label" style="margin: 0;">W${week.id}·Q${q.n}</span>
+            <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              ${esc(q.q)}
+            </span>
+          </summary>
+          <div class="review-content">
+            <div class="review-meta">QUESTION TEXT</div>
+            <p style="font-weight: 500; margin-bottom: 12px;">${esc(q.q)}</p>
+
+            ${isMissed ? `
+              <div style="margin-bottom: 8px; color: var(--wrong);">
+                <span class="mono-label" style="color: inherit;">YOUR ANSWER:</span>
+                ${userAnsIdx !== undefined ? `${letters[userAnsIdx]} — ${esc(q.options[userAnsIdx])}` : 'Unanswered'}
+              </div>
+            ` : ''}
+
+            <div style="margin-bottom: 12px; color: var(--correct);">
+              <span class="mono-label" style="color: inherit;">CORRECT ANSWER:</span>
+              ${letters[q.answer]} — ${esc(q.options[q.answer])}
+            </div>
+
+            <p style="margin-bottom: 12px; color: var(--ink);">${esc(q.why)}</p>
+
+            <a href="#/learn/${week.id}/${q.id}" class="btn-ghost" style="font-size: 0.8125rem; text-decoration: underline;">
+              Open in notes (Week ${week.id})
+            </a>
+          </div>
+        </details>
+      `;
+    }
+
+    /* 6. ROUTER & CONTROLLER */
+    function render() {
+      const hash = window.location.hash || store.lastRoute || "#/learn/1";
+      state.route = hash;
+      const parts = hash.replace(/^#\/?/, "").split("/");
+      const view = parts[0] || "learn";
+      const param1 = parts[1] || "1";
+      const param2 = parts[2] || null;
+
+      const app = document.getElementById("app");
+      const navLearn = document.getElementById("nav-learn");
+      const navQuiz = document.getElementById("nav-quiz");
+
+      // Update segmented nav links & theme button icon
+      updateThemeIcon();
+
+      let activeWeekId = 1;
+
+      if (view === "learn") {
+        activeWeekId = parseInt(param1, 10);
+        if (isNaN(activeWeekId) || activeWeekId < 1 || activeWeekId > 12) activeWeekId = 1;
+
+        if (navLearn) navLearn.classList.add("active");
+        if (navQuiz) navQuiz.classList.remove("active");
+        if (navLearn) navLearn.setAttribute("href", `#/learn/${activeWeekId}`);
+        if (navQuiz) navQuiz.setAttribute("href", `#/quiz/${activeWeekId}`);
+
+        renderWeekChips(activeWeekId, "learn");
+
+        const week = WEEKS.find(w => w.id === activeWeekId) || WEEKS[0];
+        document.title = `Learn · Week ${week.id}: ${week.title} — Conservation Geography`;
+        app.innerHTML = viewLearn(week, param2);
+        announce(`Week ${week.id} study notes loaded`);
+
+        // If highlight question or concept param present
+        if (param2) {
+          setTimeout(() => {
+            const qEl = document.getElementById(`q-${param2}`);
+            if (qEl) {
+              qEl.scrollIntoView({ behavior: "smooth", block: "start" });
+              qEl.classList.add("highlight");
+              setTimeout(() => qEl.classList.remove("highlight"), 1800);
+            } else {
+              const el = document.getElementById(`concept-${param2}`) || document.querySelector(`[data-covers~="${param2}"]`);
+              if (el) {
+                const conceptsSec = document.getElementById("week-concepts");
+                if (conceptsSec) {
+                  const details = conceptsSec.querySelector("details");
+                  if (details && !details.open) details.open = true;
+                }
+                el.scrollIntoView({ behavior: "smooth", block: "start" });
+                el.classList.add("highlight");
+                setTimeout(() => el.classList.remove("highlight"), 1800);
+              }
+            }
+          }, 60);
+        } else {
+          window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        }
+
+        store.lastRoute = `#/learn/${activeWeekId}`;
+        saveStore();
+        app.focus();
+
+      } else if (view === "quiz") {
+        if (navLearn) navLearn.classList.remove("active");
+        if (navQuiz) navQuiz.classList.add("active");
+
+        if (param1 === "mixed" || param1 === "missed") {
+          activeWeekId = 1;
+          renderWeekChips(null, "quiz");
+
+          if (!state.quiz || state.quiz.kind !== param1) {
+            document.title = `${param1 === 'mixed' ? 'Mixed Practice' : 'Retry Missed'} · Quiz — Conservation Geography`;
+            app.innerHTML = viewQuizStart(param1);
+            announce(`${param1} quiz start screen`);
+          } else if (state.quiz.finished) {
+            document.title = `Quiz Results — Conservation Geography`;
+            app.innerHTML = viewResults(state.quiz);
+            announce(`Quiz finished: results`);
+          } else {
+            document.title = `Question ${state.quiz.idx + 1} of ${state.quiz.ids.length} — Conservation Geography`;
+            app.innerHTML = viewQuestion(state.quiz);
+            announce(`Question ${state.quiz.idx + 1} of ${state.quiz.ids.length}`);
+            const stem = document.getElementById("q-stem");
+            if (stem) stem.focus();
+          }
+        } else {
+          activeWeekId = parseInt(param1, 10);
+          if (isNaN(activeWeekId) || activeWeekId < 1 || activeWeekId > 12) activeWeekId = 1;
+
+          if (navLearn) navLearn.setAttribute("href", `#/learn/${activeWeekId}`);
+          if (navQuiz) navQuiz.setAttribute("href", `#/quiz/${activeWeekId}`);
+
+          renderWeekChips(activeWeekId, "quiz");
+
+          if (!state.quiz || state.quiz.weekId !== activeWeekId) {
+            const week = WEEKS.find(w => w.id === activeWeekId) || WEEKS[0];
+            document.title = `Quiz · Week ${week.id}: ${week.title} — Conservation Geography`;
+            app.innerHTML = viewQuizStart("week", activeWeekId);
+            announce(`Week ${week.id} quiz start screen`);
+          } else if (state.quiz.finished) {
+            document.title = `Quiz Results — Conservation Geography`;
+            app.innerHTML = viewResults(state.quiz);
+            announce(`Quiz finished: results`);
+          } else {
+            document.title = `Question ${state.quiz.idx + 1} of ${state.quiz.ids.length} — Conservation Geography`;
+            app.innerHTML = viewQuestion(state.quiz);
+            announce(`Question ${state.quiz.idx + 1} of ${state.quiz.ids.length}`);
+            const stem = document.getElementById("q-stem");
+            if (stem) stem.focus();
+          }
+        }
+        window.scrollTo(0, 0);
+        app.focus();
+      }
+    }
+
+    /* 7. QUIZ ENGINE & STATE MANAGEMENT */
+    function startQuiz(kind, weekId) {
+      let qids = [];
+      if (kind === "week") {
+        const week = WEEKS.find(w => w.id === weekId);
+        if (!week) return;
+        qids = week.questions.map(q => q.id);
+      } else if (kind === "mixed") {
+        const allQuestions = [];
+        WEEKS.forEach(w => w.questions.forEach(q => allQuestions.push(q.id)));
+        const count = Math.min(store.mixedCount || 20, allQuestions.length);
+        qids = shuffle(allQuestions).slice(0, count);
+      } else if (kind === "missed") {
+        if (!store.missed || store.missed.length === 0) return;
+        qids = store.missed.slice();
+      }
+
+      state.quiz = {
+        kind,
+        weekId: kind === "week" ? weekId : null,
+        mode: store.mode || "practice",
+        ids: qids,
+        idx: 0,
+        answers: {},
+        checked: {},
+        finished: false,
+        submitPrompt: false
+      };
+
+      render();
+    }
+
+    function selectOption(optIdx) {
+      if (!state.quiz || state.quiz.finished) return;
+      const qid = state.quiz.ids[state.quiz.idx];
+      if (state.quiz.checked[qid]) return; // locked
+
+      state.quiz.answers[qid] = optIdx;
+
+      // In-place DOM patching to preserve focus & prevent complete re-render
+      const optLabels = document.querySelectorAll(".opt-label");
+      optLabels.forEach(lbl => {
+        const idx = parseInt(lbl.getAttribute("data-opt-idx"), 10);
+        const radio = lbl.querySelector('input[type="radio"]');
+        if (idx === optIdx) {
+          lbl.classList.add("selected");
+          if (radio) radio.checked = true;
+        } else {
+          lbl.classList.remove("selected");
+          if (radio) radio.checked = false;
+        }
+      });
+
+      const btnCheck = document.getElementById("btn-check-answer");
+      if (btnCheck) btnCheck.removeAttribute("disabled");
+      const btnNext = document.getElementById("btn-next-question");
+      if (btnNext) btnNext.removeAttribute("disabled");
+    }
+
+    function checkAnswer() {
+      if (!state.quiz) return;
+      const qid = state.quiz.ids[state.quiz.idx];
+      if (state.quiz.answers[qid] === undefined) return;
+
+      state.quiz.checked[qid] = true;
+      render();
+    }
+
+    function nextQuestion() {
+      if (!state.quiz) return;
+      if (state.quiz.idx + 1 < state.quiz.ids.length) {
+        state.quiz.idx++;
+        render();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function prevQuestion() {
+      if (!state.quiz || state.quiz.idx === 0) return;
+      state.quiz.idx--;
+      state.quiz.submitPrompt = false;
+      render();
+    }
+
+    function promptExamSubmit() {
+      if (!state.quiz) return;
+      const answered = Object.keys(state.quiz.answers).length;
+      if (answered < state.quiz.ids.length) {
+        state.quiz.submitPrompt = true;
+        render();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      if (!state.quiz) return;
+      state.quiz.finished = true;
+      state.quiz.submitPrompt = false;
+
+      let score = 0;
+      state.quiz.ids.forEach(qid => {
+        const item = getQuestionById(qid);
+        if (item) {
+          const isCorrect = (state.quiz.answers[qid] === item.q.answer);
+          if (isCorrect) {
+            score++;
+            // Remove from missed
+            store.missed = store.missed.filter(id => id !== qid);
+          } else {
+            // Add to missed if not already present
+            if (!store.missed.includes(qid)) {
+              store.missed.push(qid);
+            }
+          }
+        }
+      });
+
+      if (state.quiz.kind === "week") {
+        const wId = state.quiz.weekId;
+        store.attempts[wId] = (store.attempts[wId] || 0) + 1;
+        store.best[wId] = Math.max(store.best[wId] || 0, score);
+      }
+
+      saveStore();
+      render();
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme") || "light";
+      const next = current === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", next);
+      store.theme = next;
+      saveStore();
+      updateThemeIcon();
+
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", next === "dark" ? "#111A14" : "#F3EEE1");
+    }
+
+    function updateThemeIcon() {
+      const current = document.documentElement.getAttribute("data-theme") || "light";
+      const wrap = document.getElementById("theme-icon-wrap");
+      if (wrap) {
+        wrap.innerHTML = current === "dark" ? ICONS.sun : ICONS.moon;
+      }
+    }
+
+    /* 8. EVENT LISTENERS & DELEGATION */
+    document.addEventListener("click", function(e) {
+      // Theme toggle
+      const themeBtn = e.target.closest("#theme-btn");
+      if (themeBtn) {
+        toggleTheme();
+        return;
+      }
+
+      // Back to top FAB
+      if (e.target.closest("#btn-back-to-top")) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+
+      // Jump to question, concept, or section
+      const jumpEl = e.target.closest("[data-jump-to]");
+      if (jumpEl) {
+        e.preventDefault();
+        const targetId = jumpEl.getAttribute("data-jump-to");
+        if (targetId === "week-concepts" || targetId.startsWith("concept-")) {
+          const conceptsSec = document.getElementById("week-concepts");
+          if (conceptsSec) {
+            const details = conceptsSec.querySelector("details");
+            if (details && !details.open) details.open = true;
+          }
+        }
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          el.classList.add("highlight");
+          setTimeout(() => el.classList.remove("highlight"), 1800);
+        }
+        return;
+      }
+
+      // Quiz mode radio cards on start screen
+      const modeCard = e.target.closest("[data-set-mode]");
+      if (modeCard) {
+        const mode = modeCard.getAttribute("data-set-mode");
+        store.mode = mode;
+        saveStore();
+        render();
+        return;
+      }
+
+      // Mixed count buttons
+      const countBtn = e.target.closest("[data-set-count]");
+      if (countBtn) {
+        const cnt = parseInt(countBtn.getAttribute("data-set-count"), 10);
+        store.mixedCount = cnt;
+        saveStore();
+        render();
+        return;
+      }
+
+      // Start quiz button
+      const startBtn = e.target.closest("#btn-start-quiz");
+      if (startBtn) {
+        const kind = startBtn.getAttribute("data-start-kind");
+        const week = parseInt(startBtn.getAttribute("data-start-week"), 10);
+        startQuiz(kind, week);
+        return;
+      }
+
+      // Option label clicked
+      const optLbl = e.target.closest(".opt-label");
+      if (optLbl && !optLbl.classList.contains("locked")) {
+        const oIdx = parseInt(optLbl.getAttribute("data-opt-idx"), 10);
+        selectOption(oIdx);
+        return;
+      }
+
+      // Quiz actions
+      if (e.target.closest("#btn-check-answer")) {
+        checkAnswer();
+        return;
+      }
+      if (e.target.closest("#btn-next-question")) {
+        nextQuestion();
+        return;
+      }
+      if (e.target.closest("#btn-prev-question")) {
+        prevQuestion();
+        return;
+      }
+      if (e.target.closest("#btn-submit-exam")) {
+        promptExamSubmit();
+        return;
+      }
+      if (e.target.closest("#btn-confirm-submit")) {
+        finishQuiz();
+        return;
+      }
+      if (e.target.closest("#btn-cancel-submit")) {
+        if (state.quiz) {
+          state.quiz.submitPrompt = false;
+          render();
+        }
+        return;
+      }
+      if (e.target.closest("#btn-retry-quiz")) {
+        if (state.quiz) {
+          startQuiz(state.quiz.kind, state.quiz.weekId);
+        }
+        return;
+      }
+    });
+
+    // Back to top button scroll listener
+    window.addEventListener("scroll", function() {
+      const fab = document.getElementById("btn-back-to-top");
+      if (fab) {
+        if (window.scrollY > 350) {
+          fab.classList.add("visible");
+        } else {
+          fab.classList.remove("visible");
+        }
+      }
+    }, { passive: true });
+
+    // Touch Swipe Navigation for Mobile Week-to-Week Paging
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+
+    document.addEventListener("touchstart", function(e) {
+      if (e.touches.length !== 1) return;
+      if (e.target.closest(".week-scroll, .learn-jump-scroll, .seg-control")) return;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    document.addEventListener("touchend", function(e) {
+      if (e.changedTouches.length !== 1 || !touchStartTime) return;
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+      const deltaY = e.changedTouches[0].clientY - touchStartY;
+      const elapsed = Date.now() - touchStartTime;
+
+      if (elapsed < 600 && Math.abs(deltaX) > 60 && Math.abs(deltaY) < 60) {
+        const hash = window.location.hash || store.lastRoute || "#/learn/1";
+        const parts = hash.replace(/^#\/?/, "").split("/");
+        const view = parts[0] || "learn";
+        const weekId = parseInt(parts[1] || "1", 10);
+
+        if (view === "learn" && !isNaN(weekId)) {
+          if (deltaX < 0 && weekId < 12) {
+            window.location.hash = `#/learn/${weekId + 1}`;
+          } else if (deltaX > 0 && weekId > 1) {
+            window.location.hash = `#/learn/${weekId - 1}`;
+          }
+        }
+      }
+      touchStartTime = 0;
+    }, { passive: true });
+
+    // Keyboard Shortcuts
+    document.addEventListener("keydown", function(e) {
+      if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
+
+      // Learn mode week navigation
+      if (!state.quiz && window.location.hash.includes("/learn/")) {
+        const parts = (window.location.hash || "").replace(/^#\/?/, "").split("/");
+        const wId = parseInt(parts[1] || "1", 10);
+        if (e.key === "ArrowRight" && wId < 12) {
+          e.preventDefault();
+          window.location.hash = `#/learn/${wId + 1}`;
+          return;
+        }
+        if (e.key === "ArrowLeft" && wId > 1) {
+          e.preventDefault();
+          window.location.hash = `#/learn/${wId - 1}`;
+          return;
+        }
+      }
+
+      if (!state.quiz || state.quiz.finished) return;
+
+      const qid = state.quiz.ids[state.quiz.idx];
+      const isChecked = Boolean(state.quiz.checked[qid]);
+
+      // A-D or 1-4 option selection
+      const keyMap = {
+        'a': 0, 'A': 0, '1': 0,
+        'b': 1, 'B': 1, '2': 1,
+        'c': 2, 'C': 2, '3': 2,
+        'd': 3, 'D': 3, '4': 3
+      };
+
+      if (!isChecked && keyMap[e.key] !== undefined) {
+        e.preventDefault();
+        selectOption(keyMap[e.key]);
+        return;
+      }
+
+      // Enter key for primary progression
+      if (e.key === "Enter") {
+        if (state.quiz.submitPrompt) {
+          e.preventDefault();
+          finishQuiz();
+          return;
+        }
+        if (state.quiz.mode === "practice") {
+          if (!isChecked) {
+            if (state.quiz.answers[qid] !== undefined) {
+              e.preventDefault();
+              checkAnswer();
+            }
+          } else {
+            e.preventDefault();
+            nextQuestion();
+          }
+        } else {
+          // Exam mode
+          if (state.quiz.idx + 1 === state.quiz.ids.length) {
+            e.preventDefault();
+            promptExamSubmit();
+          } else if (state.quiz.answers[qid] !== undefined) {
+            e.preventDefault();
+            nextQuestion();
+          }
+        }
+        return;
+      }
+
+      // ArrowRight for next question when allowed in quiz
+      if (e.key === "ArrowRight") {
+        if (state.quiz.mode === "practice" && isChecked) {
+          e.preventDefault();
+          nextQuestion();
+        } else if (state.quiz.mode === "exam" && state.quiz.idx + 1 < state.quiz.ids.length && state.quiz.answers[qid] !== undefined) {
+          e.preventDefault();
+          nextQuestion();
+        }
+        return;
+      }
+
+      // ArrowLeft for back in exam mode
+      if (e.key === "ArrowLeft" && state.quiz.mode === "exam" && state.quiz.idx > 0) {
+        e.preventDefault();
+        prevQuestion();
+        return;
+      }
+    });
+
+    // Hash navigation listener
+    window.addEventListener("hashchange", function() {
+      // Changing route during quiz abandons it
+      if (state.quiz && !state.quiz.finished) {
+        state.quiz = null;
+      }
+      render();
+    });
+
+    /* 9. BOOTSTRAP */
+    function init() {
+      loadStore();
+      if (!validateData()) return;
+
+      if (!window.location.hash) {
+        window.location.hash = store.lastRoute || "#/learn/1";
+      } else {
+        render();
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
