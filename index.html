@@ -4,75 +4,293 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Conservation Geography — Revision & Self-Testing</title>
-  <meta name="theme-color" content="#F3EEE1">
+  <meta name="theme-color" content="#FAFAFA">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=optional" rel="stylesheet">
   <script>
     (function(){
       try {
         var raw = localStorage.getItem("cg2026.v1");
-        var savedTheme = raw ? JSON.parse(raw).theme : null;
-        var theme = savedTheme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        var saved = raw ? JSON.parse(raw) : null;
+        var theme = (saved && saved.theme) || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
         document.documentElement.setAttribute("data-theme", theme);
+        var pack = (saved && saved.pack) || "mono";
+        if (pack !== "mono") document.documentElement.setAttribute("data-pack", pack);
+        var motion = (saved && saved.motion) || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "reduced" : "default");
+        if (motion === "reduced") document.documentElement.setAttribute("data-motion", "reduced");
+        var isDark = theme === "dark";
+        var metaColors = {
+          mono: isDark ? "#09090B" : "#FAFAFA",
+          slate: isDark ? "#0B0F17" : "#F8FAFC",
+          sage: isDark ? "#0B110D" : "#F7F8F7",
+          moss: isDark ? "#0B110D" : "#F7F8F7",
+          graphite: isDark ? "#0C0C0C" : "#F5F5F5"
+        };
         var meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute("content", theme === "dark" ? "#111A14" : "#F3EEE1");
+        if (meta) meta.setAttribute("content", metaColors[pack] || (isDark ? "#09090B" : "#FAFAFA"));
       } catch(e) {}
     })();
   </script>
+  <script type="speculationrules">
+  {
+    "prerender": [
+      {
+        "where": { "href_matches": "/*" },
+        "eagerness": "moderate"
+      }
+    ]
+  }
+  </script>
   <style>
-    /* 1. TOKENS */
+    /* 1. TOKENS — Minimal Theme Specification (W3C DTCG v3) */
     :root {
       color-scheme: light dark;
-      --bg: #F3EEE1;
-      --surface: #FBF8F0;
-      --surface-2: #EAE3D0;
-      --ink: #1E2A22;
-      --muted: #56625A;
-      --line: #D6CDB5;
-      --primary: #2F5D45;
-      --on-primary: #FFFFFF;
-      --primary-tint: #DDE8DF;
-      --accent: #C0642B;
-      --accent-text: #8F4418;
-      --correct: #23703F;
+
+      /* 1.1 Canvas & Elevated Surfaces (Light: Gallery White) */
+      --bg-canvas: #FAFAFA;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #F4F4F5;
+      --bg-glass: rgba(250, 250, 250, 0.88);
+
+      /* Typography & Inks */
+      --text-primary: #09090B; /* 19.3:1 AAA */
+      --text-secondary: #71717A; /* 4.6:1 AA */
+      --text-muted: #A1A1AA;
+
+      /* Structural & Interactive Hairlines */
+      --border-subtle: #E4E4E7;
+      --border-strong: #A1A1AA;
+
+      /* Semantic Interactive — Modernist Charcoal Primary CTA */
+      --primary: #18181B;
+      --primary-hover: #27272A;
+      --on-primary: #FFFFFF; /* 16.5:1 AAA */
+      --primary-tint: #F4F4F5;
+
+      /* Semantic Validation — Botanical Forest (Verified Correct) */
+      --correct: #15803D; /* 5.0:1 AA */
       --on-correct: #FFFFFF;
-      --correct-tint: #DCEBDD;
-      --wrong: #A93222;
+      --correct-tint: #ECFDF5;
+
+      /* Semantic Validation — Surgical Carmine (Verified Wrong) */
+      --wrong: #B91C1C; /* 6.5:1 AA */
       --on-wrong: #FFFFFF;
-      --wrong-tint: #F3DDD6;
-      --focus: #1F4FD8;
+      --wrong-tint: #FEF2F2;
 
-      --font-display: "Fraunces", Georgia, "Times New Roman", serif;
-      --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-      --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-      
-      --shadow-card: 0 1px 0 rgba(0,0,0,.04), 0 10px 24px -14px rgba(30,42,34,.28);
+      /* Watch Out / Trap Note — Architectural Amber */
+      --warning: #B45309; /* 5.0:1 AA */
+      --warning-tint: #FFFBEB;
+      --accent: var(--warning);
+      --accent-text: var(--warning);
+
+      /* Accessibility Focus */
+      --focus-ring: #0284C7;
+      --focus: var(--focus-ring);
+
+      /* Compatibility aliases for markup */
+      --bg: var(--bg-canvas);
+      --surface: var(--bg-surface);
+      --surface-2: var(--bg-subtle);
+      --ink: var(--text-primary);
+      --muted: var(--text-secondary);
+      --line: var(--border-subtle);
+
+      /* 3. Typography & Optical Reading System (Minimalist Disciplined Sans) */
+      --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      --font-body: var(--font-sans);
+      --font-mono: "JetBrains Mono", "Geist Mono", "SF Mono", Menlo, Consolas, monospace;
+
+      /* Letter Spacing (Tracking) */
+      --tracking-tighter: -0.03em;
+      --tracking-tight: -0.015em;
+      --tracking-normal: 0em;
+      --tracking-wide: 0.025em;
+
+      /* OpenType features for distraction-free reading and stable quiz timers */
+      --font-features-reading: "cv02", "cv03", "cv04", "cv11", "kern";
+      --font-features-numeric: "tnum", "zero";
+
+      /* 4. Disciplined Spacing & Layout Architecture (4px / 8px Geometric Scale) */
+      --space-0-5: 0.125rem; /*  2px - Hairline offsets only */
+      --space-1:   0.25rem;  /*  4px - Tight inline icon gap */
+      --space-2:   0.5rem;   /*  8px - Chip padding, badge gap */
+      --space-3:   0.75rem;  /* 12px - Option stack vertical gap */
+      --space-4:   1rem;     /* 16px - Standard mobile padding & card inner gap */
+      --space-5:   1.25rem;  /* 20px - Desktop option padding */
+      --space-6:   1.5rem;   /* 24px - Question card internal padding */
+      --space-8:   2rem;     /* 32px - Section separation */
+      --space-10:  2.5rem;   /* 40px - Major module block rhythm */
+      --space-12:  3rem;     /* 48px - Page header / footer breathing room */
+
+      /* Layout & Ergonomic Column Tokens */
+      --container-max:     1080px;
+      --quiz-column-max:    680px; /* Minimal single-column focus zone for active testing */
+      --reading-measure:     65ch; /* Optimal cognitive eye-span */
+      --header-height:       52px;
+      --subnav-height:       42px;
+      --scroll-offset:      110px;
+
+      /* Border Radius Hierarchy (Architectural Precision Minimal Radii) */
+      --radius-xs:    2px;   /* Micro option key badges, tags */
+      --radius-sm:    4px;   /* Option rows (.opt-item), trap callouts, buttons */
+      --radius-md:    6px;   /* Rationale drawers, nested concept blocks, jump bar */
+      --radius-lg:    8px;   /* Outer question card (.q-card, .learn-q-card) */
+      --radius-pill: 9999px; /* Progress bars, circular dots, topic tags */
+
+      /* 5. Elevation, Specular Borders & Motion (Light Mode) */
+      --shadow-xs: 0 1px 2px rgba(9, 9, 11, 0.04);
+      --shadow-card: 
+        0 1px 3px rgba(9, 9, 11, 0.04),
+        0 4px 12px -2px rgba(9, 9, 11, 0.02);
+      --shadow-float: 
+        0 4px 16px -2px rgba(9, 9, 11, 0.08);
+
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out:   cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+      --ease-pop:      cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      --duration-instant: 0ms;
+      --duration-press:   90ms;
+      --duration-fast:    150ms;
+      --duration-normal:  220ms;
+      --duration-slow:    360ms;
+      --duration-vt-out:  150ms;
+      --duration-vt-in:   280ms;
+      --duration-pulse:   1600ms;
+
+      /* Motion Amplitude Tokens */
+      --move:             8px;
+      --pop-from:         0.8;
+      --press:            0.985;
+      --touch-min:        48px;
+      --p:                0;
     }
-    :root[data-theme="dark"] {
-      --bg: #111A14;
-      --surface: #18231C;
-      --surface-2: #213027;
-      --ink: #ECE8DA;
-      --muted: #A5AFA2;
-      --line: #2D3C32;
-      --primary: #8CC9A5;
-      --on-primary: #0C1710;
-      --primary-tint: #20362A;
-      --accent: #E39A63;
-      --accent-text: #EDA877;
-      --correct: #7ED6A0;
-      --on-correct: #0C1710;
-      --correct-tint: #1C3427;
-      --wrong: #F29A88;
-      --on-wrong: #1B0B08;
-      --wrong-tint: #3A211C;
-      --focus: #8FB0FF;
 
-      --shadow-card: none;
+    [data-theme="dark"], :root[data-theme="dark"] {
+      /* 1.1 Canvas & Elevated Surfaces (Dark: Deep Obsidian) */
+      --bg-canvas: #09090B;
+      --bg-surface: #141417;
+      --bg-subtle: #1D1D22;
+      --bg-glass: rgba(9, 9, 11, 0.88);
+
+      /* Typography & Inks */
+      --text-primary: #F4F4F5; /* 17.5:1 AAA */
+      --text-secondary: #A1A1AA; /* 7.1:1 AAA */
+      --text-muted: #71717A;
+
+      /* Structural & Interactive Hairlines */
+      --border-subtle: #27272A;
+      --border-strong: #52525B;
+
+      /* Semantic Interactive — High-contrast Stark Primary */
+      --primary: #FAFAFA;
+      --primary-hover: #E4E4E7;
+      --on-primary: #09090B; /* 19.3:1 AAA */
+      --primary-tint: #27272A;
+
+      /* Semantic Validation — Luminous Botanical Emerald */
+      --correct: #4ADE80; /* 11.2:1 AAA */
+      --on-correct: #051B0D; /* 9.8:1 AAA */
+      --correct-tint: #062E1A;
+
+      /* Semantic Validation — Luminous Carmine */
+      --wrong: #F87171; /* 7.8:1 AAA */
+      --on-wrong: #1F0505; /* 8.1:1 AAA */
+      --wrong-tint: #380A0A;
+
+      /* Watch Out / Trap Note — Luminous Amber */
+      --warning: #FBBF24; /* 11.5:1 AAA */
+      --on-warning: #1F1002; /* 10.4:1 AAA */
+      --warning-tint: #381E02;
+      --accent: var(--warning);
+      --accent-text: var(--warning);
+
+      /* Accessibility Focus */
+      --focus-ring: #38BDF8;
+      --focus: var(--focus-ring);
+
+      /* Compatibility aliases */
+      --bg: var(--bg-canvas);
+      --surface: var(--bg-surface);
+      --surface-2: var(--bg-subtle);
+      --ink: var(--text-primary);
+      --muted: var(--text-secondary);
+      --line: var(--border-subtle);
+
+      /* Dark Mode Shadows: Top inner specular highlight + deep ambient drop */
+      --shadow-xs: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      --shadow-card: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.04),
+        0 8px 24px -4px rgba(0, 0, 0, 0.6);
+      --shadow-float: 
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
+        0 16px 32px -6px rgba(0, 0, 0, 0.75);
+    }
+
+    /* Optional Pack Overrides: Slate, Sage, Graphite */
+    [data-pack="slate"][data-theme="light"] {
+      --bg-canvas: #F8FAFC; --bg-surface: #FFFFFF; --bg-subtle: #F1F5F9;
+      --border-subtle: #E2E8F0; --border-strong: #94A3B8;
+      --text-primary: #0F172A; --text-secondary: #64748B;
+      --primary: #1E293B; --primary-hover: #334155; --on-primary: #FFFFFF; --primary-tint: #E2E8F0;
+    }
+    [data-pack="slate"][data-theme="dark"] {
+      --bg-canvas: #0B0F17; --bg-surface: #131A24; --bg-subtle: #1C2634;
+      --border-subtle: #253346; --border-strong: #4B617E;
+      --text-primary: #F1F5F9; --text-secondary: #94A3B8;
+      --primary: #38BDF8; --primary-hover: #7DD3FC; --on-primary: #08141F; --primary-tint: #162E44;
+    }
+    [data-pack="sage"][data-theme="light"] {
+      --bg-canvas: #F7F8F7; --bg-surface: #FFFFFF; --bg-subtle: #EEF2EF;
+      --border-subtle: #DCE2DE; --border-strong: #8C9B90;
+      --text-primary: #141F18; --text-secondary: #5C6B61;
+      --primary: #1F382B; --primary-hover: #162A20; --on-primary: #FFFFFF; --primary-tint: #E2EAE4;
+    }
+    [data-pack="sage"][data-theme="dark"] {
+      --bg-canvas: #0B110D; --bg-surface: #131D16; --bg-subtle: #1B2920;
+      --border-subtle: #273A2E; --border-strong: #4E6A58;
+      --text-primary: #EAF2EC; --text-secondary: #96AC9D;
+      --primary: #4ADE80; --primary-hover: #86EFAC; --on-primary: #061C0D; --primary-tint: #163520;
+    }
+    [data-pack="graphite"][data-theme="light"] {
+      --bg-canvas: #F5F5F5; --bg-surface: #FFFFFF; --bg-subtle: #EAEAEA;
+      --border-subtle: #DCDCDC; --border-strong: #8A8A8A;
+      --text-primary: #111111; --text-secondary: #666666;
+      --primary: #222222; --primary-hover: #333333; --on-primary: #FFFFFF; --primary-tint: #E5E5E5;
+    }
+    [data-pack="graphite"][data-theme="dark"] {
+      --bg-canvas: #0C0C0C; --bg-surface: #161616; --bg-subtle: #222222;
+      --border-subtle: #2E2E2E; --border-strong: #555555;
+      --text-primary: #EEEEEE; --text-secondary: #9E9E9E;
+      --primary: #E0E0E0; --primary-hover: #F0F0F0; --on-primary: #0C0C0C; --primary-tint: #282828;
+    }
+    [data-pack="moss"][data-theme="light"] {
+      --bg-canvas: #F7F8F7; --bg-surface: #FFFFFF; --bg-subtle: #EEF2EF;
+      --border-subtle: #DCE2DE; --border-strong: #8C9B90;
+      --text-primary: #141F18; --text-secondary: #5C6B61;
+      --primary: #1F382B; --primary-hover: #162A20; --on-primary: #FFFFFF; --primary-tint: #E2EAE4;
+    }
+    [data-pack="moss"][data-theme="dark"] {
+      --bg-canvas: #0B110D; --bg-surface: #131D16; --bg-subtle: #1B2920;
+      --border-subtle: #273A2E; --border-strong: #4E6A58;
+      --text-primary: #EAF2EC; --text-secondary: #96AC9D;
+      --primary: #4ADE80; --primary-hover: #86EFAC; --on-primary: #061C0D; --primary-tint: #163520;
     }
 
     /* 2. RESET & BASE */
+    @font-face {
+      font-family: 'Inter Fallback';
+      src: local('Arial');
+      size-adjust: 100.5%;
+      ascent-override: 95%;
+      descent-override: 25%;
+      line-gap-override: 0%;
+    }
+
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -83,11 +301,15 @@
       font-optical-sizing: auto;
       scroll-behavior: smooth;
       scroll-padding-top: 125px;
+      scrollbar-gutter: stable;
+      interpolate-size: allow-keywords;
     }
+    @view-transition { navigation: auto; }
+
     body {
       background-color: var(--bg);
       color: var(--ink);
-      font-family: var(--font-body);
+      font-family: var(--font-body), 'Inter Fallback', sans-serif;
       font-size: 1.0625rem;
       line-height: 1.6;
       font-weight: 400;
@@ -99,6 +321,12 @@
       overflow-x: hidden;
       -webkit-tap-highlight-color: transparent;
     }
+    .question-stem, h1, h2, h3, .brand-title {
+      text-wrap: balance;
+    }
+    .exp-why, .learn-rationale-text, .concept-body, p {
+      text-wrap: pretty;
+    }
     a {
       color: var(--primary);
       text-decoration: underline;
@@ -108,9 +336,9 @@
     a:hover {
       text-decoration-thickness: 2px;
     }
-    button, input {
+    button, input, select, textarea {
       font-family: inherit;
-      font-size: inherit;
+      font-size: max(16px, 1rem);
       color: inherit;
     }
     button {
@@ -118,6 +346,103 @@
       border: none;
       background: none;
       touch-action: manipulation;
+    }
+
+    /* Container Queries & Layout Containment */
+    .quiz-container, .quiz-column {
+      container-type: inline-size;
+    }
+    .learn-q-card, .learn-question-card, .concept-card {
+      content-visibility: visible !important;
+      contain: none !important;
+      contain-intrinsic-block-size: auto 380px;
+      contain-intrinsic-inline-size: none !important;
+      contain-intrinsic-size: auto 380px;
+    }
+    .quiz-container, dialog, .bottom-sheet, .shortcuts-dialog {
+      overscroll-behavior: contain;
+      overscroll-behavior-y: contain;
+    }
+
+    /* Landscape Mobile: Reclaim vertical screen estate (max-height: 480px) */
+    @media (max-height: 480px) and (orientation: landscape) {
+      .sticky-action-bar, .mobile-bottom-bar {
+        display: none !important;
+      }
+      .quiz-action-bar {
+        position: static !important;
+        padding: 12px 0 !important;
+      }
+      .quiz-container {
+        padding-bottom: 16px !important;
+      }
+    }
+
+    /* Reading Space Reclaiming (Header/Bottom-bar collapse on scroll-down) */
+    .site-header, .mobile-bottom-bar {
+      transition: transform var(--duration-fast, 150ms) var(--ease-out);
+    }
+    body.reading-header-hidden .site-header {
+      transform: translateY(-100%);
+    }
+    body.reading-header-hidden .mobile-bottom-bar {
+      transform: translateY(100%);
+    }
+
+
+    /* View Transition Sliding Directions */
+    [data-vt-dir="next"]::view-transition-old(root) {
+      animation: var(--duration-vt-out, 150ms) var(--ease-out) both vtSlideOutLeft;
+    }
+    [data-vt-dir="next"]::view-transition-new(root) {
+      animation: var(--duration-vt-in, 280ms) var(--ease-out) both vtSlideInRight;
+    }
+    [data-vt-dir="prev"]::view-transition-old(root) {
+      animation: var(--duration-vt-out, 150ms) var(--ease-out) both vtSlideOutRight;
+    }
+    [data-vt-dir="prev"]::view-transition-new(root) {
+      animation: var(--duration-vt-in, 280ms) var(--ease-out) both vtSlideInLeft;
+    }
+    @keyframes vtSlideOutLeft {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(calc(var(--move) * -1.5)); }
+    }
+    @keyframes vtSlideInRight {
+      from { opacity: 0; transform: translateX(calc(var(--move) * 1.5)); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes vtSlideOutRight {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(calc(var(--move) * 1.5)); }
+    }
+    @keyframes vtSlideInLeft {
+      from { opacity: 0; transform: translateX(calc(var(--move) * -1.5)); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Reading Progress Driven by Scroll */
+    .reading-progress-track {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: calc(var(--z-header, 40) + 1);
+      background: transparent;
+      pointer-events: none;
+    }
+    @supports (animation-timeline: scroll()) {
+      .reading-progress-bar {
+        height: 100%;
+        background: var(--primary);
+        transform-origin: left;
+        transform: scaleX(0);
+        animation: readProgress linear both;
+        animation-timeline: scroll();
+      }
+      @keyframes readProgress {
+        to { transform: scaleX(1); }
+      }
     }
 
     /* 3. LAYOUT */
@@ -200,8 +525,12 @@
       font-weight: 500;
       text-decoration: none;
       color: var(--muted);
-      transition: background 150ms ease-out, color 150ms ease-out;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background var(--duration-fast, 150ms) ease-out, color var(--duration-fast, 150ms) ease-out, transform var(--duration-press, 90ms) var(--ease-out);
+    }
+    .seg-btn:active {
+      transform: scale(var(--press, 0.985));
     }
     .seg-btn.active {
       background: var(--surface);
@@ -217,12 +546,16 @@
       border-radius: 999px;
       color: var(--ink);
       border: 1px solid transparent;
-      transition: background 150ms ease-out, border-color 150ms ease-out;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background var(--duration-fast, 150ms) ease-out, border-color var(--duration-fast, 150ms) ease-out, transform var(--duration-press, 90ms) var(--ease-out);
     }
     .icon-btn:hover {
       background: var(--surface-2);
       border-color: var(--line);
+    }
+    .icon-btn:active {
+      transform: scale(var(--press, 0.985));
     }
 
     /* Week Strip */
@@ -232,19 +565,20 @@
       background: var(--bg);
       border-bottom: 1px solid var(--line);
       z-index: 30;
-      padding: 8px 0;
+      padding: 4px 0;
       padding-left: max(0px, env(safe-area-inset-left));
       padding-right: max(0px, env(safe-area-inset-right));
     }
     .week-scroll {
       display: flex;
+      align-items: center;
       gap: 8px;
       overflow-x: auto;
-      scroll-snap-type: x proximity;
+      scroll-snap-type: x mandatory;
       scroll-padding: 0 16px;
       scrollbar-width: none;
       -ms-overflow-style: none;
-      padding: 0 16px;
+      padding: 6px 16px;
       -webkit-overflow-scrolling: touch;
     }
     .week-scroll::-webkit-scrollbar {
@@ -267,11 +601,15 @@
       white-space: nowrap;
       scroll-snap-align: center;
       touch-action: manipulation;
-      transition: transform 150ms ease-out, border-color 150ms ease-out, background 150ms ease-out;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform var(--duration-press, 90ms) var(--ease-out), border-color var(--duration-fast, 150ms) var(--ease-out), background var(--duration-fast, 150ms) var(--ease-out);
     }
     .chip:hover {
       border-color: var(--primary);
       transform: translateY(-1px);
+    }
+    .chip:active {
+      transform: scale(var(--press, 0.985));
     }
     .chip[aria-current="page"] {
       background: var(--primary);
@@ -307,7 +645,7 @@
     .card {
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: var(--radius-lg);
       padding: 24px;
       box-shadow: var(--shadow-card);
     }
@@ -378,14 +716,14 @@
       text-decoration: none;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
-      transition: background 150ms ease-out, transform 150ms ease-out, border-color 150ms ease-out;
+      transition: background var(--duration-fast, 150ms) ease-out, transform var(--duration-press, 90ms) var(--ease-out), border-color var(--duration-fast, 150ms) ease-out;
       border: 1px solid transparent;
     }
     .btn:hover {
       transform: translateY(-1px);
     }
     .btn:active {
-      transform: scale(0.98);
+      transform: scale(var(--press, 0.985));
     }
     .btn-primary {
       background: var(--primary);
@@ -429,7 +767,9 @@
     .concept-card {
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      box-sizing: border-box;
       padding: 20px;
       box-shadow: var(--shadow-card);
       transition: outline 200ms ease;
@@ -450,10 +790,9 @@
       color: var(--ink);
     }
     .trap-box {
-      background: var(--surface-2);
-      border: 1px solid var(--line);
-      border-left: 3px solid var(--accent);
-      border-radius: 8px;
+      background: var(--warn-tint);
+      border: 1px solid color-mix(in srgb, var(--warn) 30%, var(--border-subtle));
+      border-radius: var(--radius-sm);
       padding: 10px 12px;
       margin-bottom: 14px;
       font-size: 0.9375rem;
@@ -508,7 +847,7 @@
       padding: 8px 12px;
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
     .page-step-btn {
@@ -526,13 +865,17 @@
       font-weight: 600;
       text-decoration: none;
       touch-action: manipulation;
-      transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+      -webkit-tap-highlight-color: transparent;
+      transition: background var(--duration-fast, 150ms) ease, border-color var(--duration-fast, 150ms) ease, transform var(--duration-press, 90ms) var(--ease-out);
     }
     .page-step-btn:hover {
       background: var(--primary-tint);
       border-color: var(--primary);
       color: var(--primary);
       transform: translateY(-1px);
+    }
+    .page-step-btn:active:not(.disabled) {
+      transform: scale(var(--press, 0.985));
     }
     .page-step-btn.page-step-next {
       background: var(--primary);
@@ -571,20 +914,21 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 24px;
-      padding: 10px 14px;
+      padding: 6px 14px;
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
     .learn-jump-scroll {
       display: flex;
+      align-items: center;
       gap: 6px;
       overflow-x: auto;
       scrollbar-width: none;
       -ms-overflow-style: none;
       -webkit-overflow-scrolling: touch;
-      padding: 2px 0;
+      padding: 6px 4px;
       flex: 1;
     }
     .learn-jump-scroll::-webkit-scrollbar {
@@ -606,14 +950,18 @@
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
-      transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: background var(--duration-fast, 150ms) ease, border-color var(--duration-fast, 150ms) ease, transform var(--duration-press, 90ms) var(--ease-out);
     }
     .jump-chip:hover, .jump-chip:focus-visible {
       border-color: var(--primary);
       background: var(--primary-tint);
       color: var(--primary);
       transform: translateY(-1px);
+    }
+    .jump-chip:active {
+      transform: scale(var(--press, 0.985));
     }
     .jump-chip.notes-jump {
       background: var(--primary-tint);
@@ -623,6 +971,34 @@
     .learn-quizzes-section {
       margin-top: 8px;
       margin-bottom: 32px;
+      width: 100%;
+    }
+    .learn-two-pane {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      width: 100%;
+    }
+    @media (min-width: 1024px) {
+      .learn-two-pane.has-sidebar {
+        grid-template-columns: 260px minmax(0, 1fr);
+        align-items: start;
+      }
+      .learn-two-pane:has(.learn-toc-sidebar) {
+        grid-template-columns: 260px minmax(0, 1fr);
+        align-items: start;
+      }
+      .learn-toc-sidebar {
+        position: sticky;
+        top: calc(var(--header-h, 56px) + 16px);
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+      }
+    }
+    @media (max-width: 1023px) {
+      .learn-toc-sidebar {
+        display: none !important;
+      }
     }
     .learn-section-title-row {
       display: flex;
@@ -633,14 +1009,48 @@
       flex-wrap: wrap;
     }
     .learn-questions-list {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: var(--space-5, 20px) !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      align-items: stretch;
+      align-items: stretch !important;
+      justify-content: flex-start !important;
+    }
+    .learn-questions-list > article,
+    .learn-questions-list > .learn-q-card,
+    .learn-questions-list > .q-card {
+      display: block !important;
+      width: 100% !important;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      margin-inline: 0 !important;
+      align-self: stretch !important;
+      box-sizing: border-box !important;
+      flex: 1 1 100% !important;
+      content-visibility: visible !important;
+      contain: none !important;
     }
     .learn-q-card {
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      min-width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      margin-inline: 0;
+      align-self: stretch;
+      align-self: stretch !important;
+      box-sizing: border-box;
+      flex: 1 1 100% !important;
+      content-visibility: visible !important;
+      contain: none !important;
       padding: 22px;
       box-shadow: var(--shadow-card);
       scroll-margin-top: 130px;
@@ -697,9 +1107,10 @@
       font-family: var(--font-body);
       font-size: 1.1875rem;
       font-weight: 500;
-      line-height: 1.5;
+      line-height: 1.55;
       margin-bottom: 18px;
       color: var(--ink);
+      max-width: min(100%, var(--reading-measure, 68ch));
     }
     .learn-options-list {
       display: flex;
@@ -707,58 +1118,210 @@
       gap: 10px;
       margin-bottom: 18px;
     }
-    .learn-opt-item {
+    .learn-options-list, .opt-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .learn-opt-item, .opt, .opt-item, .opt-label {
+      position: relative;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
-      min-height: 48px;
-      padding: 10px 16px;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      font-size: 1.0625rem;
-      line-height: 1.4;
+      gap: var(--space-3);
+      width: 100%;
+      min-height: var(--touch-min, 48px);
+      padding: var(--space-3) var(--space-4);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      text-align: left;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      outline: 2px solid transparent;
+      outline-offset: 0px;
+      transition: 
+        background-color var(--duration-fast) var(--ease-in-out),
+        border-color var(--duration-fast) var(--ease-in-out),
+        transform var(--duration-press, 90ms) var(--ease-out),
+        outline-offset var(--duration-fast, 150ms) var(--ease-out),
+        outline-color var(--duration-fast, 150ms) var(--ease-out);
+    }
+    .learn-opt-item {
+      cursor: default;
+      user-select: text;
+    }
+    .opt, .opt-item, .opt-label {
+      cursor: pointer;
       user-select: none;
     }
-    .learn-opt-item.is-correct {
-      border: 2px solid var(--correct);
-      background: var(--correct-tint);
-      font-weight: 500;
+    .opt:active, .opt-item:active, .opt-label:active {
+      transform: scale(var(--press, 0.985));
     }
-    .learn-opt-item.is-other {
-      opacity: 0.85;
+    @media (hover: hover) {
+      .opt:hover:not(:disabled):not(.is-eliminated):not(.locked),
+      .opt-item:hover:not(:disabled):not(.is-eliminated):not(.locked),
+      .opt-label:hover:not(:disabled):not(.is-eliminated):not(.locked) {
+        border-color: var(--border-strong);
+        background: var(--bg-subtle);
+      }
     }
-    .learn-opt-badge {
+    .learn-opt-item:focus-visible,
+    .opt:focus-visible,
+    .opt-item:focus-visible,
+    .opt-label:focus-visible,
+    .opt:has(input[type="radio"]:focus-visible),
+    .opt:has(input:focus-visible),
+    .opt-item:has(input[type="radio"]:focus-visible),
+    .opt-label:has(input[type="radio"]:focus-visible) {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 2px;
+      transition: outline-offset var(--duration-fast, 150ms) var(--ease-out);
+    }
+    @starting-style {
+      .opt-item:has(input[type="radio"]:focus-visible),
+      .opt-label:has(input[type="radio"]:focus-visible) {
+        outline-offset: 0px;
+      }
+    }
+
+    /* Squircle Key Badge (A, B, C, D) */
+    .learn-opt-badge, .opt-key, .opt-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 30px;
-      height: 30px;
-      min-width: 30px;
-      border-radius: 50%;
-      background: var(--surface-2);
-      border: 1px solid var(--line);
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      margin-top: -1px;
+      border-radius: var(--radius-xs);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
       font-family: var(--font-mono);
       font-size: 0.8125rem;
       font-weight: 600;
-      color: var(--ink);
-      margin-top: 1px;
+      color: var(--text-secondary);
+      transition: all var(--duration-fast) var(--ease-in-out);
     }
-    .learn-opt-item.is-correct .learn-opt-badge {
-      background: var(--correct);
-      color: var(--on-correct);
-      border-color: var(--correct);
-    }
-    .learn-opt-text {
+
+    .learn-opt-text, .opt-text {
       flex: 1;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      line-height: 1.45;
+      max-width: 60ch;
+      font-weight: 400;
       padding-top: 2px;
     }
+
+    /* STATE 2: Selected (Pre-Submit — Mineral Indigo) */
+    .opt-item.is-selected, .opt-label.selected, .opt-label.is-selected,
+    .opt-item:has(input[type="radio"]:checked),
+    .opt-label:has(input[type="radio"]:checked) {
+      background: var(--primary-tint);
+      border: 2px solid var(--primary);
+      padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+      font-weight: 500;
+    }
+    .opt-item.is-selected .opt-key,
+    .opt-label.selected .opt-badge,
+    .opt-label.is-selected .opt-key,
+    .opt-item:has(input[type="radio"]:checked) .opt-key,
+    .opt-label:has(input[type="radio"]:checked) .opt-badge {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    /* STATE 3: Eliminated / Crossed Out Distractor (Study Mode Utility) */
+    .opt-item.is-eliminated, .opt-label.is-eliminated {
+      background: var(--bg-canvas);
+      border: 1px dashed var(--border-subtle);
+      color: var(--text-muted);
+      opacity: 0.55;
+    }
+    .opt-item.is-eliminated .opt-text,
+    .opt-label.is-eliminated .opt-text {
+      text-decoration: line-through;
+    }
+    .opt-item.is-eliminated .opt-key,
+    .opt-label.is-eliminated .opt-badge {
+      background: transparent;
+      border-color: var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    /* STATE 4: Verified Correct (Post-Submit — Botanical Emerald) */
+    .opt-item.is-correct, .opt-label.correct, .opt-label.is-correct, .learn-opt-item.is-correct {
+      background: var(--correct-tint);
+      border: 2px solid var(--correct);
+      padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+      font-weight: 500;
+    }
+    .opt-item.is-correct .opt-key,
+    .opt-label.correct .opt-badge,
+    .opt-label.is-correct .opt-key,
+    .learn-opt-item.is-correct .learn-opt-badge {
+      background: var(--correct);
+      border-color: var(--correct);
+      color: var(--on-correct);
+    }
+
+    /* STATE 5: Verified Wrong (Post-Submit User Error — Crimson Clay) */
+    .opt-item.is-wrong, .opt-label.wrong, .opt-label.is-wrong {
+      background: var(--wrong-tint);
+      border: 2px solid var(--wrong);
+      padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+      animation: shake 240ms var(--ease-out);
+    }
+    .opt-item.is-wrong .opt-key,
+    .opt-label.wrong .opt-badge,
+    .opt-label.is-wrong .opt-key {
+      background: var(--wrong);
+      border-color: var(--wrong);
+      color: var(--on-wrong);
+    }
+
+    /* STATE 6: Missed Correct (Shows right answer when user picked wrong - 140ms delay) */
+    .opt, .opt-item.is-missed-correct, .opt-label.is-missed-correct {
+      background: var(--bg-surface);
+      border: 2px dashed var(--correct);
+      padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+      font-weight: 500;
+      animation: highlightPulse 600ms var(--ease-out) 140ms both;
+      transition: background 150ms var(--ease-out) 140ms,
+                  border-color 150ms var(--ease-out) 140ms,
+                  opacity 150ms var(--ease-out) 140ms;
+    }
+    .opt-item.is-missed-correct .opt-key,
+    .opt-label.is-missed-correct .opt-key,
+    .opt-label.is-missed-correct .opt-badge {
+      background: var(--correct-tint);
+      border-color: var(--correct);
+      color: var(--correct);
+      transition: background 150ms var(--ease-out) 140ms,
+                  border-color 150ms var(--ease-out) 140ms,
+                  color 150ms var(--ease-out) 140ms;
+    }
+
+    .opt-label.locked, .opt-item.locked {
+      cursor: default;
+    }
+    .opt-label.dimmed, .opt-item.dimmed {
+      opacity: 0.5;
+    }
+
+    .learn-opt-item.is-other {
+      opacity: 0.85;
+    }
+
     .learn-correct-pill {
       display: inline-flex;
       align-items: center;
       gap: 4px;
       padding: 4px 10px;
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       font-family: var(--font-mono);
       font-size: 0.6875rem;
       font-weight: 600;
@@ -775,13 +1338,107 @@
       height: 14px;
       stroke-width: 2.5;
     }
-    .learn-rationale-card {
-      background: var(--surface-2);
-      border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 14px 18px;
+
+    /* Eliminate Strikethrough Action Button */
+    .btn-eliminate-toggle {
+      opacity: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: var(--radius-xs);
+      color: var(--text-muted);
+      border: 1px dashed var(--border-subtle);
+      background: var(--bg-subtle);
+      margin-left: auto;
+      flex-shrink: 0;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity var(--duration-fast) var(--ease-in-out), color var(--duration-fast) var(--ease-in-out), background var(--duration-fast) var(--ease-in-out), border-color var(--duration-fast) var(--ease-in-out), transform var(--duration-press, 90ms) var(--ease-out);
     }
-    .learn-rationale-header {
+    .btn-eliminate-toggle:active {
+      transform: scale(var(--press, 0.985));
+    }
+    .opt-item:hover .btn-eliminate-toggle,
+    .opt-label:hover .btn-eliminate-toggle,
+    .opt-item.is-eliminated .btn-eliminate-toggle,
+    .opt-label.is-eliminated .btn-eliminate-toggle {
+      opacity: 0.85;
+    }
+    .btn-eliminate-toggle:hover {
+      opacity: 1;
+      color: var(--wrong);
+      background: var(--wrong-tint);
+      border-color: var(--wrong);
+    }
+    @media (hover: none), (max-width: 640px) {
+      .btn-eliminate-toggle {
+        opacity: 0.65;
+      }
+    }
+
+    /* RATIONALE & "WATCH OUT" TRAP CALLOUT */
+    .rationale-drawer, .explanation-panel, .rationale {
+      margin-top: var(--space-5);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows var(--duration-slow, 360ms) var(--ease-out) 200ms,
+                  opacity var(--duration-normal, 180ms) linear 200ms;
+    }
+    .learn-rationale-card {
+      margin-top: var(--space-4, 16px);
+      padding: var(--space-4) var(--space-5);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      display: block;
+      opacity: 1;
+    }
+    .rationale-drawer.is-open, .explanation-panel.is-open, .rationale.is-open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      min-height: 80px;
+    }
+    .rationale-drawer > div, .explanation-panel > div, .rationale > div {
+      overflow: hidden;
+      padding: var(--space-4) var(--space-5);
+    }
+    .learn-rationale-card > div,
+    .learn-rationale-card.rationale-drawer > div {
+      overflow: visible !important;
+      padding: 0 !important;
+    }
+    @starting-style {
+      .rationale-drawer.is-open, .explanation-panel.is-open, .rationale.is-open {
+        grid-template-rows: 0fr;
+        opacity: 0;
+      }
+      .learn-rationale-card,
+      .learn-rationale-card.rationale-drawer,
+      .learn-rationale-card.is-open {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        grid-template-rows: none !important;
+      }
+    }
+    .explanation-panel.is-wrong {
+      border-color: var(--wrong);
+    }
+
+    .learn-rationale-header, .exp-status {
       display: flex;
       align-items: center;
       gap: 6px;
@@ -791,27 +1448,54 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--correct);
-      margin-bottom: 6px;
+      margin-bottom: var(--space-2);
     }
-    .learn-rationale-text {
-      font-size: 0.9375rem;
-      line-height: 1.55;
-      color: var(--ink);
+    .exp-status {
+      font-family: var(--font-display);
+      font-size: 1.1875rem;
+      text-transform: none;
+      letter-spacing: normal;
     }
-    .learn-trap-note {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px dashed var(--line);
+    .exp-answer {
+      font-family: var(--font-mono);
       font-size: 0.875rem;
-      line-height: 1.5;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--space-2);
+    }
+    .exp-why, .learn-rationale-text {
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      max-width: 64ch;
     }
 
-    /* Page Done Card */
+    .trap-callout, .trap-box, .learn-trap-note {
+      margin-top: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--warning-tint);
+      border: 1px solid color-mix(in srgb, var(--warning) 25%, transparent);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+    }
+    .trap-callout-label, .trap-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--warning);
+      display: block;
+      margin-bottom: var(--space-1);
+    }
+
+        /* Page Done Card */
     .learn-page-done-card {
       margin-top: 32px;
       margin-bottom: 32px;
       padding: 24px 20px;
-      border-radius: 14px;
+      border-radius: var(--radius-lg);
       background: var(--surface);
       border: 2px solid var(--correct);
       box-shadow: 0 4px 16px -4px rgba(35, 112, 63, 0.15);
@@ -825,6 +1509,10 @@
       border-radius: 999px;
       background: var(--correct-tint);
       margin-bottom: 12px;
+      color: var(--correct);
+    }
+    .page-done-header .status-dot svg {
+      stroke: var(--on-correct);
     }
     .page-done-title {
       font-family: var(--font-display);
@@ -854,7 +1542,7 @@
 
     .concepts-accordion {
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: var(--radius-lg);
       background: var(--surface);
       overflow: hidden;
       scroll-margin-top: 130px;
@@ -957,14 +1645,21 @@
       align-items: flex-start;
       gap: 12px;
       padding: 16px;
-      border-radius: 12px;
+      border-radius: var(--radius-lg);
+      text-align: left;
+      width: 100%;
       border: 1px solid var(--line);
       background: var(--surface);
       cursor: pointer;
-      transition: border-color 150ms ease-out, background 150ms ease-out;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color var(--duration-fast, 150ms) ease-out, background var(--duration-fast, 150ms) ease-out, transform var(--duration-press, 90ms) var(--ease-out);
     }
     .mode-card:hover {
       border-color: var(--primary);
+    }
+    .mode-card:active {
+      transform: scale(var(--press, 0.985));
     }
     .mode-card.selected {
       border-color: var(--primary);
@@ -972,8 +1667,29 @@
       padding: 15px;
       background: var(--primary-tint);
     }
-    .mode-radio {
-      margin-top: 4px;
+    .mode-radio-circle {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--border-strong);
+      margin-top: 3px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      transition: border-color var(--duration-fast) var(--ease-in-out), background var(--duration-fast) var(--ease-in-out);
+    }
+    .mode-card.selected .mode-radio-circle {
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+    .mode-card.selected .mode-radio-circle::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--on-primary);
     }
     .mode-title {
       font-weight: 600;
@@ -1009,8 +1725,11 @@
     }
     .progress-fill {
       height: 100%;
+      width: 100%;
       background: var(--primary);
-      transition: width 200ms ease-out;
+      transform-origin: left;
+      transform: scaleX(var(--p, 0));
+      transition: transform var(--duration-slow, 360ms) var(--ease-out);
     }
     .question-stem {
       font-family: var(--font-body);
@@ -1026,22 +1745,55 @@
       gap: 12px;
       margin-bottom: 32px;
     }
+    .options-group .opt-label {
+      animation: viewFade 220ms var(--ease-out) calc(var(--i, 0) * 40ms) both;
+    }
     .opt-label {
       position: relative;
       display: flex;
       align-items: center;
       gap: 14px;
-      min-height: 56px;
+      min-height: var(--touch-min, 48px);
       padding: 12px 16px;
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       user-select: none;
-      transition: border-color 150ms ease-out, background 150ms ease-out, transform 150ms ease-out;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: border-color var(--duration-fast, 150ms) var(--ease-out),
+                  background var(--duration-fast, 150ms) var(--ease-out),
+                  transform var(--duration-press, 90ms) var(--ease-out);
     }
-    .opt-label:hover {
+    .opt-label:active {
+      transform: scale(var(--press, 0.985));
+    }
+    @media (hover: hover) {
+      .opt-label:hover:not(.locked):not(.is-eliminated) {
+        border-color: var(--primary);
+        background: var(--surface-2);
+      }
+    }
+    .opt-label:has(input[type="radio"]:checked) {
+      border: 2px solid var(--primary);
+      padding: 11px 15px;
+      background: var(--primary-tint);
+    }
+    .opt-label:has(input[type="radio"]:checked) .opt-badge {
+      background: var(--primary);
+      color: var(--on-primary);
       border-color: var(--primary);
+    }
+    .opt-label:has(input[type="radio"]:focus-visible) {
+      outline: 2px solid var(--focus-ring);
+      outline-offset: 2px;
+      transition: outline-offset var(--duration-fast, 150ms) var(--ease-out);
+    }
+    @starting-style {
+      .opt-label:has(input[type="radio"]:focus-visible) {
+        outline-offset: 0px;
+      }
     }
     .opt-label.selected {
       border: 2px solid var(--primary);
@@ -1055,6 +1807,22 @@
     .opt-label.wrong {
       border-color: var(--wrong);
       background: var(--wrong-tint);
+      animation: shake 240ms var(--ease-out);
+    }
+    .opt-label.is-missed-correct {
+      background: var(--surface);
+      border: 2px dashed var(--correct);
+      transition: background 150ms var(--ease-out) 140ms,
+                  border-color 150ms var(--ease-out) 140ms,
+                  opacity 150ms var(--ease-out) 140ms;
+    }
+    .opt-label.is-missed-correct .opt-badge {
+      background: var(--correct-tint);
+      border-color: var(--correct);
+      color: var(--correct);
+      transition: background 150ms var(--ease-out) 140ms,
+                  border-color 150ms var(--ease-out) 140ms,
+                  color 150ms var(--ease-out) 140ms;
     }
     .opt-label.dimmed {
       opacity: 0.7;
@@ -1067,15 +1835,15 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 32px;
-      height: 32px;
-      min-width: 32px;
-      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      min-width: 26px;
+      border-radius: var(--radius-xs);
       background: var(--surface-2);
       border: 1px solid var(--line);
       font-family: var(--font-mono);
-      font-size: 0.875rem;
-      font-weight: 500;
+      font-size: 0.8125rem;
+      font-weight: 600;
     }
     .opt-label.selected .opt-badge {
       background: var(--primary);
@@ -1101,14 +1869,15 @@
       margin-left: 8px;
       display: inline-flex;
       align-items: center;
+      flex-shrink: 0;
+      animation: pop 220ms var(--ease-pop) 60ms both;
     }
 
     /* Explanation Panel */
     .explanation-panel {
       background: var(--surface-2);
       border: 1px solid var(--line);
-      border-radius: 10px;
-      padding: 16px 20px;
+      border-radius: var(--radius-md);
       margin-bottom: 24px;
     }
     .explanation-panel.is-correct {
@@ -1136,7 +1905,7 @@
     }
 
     /* Action Bars */
-    .quiz-action-bar {
+    .quiz-action-bar, .sticky-action-bar {
       display: flex;
       align-items: center;
       justify-content: flex-end;
@@ -1218,7 +1987,7 @@
     .review-details {
       background: var(--surface);
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: var(--radius-lg);
       margin-bottom: 12px;
       overflow: hidden;
     }
@@ -1263,19 +2032,21 @@
       position: absolute;
       top: -40px;
       left: 16px;
-      background: var(--focus);
-      color: #FFF;
+      background: var(--primary);
+      color: var(--on-primary);
       padding: 8px 16px;
-      border-radius: 4px;
+      border-radius: var(--radius-sm);
       z-index: 100;
       text-decoration: none;
       font-family: var(--font-mono);
       font-size: 0.875rem;
+      font-weight: 600;
       transition: top 150ms ease;
     }
     .skip-link:focus {
       top: 16px;
-      outline: 3px solid var(--on-primary);
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
     }
     :focus-visible {
       outline: 3px solid var(--focus);
@@ -1289,9 +2060,80 @@
       animation: viewFade 200ms ease-out;
     }
     @keyframes viewFade {
-      from { opacity: 0; transform: translateY(6px); }
+      from { opacity: 0; transform: translateY(var(--move, 6px)); }
       to { opacity: 1; transform: translateY(0); }
     }
+    @keyframes pop {
+      0% { transform: scale(var(--pop-from, 0.8)); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(calc(var(--move, 8px) * -0.5)); }
+      40%, 80% { transform: translateX(calc(var(--move, 8px) * 0.5)); }
+    }
+    @keyframes nextBtnIn {
+      from { opacity: 0; transform: translateY(var(--move, 8px)); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .rationale ~ .quiz-action-bar #btn-next-question,
+    .rationale-drawer ~ .quiz-action-bar #btn-next-question,
+    .explanation-panel ~ .quiz-action-bar #btn-next-question {
+      animation: nextBtnIn var(--duration-fast, 150ms) var(--ease-out) 560ms both;
+    }
+
+    /* Restrained Completion Moment: Score Ring & Checkmark Drawing */
+    @property --score-pct {
+      syntax: '<integer>';
+      initial-value: 0;
+      inherits: false;
+    }
+    .score-ring-circle {
+      transform-origin: center;
+      transform: rotate(-90deg);
+      animation: drawScoreRing 1000ms var(--ease-out) forwards;
+    }
+    @keyframes drawScoreRing {
+      to { stroke-dashoffset: var(--target-dashoffset, 0); }
+    }
+    .score-check-path {
+      stroke-dasharray: 50;
+      stroke-dashoffset: 50;
+      animation: drawScoreCheck 500ms var(--ease-out) 500ms forwards;
+    }
+    @keyframes drawScoreCheck {
+      to { stroke-dashoffset: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .score-ring-circle, .score-check-path {
+        animation: none !important;
+        stroke-dashoffset: var(--target-dashoffset, 0) !important;
+      }
+    }
+    :root[data-motion="reduced"] .score-ring-circle,
+    :root[data-motion="reduced"] .score-check-path {
+      animation: none !important;
+      stroke-dashoffset: var(--target-dashoffset, 0) !important;
+    }
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 8px;
+      height: 12px;
+      top: -20px;
+      animation: confettiFall 2.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+    }
+
     .site-footer {
       border-top: 1px solid var(--line);
       padding: 24px 0;
@@ -1321,7 +2163,7 @@
       }
       .card {
         padding: 16px 14px;
-        border-radius: 12px;
+        border-radius: var(--radius-lg);
       }
       .learn-container {
         padding-bottom: 84px;
@@ -1332,7 +2174,7 @@
       }
       .learn-q-card {
         padding: 16px 14px;
-        border-radius: 12px;
+        border-radius: var(--radius-lg);
       }
       .learn-q-stem {
         font-size: 1.0625rem;
@@ -1414,6 +2256,8 @@
         font-size: 0.8125rem;
         font-weight: 600;
         touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        transition: background var(--duration-fast, 150ms) ease, border-color var(--duration-fast, 150ms) ease, transform var(--duration-press, 90ms) var(--ease-out);
         flex-shrink: 0;
       }
       .mobile-bar-btn.disabled {
@@ -1422,6 +2266,7 @@
       }
       .mobile-bar-btn:active {
         background: var(--primary-tint);
+        transform: scale(var(--press, 0.985));
       }
       .mobile-bar-indicator {
         display: flex;
@@ -1445,9 +2290,13 @@
         background: var(--primary);
         color: var(--on-primary);
         border-color: var(--primary);
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+        transition: background var(--duration-fast, 150ms) ease, border-color var(--duration-fast, 150ms) ease, transform var(--duration-press, 90ms) var(--ease-out);
       }
       .mobile-bar-quiz:active {
         filter: brightness(1.1);
+        transform: scale(var(--press, 0.985));
       }
       .back-to-top-fab {
         bottom: calc(66px + env(safe-area-inset-bottom));
@@ -1550,10 +2399,132 @@
       }
     }
     @media (prefers-reduced-motion: reduce) {
-      * {
-        animation: none !important;
-        transition: none !important;
+      :root {
+        --move:             0px;
+        --pop-from:         1;
+        --press:            1;
+        --duration-press:   0ms;
+        --duration-fast:    100ms;
+        --duration-normal:  100ms;
+        --duration-slow:    100ms;
+        --duration-vt-out:  80ms;
+        --duration-vt-in:   100ms;
+        --duration-pulse:   0ms;
+      }
+      *, *::before, *::after {
         scroll-behavior: auto !important;
+      }
+    }
+    :root[data-motion="reduced"] {
+      --move:             0px;
+      --pop-from:         1;
+      --press:            1;
+      --duration-press:   0ms;
+      --duration-fast:    100ms;
+      --duration-normal:  100ms;
+      --duration-slow:    100ms;
+      --duration-vt-out:  80ms;
+      --duration-vt-in:   100ms;
+      --duration-pulse:   0ms;
+    }
+    :root[data-motion="reduced"] *,
+    :root[data-motion="reduced"] *::before,
+    :root[data-motion="reduced"] *::after {
+      scroll-behavior: auto !important;
+    }
+
+    /* Forced Colors (Windows High Contrast Mode) */
+    @media (forced-colors: active) {
+      .opt-label.correct, .opt-item.is-correct, .opt-label.is-correct {
+        border: 2px solid Highlight !important;
+      }
+      .opt-label.wrong, .opt-item.is-wrong, .opt-label.is-wrong {
+        border: 2px dashed Highlight !important;
+      }
+      .opt-badge, .opt-key {
+        border: 1px solid CanvasText !important;
+      }
+      .progress-fill {
+        background: Highlight !important;
+      }
+    }
+
+    /* Shortcuts Dialog & Modal Overlay */
+    dialog.shortcuts-dialog {
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-float);
+      padding: 24px;
+      max-width: 480px;
+      width: 90%;
+      margin: auto;
+      transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out), display 200ms allow-discrete;
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    dialog.shortcuts-dialog[open] {
+      opacity: 1;
+      transform: scale(1);
+    }
+    @starting-style {
+      dialog.shortcuts-dialog[open] {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+    }
+    dialog.shortcuts-dialog::backdrop {
+      background: rgba(9, 9, 11, 0.45);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      opacity: 0;
+      transition: opacity 200ms var(--ease-out), display 200ms allow-discrete;
+    }
+    dialog.shortcuts-dialog[open]::backdrop {
+      opacity: 1;
+    }
+    @starting-style {
+      dialog.shortcuts-dialog[open]::backdrop {
+        opacity: 0;
+      }
+    }
+    .shortcuts-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .shortcut-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.875rem;
+    }
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 7px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xs);
+      box-shadow: 0 1px 1px rgba(0,0,0,0.06);
+    }
+    .opt-key-hint {
+      display: none;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .opt-key-hint {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        opacity: 0.55;
+        margin-left: 6px;
       }
     }
 
@@ -1575,9 +2546,1440 @@
         padding: 0;
       }
     }
+  
+
+/* ==========================================================================
+   PRODUCTION CSS COMPONENT IMPLEMENTATION (Warm Stone & Mineral Slate)
+   ========================================================================== */
+/* 1. QUESTION CARD & HEADER METADATA */
+.q-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card);
+  width: 100%;
+  max-width: var(--quiz-column-max);
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+.learn-q-card.q-card {
+  display: block !important;
+  width: 100%;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100%;
+  max-width: 100% !important;
+  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-inline: 0;
+  margin-inline: 0 !important;
+  align-self: stretch;
+  align-self: stretch !important;
+  box-sizing: border-box;
+  box-sizing: border-box !important;
+  flex: 1 1 100% !important;
+  content-visibility: visible !important;
+  contain: none !important;
+}
+.learn-questions-list > article,
+.learn-questions-list > .learn-q-card,
+.learn-questions-list > .q-card {
+  display: block !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-inline: 0 !important;
+  align-self: stretch !important;
+  box-sizing: border-box !important;
+  flex: 1 1 100% !important;
+  content-visibility: visible !important;
+  contain: none !important;
+}
+
+
+.q-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.q-stem {
+  font-family: var(--font-sans);
+  font-size: clamp(1.0625rem, 1.2vw + 0.5rem, 1.25rem);
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--text-primary);
+  margin-bottom: var(--space-5);
+  max-width: var(--reading-measure);
+}
+
+/* 2. QUIZ OPTION ITEM (ALL 6 INTERACTIVE & VERIFICATION STATES) */
+.opt-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.opt-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: var(--touch-min, 48px);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: 
+    background-color var(--duration-fast) var(--ease-in-out),
+    border-color var(--duration-fast) var(--ease-in-out),
+    transform var(--duration-press, 90ms) var(--ease-out);
+}
+.opt-item:active {
+  transform: scale(var(--press, 0.985));
+}
+@media (hover: hover) {
+  .opt-item:hover:not(:disabled):not(.is-eliminated):not(.locked) {
+    border-color: var(--border-strong);
+    background: var(--bg-subtle);
+  }
+}
+.opt-item:focus-visible,
+.opt-item:has(input[type="radio"]:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  transition: outline-offset var(--duration-fast, 150ms) var(--ease-out);
+}
+@starting-style {
+  .opt-item:has(input[type="radio"]:focus-visible) {
+    outline-offset: 0px;
+  }
+}
+
+/* Squircle Key Badge (A, B, C, D) */
+.opt-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  margin-top: -1px;
+  border-radius: var(--radius-xs);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all var(--duration-fast) var(--ease-in-out);
+}
+
+/* STATE 2: Selected (Pre-Submit — Mineral Indigo) */
+.opt-item.is-selected,
+.opt-item:has(input[type="radio"]:checked) {
+  background: var(--primary-tint);
+  border: 2px solid var(--primary);
+  padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px); /* Prevent 1px layout shift */
+  font-weight: 500;
+}
+.opt-item.is-selected .opt-key,
+.opt-item:has(input[type="radio"]:checked) .opt-key {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+/* STATE 3: Eliminated / Crossed Out Distractor (Study Mode Utility) */
+.opt-item.is-eliminated {
+  background: var(--bg-canvas);
+  border: 1px dashed var(--border-subtle);
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+.opt-item.is-eliminated .opt-text {
+  text-decoration: line-through;
+}
+
+/* STATE 4: Verified Correct (Post-Submit — Botanical Emerald) */
+.opt-item.is-correct {
+  background: var(--correct-tint);
+  border: 2px solid var(--correct);
+  padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+  font-weight: 500;
+}
+.opt-item.is-correct .opt-key {
+  background: var(--correct);
+  border-color: var(--correct);
+  color: var(--on-correct);
+}
+
+/* STATE 5: Verified Wrong (Post-Submit User Error — Crimson Clay) */
+.opt-item.is-wrong {
+  background: var(--wrong-tint);
+  border: 2px solid var(--wrong);
+  padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+  animation: shake 240ms var(--ease-out);
+}
+.opt-item.is-wrong .opt-key {
+  background: var(--wrong);
+  border-color: var(--wrong);
+  color: var(--on-wrong);
+}
+
+/* STATE 6: Missed Correct (Shows right answer when user picked wrong - 140ms delay) */
+.opt-item.is-missed-correct {
+  background: var(--bg-surface);
+  border: 2px dashed var(--correct);
+  padding: calc(var(--space-3) - 1px) calc(var(--space-4) - 1px);
+  font-weight: 500;
+  transition: background 150ms var(--ease-out) 140ms,
+              border-color 150ms var(--ease-out) 140ms,
+              opacity 150ms var(--ease-out) 140ms;
+}
+.opt-item.is-missed-correct .opt-key {
+  background: var(--correct-tint);
+  border-color: var(--correct);
+  color: var(--correct);
+  transition: background 150ms var(--ease-out) 140ms,
+              border-color 150ms var(--ease-out) 140ms,
+              color 150ms var(--ease-out) 140ms;
+}
+
+/* 3. RATIONALE & "WATCH OUT" TRAP CALLOUT */
+.rationale-drawer {
+  margin-top: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows var(--duration-slow, 360ms) var(--ease-out) 200ms,
+              opacity var(--duration-normal, 180ms) linear 200ms;
+}
+.rationale-drawer.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+.rationale-drawer > div {
+  overflow: hidden;
+}
+
+/* Learn Mode Rationale Card Invariant (Always Fully Disclosed) */
+.learn-rationale-card,
+.learn-rationale-card.rationale-drawer,
+.learn-rationale-card.is-open {
+  display: block !important;
+  grid-template-rows: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  overflow: visible !important;
+  transition: none !important;
+  animation: none !important;
+  min-height: auto !important;
+  max-height: none !important;
+  margin-top: 0 !important;
+}
+.learn-rationale-card > *,
+.learn-rationale-card > div,
+.learn-rationale-card > p {
+  overflow: visible !important;
+}
+.learn-rationale-card > div,
+.learn-rationale-card.rationale-drawer > div {
+  padding: 0 !important;
+  overflow: visible !important;
+}
+.learn-rationale-card .learn-rationale-header {
+  padding: 0 !important;
+  margin-bottom: var(--space-2, 8px) !important;
+}
+.learn-rationale-card .learn-rationale-text {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.learn-rationale-card .learn-trap-note {
+  margin-top: var(--space-3, 12px) !important;
+  padding: var(--space-3) var(--space-4) !important;
+}
+
+/* Learn Mode Option Items Invariant (Read-Only Display) */
+.learn-opt-item,
+.learn-opt-item.opt-item {
+  cursor: default !important;
+  user-select: text !important;
+}
+.learn-opt-item:active,
+.learn-opt-item.opt-item:active {
+  transform: none !important;
+}
+@media (hover: hover) {
+  .learn-opt-item.opt-item:hover:not(:disabled) {
+    cursor: default !important;
+  }
+}
+
+
+.trap-callout {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--warning-tint);
+  border: 1px solid color-mix(in srgb, var(--warning) 25%, transparent);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.trap-callout-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--warning);
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+/* 4. TRANSLUCENT STICKY MOBILE ACTION BAR */
+.sticky-action-bar {
+  position: fixed;
+  bottom: 0;
+  inset-inline: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) max(var(--space-4), env(safe-area-inset-right))
+           calc(var(--space-3) + env(safe-area-inset-bottom))
+           max(var(--space-4), env(safe-area-inset-left));
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-subtle);
+}
+
   </style>
+  <!-- W3C DTCG Machine-Readable Design Tokens -->
+  <script type="application/json" id="w3c-dtcg-tokens">
+{
+  "$description": "Conservation Geography design tokens v3 — Minimal Theme (W3C DTCG). Disciplined, high-contrast, modernist design system with architectural precision, neo-grotesque typography, 4px/8px geometric spatial rhythm, and WCAG AAA compliant palettes.",
+  "color": {
+    "mono": {
+      "$description": "Pure architectural minimalism — stark neutral scale, razor-sharp contrast, zero unnecessary chroma (default)",
+      "light": {
+        "bg": {
+          "$type": "color",
+          "$value": "#FAFAFA",
+          "$description": "Gallery canvas background"
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "Elevated card and module surface"
+        },
+        "surface-2": {
+          "$type": "color",
+          "$value": "#F4F4F5",
+          "$description": "Secondary container, option rows, subtle callout background"
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#E4E4E7",
+          "$description": "Structural 1px hairline border"
+        },
+        "line-strong": {
+          "$type": "color",
+          "$value": "#A1A1AA",
+          "$description": "Active, focused, or high-contrast border"
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "#09090B",
+          "$description": "Primary high-contrast typography (19.3:1 contrast ratio)"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "#71717A",
+          "$description": "Secondary metadata and caption typography (4.6:1 contrast ratio)"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "#18181B",
+          "$description": "Primary action button and interactive emphasis"
+        },
+        "primary-hover": {
+          "$type": "color",
+          "$value": "#27272A",
+          "$description": "Primary action hover state"
+        },
+        "on-primary": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "High-contrast text on primary CTA (16.5:1 ratio)"
+        },
+        "primary-tint": {
+          "$type": "color",
+          "$value": "#F4F4F5",
+          "$description": "Interactive selection tint and active chip wash"
+        }
+      },
+      "dark": {
+        "bg": {
+          "$type": "color",
+          "$value": "#09090B",
+          "$description": "Obsidian deep carbon background canvas"
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#141417",
+          "$description": "Elevated dark card surface"
+        },
+        "surface-2": {
+          "$type": "color",
+          "$value": "#1D1D22",
+          "$description": "Secondary container and option card background"
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#27272A",
+          "$description": "Subtle structural border hairline"
+        },
+        "line-strong": {
+          "$type": "color",
+          "$value": "#52525B",
+          "$description": "Active/focused border hairline"
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "#F4F4F5",
+          "$description": "High-contrast primary typography (17.5:1 ratio)"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "#A1A1AA",
+          "$description": "Secondary metadata typography (7.1:1 ratio)"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "#FAFAFA",
+          "$description": "Stark high-contrast primary CTA"
+        },
+        "primary-hover": {
+          "$type": "color",
+          "$value": "#E4E4E7",
+          "$description": "Primary CTA hover state"
+        },
+        "on-primary": {
+          "$type": "color",
+          "$value": "#09090B",
+          "$description": "Text on primary CTA (19.3:1 ratio)"
+        },
+        "primary-tint": {
+          "$type": "color",
+          "$value": "#27272A",
+          "$description": "Selection and active state wash"
+        }
+      }
+    },
+    "slate": {
+      "$description": "Technical minimal — cool technical slate & steel with surgical clarity",
+      "light": {
+        "bg": {
+          "$type": "color",
+          "$value": "#F8FAFC",
+          "$description": "Cool porcelain background"
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "Pure white card surface"
+        },
+        "surface-2": {
+          "$type": "color",
+          "$value": "#F1F5F9",
+          "$description": "Secondary container and option row"
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#E2E8F0",
+          "$description": "Cool slate hairline divider"
+        },
+        "line-strong": {
+          "$type": "color",
+          "$value": "#94A3B8",
+          "$description": "Strong interactive border"
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "#0F172A",
+          "$description": "Deep slate typography (17.8:1 ratio)"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "#64748B",
+          "$description": "Subdued slate metadata (5.3:1 ratio)"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "#1E293B",
+          "$description": "Sleek slate primary CTA"
+        },
+        "primary-hover": {
+          "$type": "color",
+          "$value": "#334155",
+          "$description": "Primary hover state"
+        },
+        "on-primary": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "High-contrast text on primary"
+        },
+        "primary-tint": {
+          "$type": "color",
+          "$value": "#E2E8F0",
+          "$description": "Selection wash"
+        }
+      },
+      "dark": {
+        "bg": {
+          "$type": "color",
+          "$value": "#0B0F17",
+          "$description": "Deep space slate canvas"
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#131A24",
+          "$description": "Elevated slate card"
+        },
+        "surface-2": {
+          "$type": "color",
+          "$value": "#1C2634",
+          "$description": "Secondary slate card"
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#253346",
+          "$description": "Hairline slate divider"
+        },
+        "line-strong": {
+          "$type": "color",
+          "$value": "#4B617E",
+          "$description": "Strong slate border"
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "#F1F5F9",
+          "$description": "High-contrast slate typography (16.8:1 ratio)"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "#94A3B8",
+          "$description": "Secondary slate text (7.2:1 ratio)"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "#38BDF8",
+          "$description": "Cyan-slate technical interactive accent"
+        },
+        "primary-hover": {
+          "$type": "color",
+          "$value": "#7DD3FC",
+          "$description": "Primary hover state"
+        },
+        "on-primary": {
+          "$type": "color",
+          "$value": "#08141F",
+          "$description": "Text on primary accent"
+        },
+        "primary-tint": {
+          "$type": "color",
+          "$value": "#162E44",
+          "$description": "Selection wash"
+        }
+      }
+    },
+    "sage": {
+      "$description": "Botanical minimalist — quiet, desaturated Scandinavian eucalyptus/sage, refined for Conservation Geography",
+      "light": {
+        "bg": {
+          "$type": "color",
+          "$value": "#F7F8F7",
+          "$description": "Soft clean eucalyptus canvas"
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "Pure white card surface"
+        },
+        "surface-2": {
+          "$type": "color",
+          "$value": "#EEF2EF",
+          "$description": "Subtle sage container background"
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#DCE2DE",
+          "$description": "Hairline sage border"
+        },
+        "line-strong": {
+          "$type": "color",
+          "$value": "#8C9B90",
+          "$description": "Strong sage border"
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "#141F18",
+          "$description": "Deep woodland ink (16.4:1 ratio)"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "#5C6B61",
+          "$description": "Muted sage caption (5.2:1 ratio)"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "#1F382B",
+          "$description": "Nordic pine primary CTA"
+        },
+        "primary-hover": {
+          "$type": "color",
+          "$value": "#162A20",
+          "$description": "Primary hover state"
+        },
+        "on-primary": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "High-contrast text on primary"
+        },
+        "primary-tint": {
+          "$type": "color",
+          "$value": "#E2EAE4",
+          "$description": "Restrained sage wash"
+        }
+      },
+      "dark": {
+        "bg": {
+          "$type": "color",
+          "$value": "#0B110D",
+          "$description": "Forest midnight canvas"
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#131D16",
+          "$description": "Elevated woodland card surface"
+        },
+        "surface-2": {
+          "$type": "color",
+          "$value": "#1B2920",
+          "$description": "Secondary sage container"
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#273A2E",
+          "$description": "Hairline dark sage border"
+        },
+        "line-strong": {
+          "$type": "color",
+          "$value": "#4E6A58",
+          "$description": "Strong dark sage border"
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "#EAF2EC",
+          "$description": "High-contrast sage typography (16.9:1 ratio)"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "#96AC9D",
+          "$description": "Subdued sage typography (7.1:1 ratio)"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "#4ADE80",
+          "$description": "Crisp botanical green accent"
+        },
+        "primary-hover": {
+          "$type": "color",
+          "$value": "#86EFAC",
+          "$description": "Botanical accent hover"
+        },
+        "on-primary": {
+          "$type": "color",
+          "$value": "#061C0D",
+          "$description": "Text on botanical primary"
+        },
+        "primary-tint": {
+          "$type": "color",
+          "$value": "#163520",
+          "$description": "Botanical selection wash"
+        }
+      }
+    },
+    "graphite": {
+      "$description": "Achromatic minimalist — absolute zero-chroma neutral grayscale, pure Swiss/modernist discipline",
+      "light": {
+        "bg": {
+          "$type": "color",
+          "$value": "#F5F5F5",
+          "$description": "Neutral gray canvas"
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "Pure white card surface"
+        },
+        "surface-2": {
+          "$type": "color",
+          "$value": "#EAEAEA",
+          "$description": "Secondary gray container"
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#DCDCDC",
+          "$description": "Achromatic hairline border"
+        },
+        "line-strong": {
+          "$type": "color",
+          "$value": "#8A8A8A",
+          "$description": "Strong gray border"
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "#111111",
+          "$description": "Absolute carbon ink (17.1:1 ratio)"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "#666666",
+          "$description": "Neutral gray caption (5.4:1 ratio)"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "#222222",
+          "$description": "Pure carbon primary CTA"
+        },
+        "primary-hover": {
+          "$type": "color",
+          "$value": "#333333",
+          "$description": "Primary hover state"
+        },
+        "on-primary": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "High-contrast text on primary"
+        },
+        "primary-tint": {
+          "$type": "color",
+          "$value": "#E5E5E5",
+          "$description": "Achromatic selection wash"
+        }
+      },
+      "dark": {
+        "bg": {
+          "$type": "color",
+          "$value": "#0C0C0C",
+          "$description": "Deep achromatic black canvas"
+        },
+        "surface": {
+          "$type": "color",
+          "$value": "#161616",
+          "$description": "Elevated neutral card surface"
+        },
+        "surface-2": {
+          "$type": "color",
+          "$value": "#222222",
+          "$description": "Secondary gray container"
+        },
+        "line": {
+          "$type": "color",
+          "$value": "#2E2E2E",
+          "$description": "Hairline gray border"
+        },
+        "line-strong": {
+          "$type": "color",
+          "$value": "#555555",
+          "$description": "Strong gray border"
+        },
+        "ink": {
+          "$type": "color",
+          "$value": "#EEEEEE",
+          "$description": "High-contrast neutral gray typography (17.5:1 ratio)"
+        },
+        "muted": {
+          "$type": "color",
+          "$value": "#9E9E9E",
+          "$description": "Subdued neutral typography (7.2:1 ratio)"
+        },
+        "primary": {
+          "$type": "color",
+          "$value": "#E0E0E0",
+          "$description": "High-contrast neutral primary CTA"
+        },
+        "primary-hover": {
+          "$type": "color",
+          "$value": "#F0F0F0",
+          "$description": "Primary hover state"
+        },
+        "on-primary": {
+          "$type": "color",
+          "$value": "#0C0C0C",
+          "$description": "Text on primary CTA"
+        },
+        "primary-tint": {
+          "$type": "color",
+          "$value": "#282828",
+          "$description": "Neutral selection wash"
+        }
+      }
+    },
+    "status": {
+      "$description": "Surgical semantic validation and interactive focus — shared by all packs with strict WCAG AAA/AA ratings",
+      "light": {
+        "correct": {
+          "$type": "color",
+          "$value": "#15803D",
+          "$description": "Botanical Emerald — verified correct answers (5.2:1 contrast)"
+        },
+        "on-correct": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "High-contrast text on correct badge"
+        },
+        "correct-tint": {
+          "$type": "color",
+          "$value": "#ECFDF5",
+          "$description": "Ultra-clean emerald selection wash"
+        },
+        "wrong": {
+          "$type": "color",
+          "$value": "#B91C1C",
+          "$description": "Surgical Carmine — incorrect selections and error indicators (5.9:1 contrast)"
+        },
+        "on-wrong": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "High-contrast text on wrong badge"
+        },
+        "wrong-tint": {
+          "$type": "color",
+          "$value": "#FEF2F2",
+          "$description": "Clean carmine error wash"
+        },
+        "warn": {
+          "$type": "color",
+          "$value": "#B45309",
+          "$description": "Architectural Amber — Watch Out / Exam traps (4.8:1 contrast)"
+        },
+        "on-warn": {
+          "$type": "color",
+          "$value": "#FFFFFF",
+          "$description": "High-contrast text on warn badge"
+        },
+        "warn-tint": {
+          "$type": "color",
+          "$value": "#FFFBEB",
+          "$description": "Restrained amber warning wash"
+        },
+        "focus": {
+          "$type": "color",
+          "$value": "#0284C7",
+          "$description": "High-visibility cobalt keyboard focus ring"
+        }
+      },
+      "dark": {
+        "correct": {
+          "$type": "color",
+          "$value": "#4ADE80",
+          "$description": "High-visibility luminous emerald (11.2:1 contrast)"
+        },
+        "on-correct": {
+          "$type": "color",
+          "$value": "#051B0D",
+          "$description": "Text on dark correct badge (9.8:1 contrast — AAA)"
+        },
+        "correct-tint": {
+          "$type": "color",
+          "$value": "#062E1A",
+          "$description": "Dark emerald container wash"
+        },
+        "wrong": {
+          "$type": "color",
+          "$value": "#F87171",
+          "$description": "High-visibility luminous carmine (7.8:1 contrast)"
+        },
+        "on-wrong": {
+          "$type": "color",
+          "$value": "#1F0505",
+          "$description": "Text on dark wrong badge (8.1:1 contrast — AAA)"
+        },
+        "wrong-tint": {
+          "$type": "color",
+          "$value": "#380A0A",
+          "$description": "Dark carmine container wash"
+        },
+        "warn": {
+          "$type": "color",
+          "$value": "#FBBF24",
+          "$description": "High-visibility luminous amber (11.5:1 contrast)"
+        },
+        "on-warn": {
+          "$type": "color",
+          "$value": "#1F1002",
+          "$description": "Text on dark warn badge (10.4:1 contrast — AAA)"
+        },
+        "warn-tint": {
+          "$type": "color",
+          "$value": "#381E02",
+          "$description": "Dark amber container wash"
+        },
+        "focus": {
+          "$type": "color",
+          "$value": "#38BDF8",
+          "$description": "Luminous cyan-blue keyboard focus ring"
+        }
+      }
+    }
+  },
+  "font": {
+    "family": {
+      "display": {
+        "$type": "fontFamily",
+        "$value": [
+          "Inter",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Helvetica Neue",
+          "sans-serif"
+        ],
+        "$description": "Disciplined neo-grotesque sans for architectural titles and numbers"
+      },
+      "body": {
+        "$type": "fontFamily",
+        "$value": [
+          "Inter",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "system-ui",
+          "sans-serif"
+        ],
+        "$description": "Hyper-legible neutral sans-serif for stems, options, and rationales"
+      },
+      "mono": {
+        "$type": "fontFamily",
+        "$value": [
+          "JetBrains Mono",
+          "Geist Mono",
+          "SF Mono",
+          "Menlo",
+          "Consolas",
+          "monospace"
+        ],
+        "$description": "High-precision monospace with tabular numerals for timers, chips, and IDs"
+      }
+    },
+    "weight": {
+      "regular": {
+        "$type": "fontWeight",
+        "$value": 400
+      },
+      "medium": {
+        "$type": "fontWeight",
+        "$value": 500
+      },
+      "semibold": {
+        "$type": "fontWeight",
+        "$value": 600
+      },
+      "bold": {
+        "$type": "fontWeight",
+        "$value": 700
+      }
+    },
+    "letterSpacing": {
+      "tighter": {
+        "$type": "dimension",
+        "$value": "-0.03em",
+        "$description": "Large display headings (h1, h2)"
+      },
+      "tight": {
+        "$type": "dimension",
+        "$value": "-0.015em",
+        "$description": "Section headers and question stems"
+      },
+      "normal": {
+        "$type": "dimension",
+        "$value": "0em",
+        "$description": "Body text baseline"
+      },
+      "wide": {
+        "$type": "dimension",
+        "$value": "0.025em",
+        "$description": "Uppercase metadata labels and option badges"
+      },
+      "mono": {
+        "$type": "dimension",
+        "$value": "0.01em",
+        "$description": "Tabular code and question IDs"
+      }
+    },
+    "size": {
+      "xs": {
+        "$type": "dimension",
+        "$value": "0.75rem",
+        "$description": "12px fluid. Badges, tags, metadata, and keyboard hints",
+        "$extensions": {
+          "fluid": {
+            "min": "0.75rem",
+            "max": "0.8125rem",
+            "viewport": [
+              "320px",
+              "1240px"
+            ],
+            "css": "clamp(0.75rem, 0.7283rem + 0.1087vw, 0.8125rem)"
+          }
+        }
+      },
+      "sm": {
+        "$type": "dimension",
+        "$value": "0.875rem",
+        "$description": "14px fluid. Buttons, navigation chips, secondary descriptions",
+        "$extensions": {
+          "fluid": {
+            "min": "0.875rem",
+            "max": "0.9375rem",
+            "viewport": [
+              "320px",
+              "1240px"
+            ],
+            "css": "clamp(0.875rem, 0.8533rem + 0.1087vw, 0.9375rem)"
+          }
+        }
+      },
+      "md": {
+        "$type": "dimension",
+        "$value": "1.0rem",
+        "$description": "16px fluid. Body text, question options, and concept notes",
+        "$extensions": {
+          "fluid": {
+            "min": "1.0rem",
+            "max": "1.0625rem",
+            "viewport": [
+              "320px",
+              "1240px"
+            ],
+            "css": "clamp(1.0rem, 0.9783rem + 0.1087vw, 1.0625rem)"
+          }
+        }
+      },
+      "lg": {
+        "$type": "dimension",
+        "$value": "1.125rem",
+        "$description": "18px fluid. Question stem (q.q) and h3 headings",
+        "$extensions": {
+          "fluid": {
+            "min": "1.125rem",
+            "max": "1.25rem",
+            "viewport": [
+              "320px",
+              "1240px"
+            ],
+            "css": "clamp(1.125rem, 1.0815rem + 0.2174vw, 1.25rem)"
+          }
+        }
+      },
+      "xl": {
+        "$type": "dimension",
+        "$value": "1.375rem",
+        "$description": "22px fluid. Section headers and major card titles",
+        "$extensions": {
+          "fluid": {
+            "min": "1.375rem",
+            "max": "1.5rem",
+            "viewport": [
+              "320px",
+              "1240px"
+            ],
+            "css": "clamp(1.375rem, 1.3315rem + 0.2174vw, 1.5rem)"
+          }
+        }
+      },
+      "2xl": {
+        "$type": "dimension",
+        "$value": "1.625rem",
+        "$description": "26px fluid. Quiz results and major milestones",
+        "$extensions": {
+          "fluid": {
+            "min": "1.625rem",
+            "max": "1.875rem",
+            "viewport": [
+              "320px",
+              "1240px"
+            ],
+            "css": "clamp(1.625rem, 1.538rem + 0.4348vw, 1.875rem)"
+          }
+        }
+      },
+      "3xl": {
+        "$type": "dimension",
+        "$value": "2.0rem",
+        "$description": "32px fluid. Primary page title (h1) — disciplined and compact",
+        "$extensions": {
+          "fluid": {
+            "min": "2.0rem",
+            "max": "2.375rem",
+            "viewport": [
+              "320px",
+              "1240px"
+            ],
+            "css": "clamp(2.0rem, 1.8696rem + 0.6522vw, 2.375rem)"
+          }
+        }
+      }
+    },
+    "lineHeight": {
+      "none": {
+        "$type": "number",
+        "$value": 1.0,
+        "$description": "Badges and raw metrics"
+      },
+      "tight": {
+        "$type": "number",
+        "$value": 1.15,
+        "$description": "Display headings and hero titles"
+      },
+      "snug": {
+        "$type": "number",
+        "$value": 1.25,
+        "$description": "Question stems and section titles"
+      },
+      "ui": {
+        "$type": "number",
+        "$value": 1.375,
+        "$description": "Buttons, chips, and option cards"
+      },
+      "body": {
+        "$type": "number",
+        "$value": 1.5,
+        "$description": "Body copy, rationales, and concept notes"
+      }
+    }
+  },
+  "space": {
+    "3xs": {
+      "$type": "dimension",
+      "$value": "0.125rem",
+      "$description": "2px - Hairline offset and border adjustments"
+    },
+    "2xs": {
+      "$type": "dimension",
+      "$value": "0.25rem",
+      "$description": "4px - Micro gaps between badges and icons"
+    },
+    "xs": {
+      "$type": "dimension",
+      "$value": "0.5rem",
+      "$description": "8px - Button internal padding and chip gaps"
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "0.75rem",
+      "$description": "12px - Option list vertical spacing"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "1rem",
+      "$description": "16px - Base mobile padding and card internal gap"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "1.5rem",
+      "$description": "24px - Desktop card padding and section rhythm"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "2rem",
+      "$description": "32px - Module block separation"
+    },
+    "2xl": {
+      "$type": "dimension",
+      "$value": "3rem",
+      "$description": "48px - Major view section boundaries"
+    },
+    "3xl": {
+      "$type": "dimension",
+      "$value": "4rem",
+      "$description": "64px - View top/bottom breathing room"
+    }
+  },
+  "radius": {
+    "none": {
+      "$type": "dimension",
+      "$value": "0px",
+      "$description": "True minimal sharp edge"
+    },
+    "xs": {
+      "$type": "dimension",
+      "$value": "2px",
+      "$description": "Micro edge for sub-badges and tags"
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "4px",
+      "$description": "Standard buttons, option items, inputs, and code blocks"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "6px",
+      "$description": "Rationale callouts, drawers, and nested modules"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "8px",
+      "$description": "Outer question cards and view containers"
+    },
+    "full": {
+      "$type": "dimension",
+      "$value": "9999px",
+      "$description": "Pills, progress tracks, and circular status dots"
+    },
+    "focus": {
+      "$type": "dimension",
+      "$value": "3px",
+      "$description": "Keyboard focus outline offset"
+    }
+  },
+  "shadow": {
+    "none": {
+      "$type": "shadow",
+      "$value": "none",
+      "$description": "Zero shadow — pure flat minimalism"
+    },
+    "xs": {
+      "$type": "shadow",
+      "$value": "0 1px 2px rgba(9, 9, 11, 0.04)",
+      "$description": "Micro elevation for subtle interactive buttons"
+    },
+    "card": {
+      "$type": "shadow",
+      "$value": "0 1px 3px rgba(9, 9, 11, 0.04), 0 4px 12px -2px rgba(9, 9, 11, 0.02)",
+      "$description": "Crisp card elevation"
+    },
+    "float": {
+      "$type": "shadow",
+      "$value": "0 4px 16px -2px rgba(9, 9, 11, 0.08)",
+      "$description": "Sticky bottom bar and floating back-to-top button"
+    }
+  },
+  "layout": {
+    "pageMax": {
+      "$type": "dimension",
+      "$value": "1080px",
+      "$description": "Maximum page container constraint"
+    },
+    "quizMax": {
+      "$type": "dimension",
+      "$value": "680px",
+      "$description": "Optimal eye-span single-column testing width"
+    },
+    "readingMeasure": {
+      "$type": "dimension",
+      "$value": "65ch",
+      "$description": "Optimal typographic reading line length"
+    },
+    "headerHeight": {
+      "$type": "dimension",
+      "$value": "52px",
+      "$description": "Slim, minimal top navigation bar"
+    },
+    "subnavHeight": {
+      "$type": "dimension",
+      "$value": "42px",
+      "$description": "Secondary week pagination bar"
+    },
+    "touchMin": {
+      "$type": "dimension",
+      "$value": "48px",
+      "$description": "WCAG 2.5.5 and Apple HIG standard minimum touch target"
+    }
+  },
+  "motion": {
+    "duration": {
+      "instant": {
+        "$type": "duration",
+        "$value": "0ms",
+        "$description": "Immediate state changes without visual latency"
+      },
+      "press": {
+        "$type": "duration",
+        "$value": "90ms",
+        "$description": "Immediate tap and active press feedback"
+      },
+      "fast": {
+        "$type": "duration",
+        "$value": "150ms",
+        "$description": "Micro button hovers, radio selections, and focus rings"
+      },
+      "normal": {
+        "$type": "duration",
+        "$value": "220ms",
+        "$description": "Icon pop animation and modal reveals"
+      },
+      "slow": {
+        "$type": "duration",
+        "$value": "360ms",
+        "$description": "Accordion expansions, drawer toggles, and rationale progress"
+      },
+      "vtOut": {
+        "$type": "duration",
+        "$value": "150ms",
+        "$description": "View transition element exit duration"
+      },
+      "vtIn": {
+        "$type": "duration",
+        "$value": "280ms",
+        "$description": "View transition element entrance duration"
+      },
+      "pulse": {
+        "$type": "duration",
+        "$value": "1600ms",
+        "$description": "Deep-link target indicator pulse duration"
+      }
+    },
+    "easing": {
+      "out": {
+        "$type": "cubicBezier",
+        "$value": [
+          0.16,
+          1,
+          0.3,
+          1
+        ],
+        "$description": "Snappy exponential out curve — instant response with smooth landing"
+      },
+      "standard": {
+        "$type": "cubicBezier",
+        "$value": [
+          0.4,
+          0,
+          0.2,
+          1
+        ],
+        "$description": "Standard material transition curve"
+      },
+      "pop": {
+        "$type": "cubicBezier",
+        "$value": [
+          0.34,
+          1.56,
+          0.64,
+          1
+        ],
+        "$description": "Light overshoot bounce for feedback icons"
+      }
+    },
+    "amplitude": {
+      "move": {
+        "$type": "dimension",
+        "$value": "8px",
+        "$description": "Displacement amplitude for entrances"
+      },
+      "popFrom": {
+        "$type": "number",
+        "$value": 0.8,
+        "$description": "Scale amplitude for feedback pops"
+      },
+      "press": {
+        "$type": "number",
+        "$value": 0.985,
+        "$description": "Compression amplitude for tap feedback"
+      }
+    }
+  },
+  "breakpoint": {
+    "compact": {
+      "$type": "dimension",
+      "$value": "400px",
+      "$description": "Narrow mobile viewports (down to 320px)"
+    },
+    "mobile": {
+      "$type": "dimension",
+      "$value": "640px",
+      "$description": "Standard mobile devices"
+    },
+    "tablet": {
+      "$type": "dimension",
+      "$value": "840px",
+      "$description": "Tablet viewports and dual-column layouts"
+    },
+    "wide": {
+      "$type": "dimension",
+      "$value": "1040px",
+      "$description": "Desktop viewing"
+    }
+  },
+  "zIndex": {
+    "base": {
+      "$type": "number",
+      "$value": 1
+    },
+    "sticky-sub": {
+      "$type": "number",
+      "$value": 30
+    },
+    "header": {
+      "$type": "number",
+      "$value": 40
+    },
+    "fab": {
+      "$type": "number",
+      "$value": 45
+    },
+    "fixed-bar": {
+      "$type": "number",
+      "$value": 50
+    },
+    "modal": {
+      "$type": "number",
+      "$value": 80
+    },
+    "skip-link": {
+      "$type": "number",
+      "$value": 100
+    }
+  }
+}
+  </script>
 </head>
 <body>
+  <div class="reading-progress-track" aria-hidden="true"><div class="reading-progress-bar"></div></div>
   <a href="#app" class="skip-link">Skip to content</a>
 
   <header class="site-header">
@@ -1597,7 +3999,10 @@
             Quiz
           </a>
         </nav>
-        <button id="theme-btn" class="icon-btn" aria-label="Toggle dark mode">
+        <button id="motion-btn" class="icon-btn" aria-label="Toggle reduced motion" title="Toggle reduced motion">
+          <span id="motion-icon-wrap"></span>
+        </button>
+        <button id="theme-btn" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">
           <span id="theme-icon-wrap"></span>
         </button>
       </div>
@@ -1609,6 +4014,37 @@
   </nav>
 
   <main id="app" tabindex="-1"></main>
+
+  <dialog id="shortcuts-dialog" class="shortcuts-dialog" aria-labelledby="shortcuts-title">
+    <div class="shortcuts-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 id="shortcuts-title" style="font-size:1.125rem; font-weight:600; margin:0;">Keyboard Shortcuts</h3>
+        <button id="btn-close-shortcuts" class="icon-btn" aria-label="Close shortcuts" style="width:32px; height:32px; font-size:1rem; cursor:pointer;">✕</button>
+      </div>
+      <div class="shortcuts-grid">
+        <div class="shortcut-row">
+          <span>Select quiz option</span>
+          <div><kbd class="kbd">1</kbd>–<kbd class="kbd">4</kbd> / <kbd class="kbd">A</kbd>–<kbd class="kbd">D</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <span>Check answer / Next</span>
+          <div><kbd class="kbd">Enter</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <span>Next / Previous question</span>
+          <div><kbd class="kbd">←</kbd> <kbd class="kbd">→</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <span>Toggle shortcuts</span>
+          <div><kbd class="kbd">?</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <span>Dismiss dialog</span>
+          <div><kbd class="kbd">Esc</kbd></div>
+        </div>
+      </div>
+    </div>
+  </dialog>
 
   <div id="live" class="sr-only" aria-live="polite"></div>
 
@@ -1811,7 +4247,7 @@
           { id: "c8-3", term: "Ecological Roles: Keystone and Umbrella Species", body: "Keystone species exert disproportionate regulatory control over ecosystem structure relative to their numerical abundance. The Asian elephant functions simultaneously as an umbrella species (large range), keystone species (forest engineer), and flagship species (charismatic cultural icon).", covers: ["w8q3", "w8q10"] },
           { id: "c8-4", term: "Challenges of Ex-situ Conservation", body: "While ex-situ programs preserve critical germplasm, they face operational drawbacks: captive-bred individuals may struggle to adapt, forage, or avoid predators upon reintroduction to the wild.", covers: ["w8q5"] },
           { id: "c8-5", term: "Species-Area Relationship and Biomagnification", body: "In the fundamental species-area relationship, 'S' denotes total species richness. Biomagnification occurs when persistent synthetic contaminants like DDD increase in concentration at successively higher trophic feeding levels.", covers: ["w8q6", "w8q7"] },
-          { id: "c8-6", term: "Reserve Prioritisation and the HIPPO Framework", body: "Conservation planning often prioritises regions where the level of human threat is very low to safeguard pristine habitats before degradation begins. The classic threat acronym HIPPO stands for Habitat loss, Invasive species, Pollution, Population growth, and Overharvesting.", trap: "In the HIPPO acronym, P stands for Pollution and Population, while pollination is an ecosystem service, not a threat.", covers: ["w8q8", "w8q9"] }
+          { id: "c8-6", term: "Reserve Prioritisation and the HIPPO Framework", body: "Conservation planning often prioritises regions where the level of human threat is medium to optimize conservation effectiveness where intervention is most needed and viable. The classic threat acronym HIPPO stands for Habitat loss, Invasive species, Pollution, Population growth, and Overharvesting.", trap: "In the HIPPO acronym, P stands for Pollution and Population, while pollination is an ecosystem service, not a threat.", covers: ["w8q8", "w8q9"] }
         ],
         questions: [
           { id: "w8q1", n: 1, q: "Which of the following is listed as an ex-situ conservation method?", options: ["Wildlife sanctuary", "National park", "Seed bank", "Biosphere reserve"], answer: 2, why: "A seed bank preserves plant germplasm off-site (ex-situ), whereas sanctuaries, national parks, and biosphere reserves protect species in their natural habitats (in-situ)." },
@@ -1821,7 +4257,7 @@
           { id: "w8q5", n: 5, q: "Which of the following is a disadvantage of ex-situ conservation?", options: ["It always protects the natural habitat of the species", "Captive-bred individuals may find reintroduction difficult", "It prevents all inbreeding risks automatically", "It can be planned for all species at the same time"], answer: 1, why: "A major drawback of ex-situ conservation is that individuals bred in captivity often struggle with foraging, predator avoidance, and acclimatisation upon release." },
           { id: "w8q6", n: 6, q: "In the species-area relationship, what does “S” represent?", options: ["Size of the habitat", "Species richness", "Survival rate", "Stochastic pressure"], answer: 1, why: "In the mathematical species-area equation (S = c * A^z), 'S' denotes species richness (the number of species)." },
           { id: "w8q7", n: 7, q: "In the Clear Lake example, DDD concentration increased from water to plankton, fish, and piscivorous birds. This illustrates", options: ["ecological redundancy", "habitat selection", "biomagnification", "ex-situ management"], answer: 2, why: "Biomagnification is the progressive accumulation and concentration of persistent toxins at successively higher trophic levels." },
-          { id: "w8q8", n: 8, q: "We prefer those areas for the creation of a conservation reserve where the level of threat is", options: ["very high", "medium", "very low", "non-existent"], answer: 2, why: "In conservation planning assignment keys, areas with very low levels of threat are preferred for reserve creation to secure stable, viable habitats." },
+          { id: "w8q8", n: 8, q: "We prefer those areas for the creation of a conservation reserve where the level of threat is", options: ["very high", "medium", "very low", "non-existent"], answer: 1, why: "In systematic conservation planning, areas with medium threat levels are preferred for reserve creation because areas under low threat are already safe (low vulnerability), while high-threat areas may be too degraded; medium threat maximizes conservation return on investment." },
           { id: "w8q9", n: 9, q: "The acronym HIPPO does not include", options: ["habitat loss", "invasive species", "pollination", "pollution"], answer: 2, why: "HIPPO stands for Habitat loss, Invasive species, Pollution, Population growth, and Overharvesting. Pollination is an ecological process, not a threat." },
           { id: "w8q10", n: 10, q: "The elephant has a home range of several square kilometres, regulates the ecosystem by its habit of destructive feeding, and people can relate to this animal which is important for conservation. Given this background, the elephant can be called as", options: ["umbrella species", "keystone species", "flagship species", "all of the above"], answer: 3, why: "The elephant acts as an umbrella species (large range), keystone species (ecosystem modifier), and flagship species (charismatic cultural appeal)." }
         ]
@@ -1857,7 +4293,7 @@
         bigIdea: "Resource classification delineates reserves, potentials, and stocks across modern agriculture, forestry, and industry. Understanding anthropogenic emissions of nitrogen oxides and ammonia is critical for curbing environmental degradation.",
         concepts: [
           { id: "c10-1", term: "Deforestation and Soil Carbon Release", body: "Clearing forests contributes to carbon emissions not only from the combustion or harvesting of woody biomass, but also through rapid oxidation and breakdown of organic matter stored within the topsoil.", covers: ["w10q1"] },
-          { id: "c10-2", term: "Resource Typology: Potential, Reserve, and Stock", body: "Resources are categorized by availability and technological feasibility. Potential resources include untapped oil and fusion hydrogen; reserve resources are identified deposits held for the future; and stock resources are materials surveyed but currently unusable due to lack of technology.", covers: ["w10q2", "w10q4", "w10q6", "w10q7"] },
+          { id: "c10-2", term: "Resource Typology: Potential, Reserve, and Stock", body: "Resources are categorized by availability and technological feasibility. Potential resources include untapped oil; reserve resources are identified deposits held for the future; and stock resources are materials surveyed but currently unusable due to lack of technology, such as hydrogen for nuclear fusion.", covers: ["w10q2", "w10q4", "w10q6", "w10q7"] },
           { id: "c10-3", term: "Infrastructure and Deforestation in Rondônia", body: "In the Brazilian Amazon state of Rondônia, highway and feeder road construction accelerated deforestation primarily by enabling easier human settlement, logging access, and agricultural expansion into previously impenetrable forest.", covers: ["w10q3"] },
           { id: "c10-4", term: "Cropland vs Livestock Calorie Output", body: "Although dedicated cropland accounts for a significantly smaller land footprint than grazing pastures, it generates the vast majority of the global human calorie supply directly.", covers: ["w10q5"] },
           { id: "c10-5", term: "Atmospheric Pollutants: Nitrogen Oxides and Ammonia", body: "Anthropogenic emissions vary distinctly by source: mobile sources like vehicular transport are the primary emitter of nitrogen oxides, whereas livestock animal manure is the predominant global source of atmospheric ammonia.", covers: ["w10q8", "w10q10"] },
@@ -1865,7 +4301,7 @@
         ],
         questions: [
           { id: "w10q1", n: 1, q: "When forests are cleared, carbon may be released not only from removed wood but also from", options: ["ocean sediments", "glaciers", "soil organic matter", "desert sand"], answer: 2, why: "Clearing forests exposes topsoil, causing rapid decomposition and release of stored carbon from soil organic matter." },
-          { id: "w10q2", n: 2, q: "Hydrogen for nuclear fusion comes under the category of", options: ["potential resources", "actual resources", "reserve resources", "stock resources"], answer: 0, why: "In resource classification schemes where unutilized energy sources with future potential are grouped as potential resources, hydrogen for nuclear fusion is categorized as a potential resource." },
+          { id: "w10q2", n: 2, q: "Hydrogen for nuclear fusion comes under the category of", options: ["potential resources", "actual resources", "reserve resources", "stock resources"], answer: 3, why: "Hydrogen for nuclear fusion is categorized as a stock resource because although hydrogen holds tremendous potential to satisfy energy needs, humanity does not currently possess the required commercial technology to harness controlled nuclear fusion." },
           { id: "w10q3", n: 3, q: "In the Rondonia rainforest example, road construction mainly contributed to forest loss by", options: ["increasing rainfall in cleared patches", "allowing easier human access into forest areas", "preventing agricultural plots from forming", "converting cropland back into forest"], answer: 1, why: "Road building in Rondônia provided access penetration corridors that facilitated logging, land clearance, and agricultural settlement." },
           { id: "w10q4", n: 4, q: "Oil that has not been drilled can be categorised under", options: ["potential resources", "actual resources", "reserve resources", "stock resources"], answer: 0, why: "Oil reserves that have been identified and estimated but not yet extracted or drilled are categorized as potential resources." },
           { id: "w10q5", n: 5, q: "Although cropland uses a smaller share of agricultural land than livestock, it contributes more to", options: ["global calorie supply", "mineral extraction", "groundwater recharge", "built-up land expansion"], answer: 0, why: "Direct human food crops on arable land produce the majority of global dietary energy and calories despite using less acreage than livestock pasture." },
@@ -1938,6 +4374,7 @@
     let store = {
       v: 1,
       theme: "light",
+      pack: "mono",
       mode: "practice",
       lastRoute: "#/learn/1",
       mixedCount: 20,
@@ -1993,13 +4430,17 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed && parsed.v === 1) {
+          if (parsed && typeof parsed === "object") {
             store = Object.assign(store, parsed);
           }
         }
       } catch (e) {
         console.warn("Storage read failed; fallback in-memory.", e);
       }
+      if (!store.pack || typeof store.pack !== "string") store.pack = "mono";
+      if (!Array.isArray(store.missed)) store.missed = [];
+      if (!store.best || typeof store.best !== "object") store.best = {};
+      if (!store.attempts || typeof store.attempts !== "object") store.attempts = {};
     }
 
     function saveStore() {
@@ -2019,12 +4460,12 @@
       const seenQids = new Set();
       const coveredQids = new Set();
 
-      WEEKS.forEach((w, wIdx) => {
+      (WEEKS || []).forEach((w, wIdx) => {
         if (w.id !== wIdx + 1) errors.push(`Week index mismatch for week id ${w.id}`);
         if (!Array.isArray(w.questions) || w.questions.length !== 10) {
           errors.push(`Week ${w.id} has ${w.questions ? w.questions.length : 0} questions (expected 10)`);
         }
-        w.questions.forEach((q, qIdx) => {
+        (w.questions || []).forEach(q => {
           if (seenQids.has(q.id)) errors.push(`Duplicate question id: ${q.id}`);
           seenQids.add(q.id);
           if (!Array.isArray(q.options) || q.options.length !== 4) {
@@ -2037,7 +4478,7 @@
         if (!Array.isArray(w.concepts) || w.concepts.length < 5) {
           errors.push(`Week ${w.id} has insufficient concepts (${w.concepts ? w.concepts.length : 0})`);
         }
-        w.concepts.forEach(c => {
+        (w.concepts || []).forEach(c => {
           if (Array.isArray(c.covers)) {
             c.covers.forEach(id => coveredQids.add(id));
           }
@@ -2050,13 +4491,19 @@
         }
       });
 
+      coveredQids.forEach(qid => {
+        if (!seenQids.has(qid)) {
+          errors.push(`Concept covers references unknown question ID: ${qid}`);
+        }
+      });
+
       if (errors.length > 0) {
         console.error("Data validation failed:", errors);
         const app = document.getElementById("app");
         if (app) {
           app.innerHTML = `
             <div class="container" style="padding: 24px;">
-              <div style="background: #F8D7DA; color: #721C24; padding: 20px; border-radius: 8px; border: 1px solid #F5C6CB;">
+              <div style="background: var(--wrong-tint); color: var(--wrong); padding: 20px; border-radius: var(--radius-lg); border: 1px solid var(--wrong);">
                 <h2 style="font-family: monospace; font-size: 1.25rem; margin-bottom: 8px;">Data Validation Error</h2>
                 <ul style="padding-left: 20px;">
                   ${errors.map(err => `<li>${esc(err)}</li>`).join("")}
@@ -2078,7 +4525,9 @@
       arrowRight: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`,
       arrowLeft: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>`,
       arrowUp: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>`,
-      chevronDown: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>`
+      chevronDown: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>`,
+      motionNormal: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>`,
+      motionReduced: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="10" y1="15" x2="10" y2="9"></line><line x1="14" y1="15" x2="14" y2="9"></line></svg>`
     };
 
     /* 5. TEMPLATES & VIEWS */
@@ -2200,8 +4649,8 @@
                 const isTarget = (highlightQid === q.id);
 
                 return `
-                  <article class="learn-q-card ${isTarget ? 'highlight' : ''}" id="q-${q.id}" data-qid="${q.id}">
-                    <div class="learn-q-top-row">
+                  <article class="learn-q-card q-card ${isTarget ? 'highlight' : ''}" id="q-${q.id}" data-qid="${q.id}">
+                    <div class="learn-q-top-row q-meta-bar">
                       <span class="mono-label learn-q-num">QUESTION ${q.n} OF 10</span>
                       ${relatedConcept ? `
                         <button type="button" class="learn-q-topic" data-jump-to="concept-${relatedConcept.id}" title="Jump to concept notes">
@@ -2210,14 +4659,14 @@
                       ` : ''}
                     </div>
 
-                    <h3 class="learn-q-stem">${esc(q.q)}</h3>
+                    <h3 class="learn-q-stem q-stem">${esc(q.q)}</h3>
 
-                    <div class="learn-options-list">
+                    <div class="learn-options-list opt-list">
                       ${q.options.map((opt, oIdx) => {
                         const isCorrect = (oIdx === q.answer);
                         return `
-                          <div class="learn-opt-item ${isCorrect ? 'is-correct' : 'is-other'}">
-                            <span class="learn-opt-badge">${letters[oIdx]}</span>
+                          <div class="learn-opt-item opt-item ${isCorrect ? 'is-correct' : 'is-other'}">
+                            <span class="learn-opt-badge opt-key">${letters[oIdx]}</span>
                             <span class="learn-opt-text">${esc(opt)}</span>
                             ${isCorrect ? `
                               <span class="learn-correct-pill">
@@ -2229,15 +4678,15 @@
                       }).join("")}
                     </div>
 
-                    <div class="learn-rationale-card">
+                    <div class="learn-rationale-card rationale-drawer is-open">
                       <div class="learn-rationale-header">
                         ${ICONS.check}
                         <span>CORRECT ANSWER: ${correctLetter} — ${esc(correctText)}</span>
                       </div>
                       <p class="learn-rationale-text">${esc(q.why)}</p>
                       ${relatedConcept && relatedConcept.trap ? `
-                        <div class="learn-trap-note">
-                          <span class="trap-label">WATCH OUT</span>
+                        <div class="learn-trap-note trap-callout">
+                          <span class="trap-label trap-callout-label">WATCH OUT</span>
                           <div>${esc(relatedConcept.trap)}</div>
                         </div>
                       ` : ''}
@@ -2291,7 +4740,7 @@
                   ${week.concepts.map(c => {
                     const coversList = c.covers || [];
                     const coversAttr = coversList.join(" ");
-                    const isTarget = highlightQid && coversList.includes(highlightQid);
+                    const isTarget = highlightQid && (c.id === highlightQid || coversList.includes(highlightQid));
 
                     return `
                       <article class="concept-card ${isTarget ? 'highlight' : ''}" id="concept-${c.id}" data-covers="${coversAttr}">
@@ -2398,14 +4847,44 @@
         : (kind === "mixed" ? "Mixed Practice Quiz" : "Retry Missed Questions");
 
       const label = kind === "week" ? `WEEK ${weekPad} / 12` : "TEST PRACTICE";
+      const missedCount = (store.missed || []).length;
       const desc = kind === "week" 
         ? "10 multiple-choice questions from this week's assignments." 
         : (kind === "mixed" 
             ? "Random sample of questions drawn from all 12 course weeks."
-            : `Retry questions you previously answered incorrectly (${store.missed.length} available).`);
+            : (missedCount === 0 
+                ? "You currently have no recorded missed questions."
+                : `Retry questions you previously answered incorrectly (${missedCount} available).`));
 
       const currentMode = store.mode || "practice";
-      const missedCount = store.missed.length;
+
+      if (kind === "missed" && missedCount === 0) {
+        return `
+          <div class="container quiz-column">
+            <section class="card hero">
+              <div class="mono-label">FOCUSED REVIEW</div>
+              <h1>Retry Missed Questions</h1>
+              <p style="margin-bottom: 20px; color: var(--muted);">
+                You currently have no recorded missed questions! As you take week quizzes and mixed practice sets, any questions answered incorrectly will automatically accumulate here for targeted revision.
+              </p>
+              <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <a href="#/learn/1" class="btn btn-primary">Start Learning (Week 1) ${ICONS.arrowRight}</a>
+                <a href="#/quiz/mixed" class="btn btn-secondary">Try Mixed Practice</a>
+              </div>
+            </section>
+          </div>
+        `;
+      }
+
+      const hasActiveSession = Boolean(
+        store.activeQuiz &&
+        store.activeQuiz.kind === kind &&
+        (!weekId || store.activeQuiz.weekId === weekId) &&
+        Array.isArray(store.activeQuiz.ids) &&
+        !store.activeQuiz.finished
+      );
+      const activeIdx = hasActiveSession ? (typeof store.activeQuiz.idx === "number" ? store.activeQuiz.idx : 0) : 0;
+      const activeTotal = hasActiveSession ? store.activeQuiz.ids.length : 10;
 
       return `
         <div class="container quiz-column">
@@ -2418,28 +4897,40 @@
             <div style="margin-bottom: 24px;">
               <div class="mono-label" style="margin-bottom: 8px;">SELECT QUIZ MODE</div>
               <div class="start-modes">
-                <div class="mode-card ${currentMode === 'practice' ? 'selected' : ''}" data-set-mode="practice" role="radio" aria-checked="${currentMode === 'practice'}" tabindex="0">
-                  <input type="radio" name="quiz_mode" value="practice" class="mode-radio" ${currentMode === 'practice' ? 'checked' : ''} tabindex="-1">
+                <button type="button" class="mode-card ${currentMode === 'practice' ? 'selected' : ''}" data-set-mode="practice" role="radio" aria-checked="${currentMode === 'practice'}">
+                  <span class="mode-radio-circle" aria-hidden="true"></span>
                   <div>
                     <div class="mode-title">Practice Mode</div>
                     <div class="mode-desc">Check each answer immediately and read the rationale.</div>
                   </div>
-                </div>
-                <div class="mode-card ${currentMode === 'exam' ? 'selected' : ''}" data-set-mode="exam" role="radio" aria-checked="${currentMode === 'exam'}" tabindex="0">
-                  <input type="radio" name="quiz_mode" value="exam" class="mode-radio" ${currentMode === 'exam' ? 'checked' : ''} tabindex="-1">
+                </button>
+                <button type="button" class="mode-card ${currentMode === 'exam' ? 'selected' : ''}" data-set-mode="exam" role="radio" aria-checked="${currentMode === 'exam'}">
+                  <span class="mode-radio-circle" aria-hidden="true"></span>
                   <div>
                     <div class="mode-title">Exam Mode</div>
                     <div class="mode-desc">Answers and full explanations revealed at the end.</div>
                   </div>
-                </div>
+                </button>
               </div>
             </div>
 
-            <div style="display: flex; gap: 12px; align-items: center;">
+            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
               <button id="btn-start-quiz" class="btn btn-primary" data-start-kind="${kind}" data-start-week="${weekId || 1}">
-                Start Quiz ${ICONS.arrowRight}
+                ${hasActiveSession ? `Resume Quiz (Q${activeIdx + 1} of ${activeTotal})` : 'Start Quiz'} ${ICONS.arrowRight}
               </button>
+              ${hasActiveSession ? `
+                <button type="button" id="btn-restart-quiz" class="btn btn-secondary" data-start-kind="${kind}" data-start-week="${weekId || 1}">
+                  Start Quiz from Q1
+                </button>
+              ` : ''}
               ${kind === "week" ? `<a href="#/learn/${week.id}" class="btn btn-ghost">Review notes</a>` : ""}
+            </div>
+
+            <div style="margin-top: 14px;">
+              <label class="vibrate-setting-row" style="display:inline-flex; align-items:center; gap:8px; font-size:0.875rem; color:var(--text-secondary); cursor:pointer;">
+                <input type="checkbox" id="toggle-vibrate" ${store.vibrate !== false ? 'checked' : ''} style="width:16px; height:16px; accent-color:var(--primary);">
+                <span>Haptic feedback on answers (Android)</span>
+              </label>
             </div>
           </section>
 
@@ -2504,14 +4995,14 @@
       const isMixedOrMissed = quiz.kind !== "week";
 
       return `
-        <div class="container quiz-column quiz-container">
+        <div class="container quiz-column quiz-container q-card">
           <div class="quiz-progress-wrap">
-            <div class="quiz-meta-row">
+            <div class="quiz-meta-row q-meta-bar">
               <span class="mono-label">Q ${currentNum} / ${total}</span>
               ${quiz.mode === "practice" ? `<span class="mono-label">${correctSoFar} correct</span>` : ""}
             </div>
             <div class="progress-track" role="progressbar" aria-valuenow="${answeredCount}" aria-valuemin="0" aria-valuemax="${total}">
-              <div class="progress-fill" style="width: ${progressPct}%;"></div>
+              <div class="progress-fill" style="--p: ${total > 0 ? (answeredCount / total).toFixed(4) : 0};"></div>
             </div>
           </div>
 
@@ -2519,58 +5010,75 @@
             <div class="mono-label" style="color: var(--primary);">SOURCE: WEEK ${week.id} · Q${q.n}</div>
           ` : ""}
 
-          <h2 class="question-stem" id="q-stem" tabindex="-1">${esc(q.q)}</h2>
+          <h2 class="question-stem q-stem" id="q-stem" tabindex="-1">${esc(q.q)}</h2>
 
-          <div class="options-group" role="radiogroup" aria-labelledby="q-stem">
+          <div class="options-group opt-list" role="radiogroup" aria-labelledby="q-stem">
             ${q.options.map((optText, oIdx) => {
               const letter = ["A", "B", "C", "D"][oIdx];
-              let optClass = "opt-label";
+              let optClass = "opt opt-item opt-label";
               let iconHtml = "";
+              const isEliminated = quiz.eliminated && Array.isArray(quiz.eliminated[qid]) && quiz.eliminated[qid].includes(oIdx);
 
-              if (selectedIdx === oIdx) optClass += " selected";
+              if (selectedIdx === oIdx) optClass += " is-selected selected";
               if (isChecked) {
                 optClass += " locked";
                 if (oIdx === q.answer) {
-                  optClass += " correct";
-                  iconHtml = `<span class="opt-feedback-icon" style="color: var(--correct);">${ICONS.check}<span class="sr-only">Correct</span></span>`;
+                  if (selectedIdx === oIdx) {
+                    optClass += " is-correct correct";
+                    iconHtml = `<span class="opt-feedback-icon" style="color: var(--correct);">${ICONS.check}<span class="sr-only">Verified Correct</span></span>`;
+                  } else {
+                    optClass += " is-missed-correct";
+                    iconHtml = `<span class="opt-feedback-icon" style="color: var(--correct);">${ICONS.check}<span class="sr-only">Missed Correct (Unchosen)</span></span>`;
+                  }
                 } else if (selectedIdx === oIdx) {
-                  optClass += " wrong";
-                  iconHtml = `<span class="opt-feedback-icon" style="color: var(--wrong);">${ICONS.cross}<span class="sr-only">Your answer</span></span>`;
+                  optClass += " is-wrong wrong";
+                  iconHtml = `<span class="opt-feedback-icon" style="color: var(--wrong);">${ICONS.cross}<span class="sr-only">Verified Wrong (Chosen)</span></span>`;
                 } else {
                   optClass += " dimmed";
+                }
+              } else {
+                if (isEliminated) {
+                  optClass += " is-eliminated";
                 }
               }
 
               return `
-                <label class="${optClass}" data-opt-idx="${oIdx}">
+                <label class="${optClass}" data-opt-idx="${oIdx}" style="--i: ${oIdx};" title="${!isChecked ? 'Click to select, right-click to eliminate/cross out' : ''}">
                   <input type="radio" name="opt" value="${oIdx}" class="sr-only" ${selectedIdx === oIdx ? 'checked' : ''} ${isChecked ? 'disabled' : ''}>
-                  <span class="opt-badge">${letter}</span>
+                  <span class="opt-key opt-badge">${letter}</span>
                   <span class="opt-text">${esc(optText)}</span>
+                  <span class="opt-key-hint" aria-hidden="true">[${letter}]</span>
                   ${iconHtml}
+                  ${!isChecked ? `
+                    <button type="button" class="btn-eliminate-toggle" data-eliminate-idx="${oIdx}" title="Cross out / restore option (Process of elimination)" aria-label="Cross out option ${letter}">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"></line></svg>
+                    </button>
+                  ` : ''}
                 </label>
               `;
-            }).join("")}
-          </div>
+            }).join("")}</div>
 
           ${isChecked && quiz.mode === "practice" ? `
-            <div class="explanation-panel ${selectedIdx === q.answer ? 'is-correct' : 'is-wrong'}">
-              <div class="exp-status" style="color: ${selectedIdx === q.answer ? 'var(--correct)' : 'var(--wrong)'};">
-                ${selectedIdx === q.answer ? 'Correct' : 'Not quite'}
-              </div>
-              <div class="exp-answer">
-                Answer: ${["A","B","C","D"][q.answer]} — ${esc(q.options[q.answer])}
-              </div>
-              <p class="exp-why">${esc(q.why)}</p>
+            <div class="explanation-panel rationale-drawer rationale is-open ${selectedIdx === q.answer ? 'is-correct' : 'is-wrong'}">
               <div>
-                <a href="#/learn/${week.id}/${q.id}" class="btn-ghost" style="font-size: 0.875rem; text-decoration: underline;">
-                  Open in notes (Week ${week.id})
-                </a>
+                <div class="exp-status" style="color: ${selectedIdx === q.answer ? 'var(--correct)' : 'var(--wrong)'};">
+                  ${selectedIdx === q.answer ? 'Correct' : 'Not quite'}
+                </div>
+                <div class="exp-answer">
+                  Answer: ${["A","B","C","D"][q.answer]} — ${esc(q.options[q.answer])}
+                </div>
+                <p class="exp-why">${esc(q.why)}</p>
+                <div>
+                  <a href="#/learn/${week.id}/${q.id}" class="btn-ghost" style="font-size: 0.875rem; text-decoration: underline;">
+                    Open in notes (Week ${week.id})
+                  </a>
+                </div>
               </div>
             </div>
           ` : ""}
 
           ${quiz.submitPrompt ? `
-            <div style="background: var(--surface-2); border: 1px solid var(--wrong); padding: 16px; border-radius: 10px; margin-bottom: 20px;">
+            <div style="background: var(--wrong-tint); border: 1px solid var(--wrong); padding: 16px; border-radius: var(--radius-lg); margin-bottom: 20px;">
               <p style="font-weight: 500; margin-bottom: 12px; color: var(--wrong);">
                 ${total - answeredCount} unanswered question${(total - answeredCount) > 1 ? 's' : ''} — submit anyway?
               </p>
@@ -2604,7 +5112,7 @@
                   Submit
                 </button>
               ` : `
-                <button id="btn-next-question" class="btn btn-primary" ${selectedIdx === undefined ? 'disabled' : ''}>
+                <button id="btn-next-question" class="btn btn-primary">
                   Next ${ICONS.arrowRight}
                 </button>
               `
@@ -2632,7 +5140,7 @@
         }
       });
 
-      const pct = Math.round((score / total) * 100);
+      const pct = total > 0 ? Math.round((score / total) * 100) : 0;
       let verdict = "Revisit the notes first.";
       if (pct >= 90) verdict = "Excellent. You're set.";
       else if (pct >= 70) verdict = "Good. Review the misses.";
@@ -2650,22 +5158,35 @@
             <div class="score-ring-wrap">
               <svg class="score-ring-svg" viewBox="0 0 120 120" aria-hidden="true">
                 <circle cx="60" cy="60" r="52" fill="none" stroke="var(--surface-2)" stroke-width="10" />
-                <circle cx="60" cy="60" r="52" fill="none" stroke="var(--primary)" stroke-width="10"
-                        stroke-linecap="round" stroke-dasharray="${strokeDash}" />
+                <circle class="score-ring-circle" cx="60" cy="60" r="52" fill="none" stroke="var(--primary)" stroke-width="10"
+                        stroke-linecap="round" stroke-dasharray="${strokeDash}" style="opacity: ${pct === 0 ? 0 : 1}; --target-dashoffset: ${(1 - pct / 100) * circumference}px;" />
               </svg>
               <div class="score-ring-text">
                 <span class="score-num">${score}/${total}</span>
                 <span class="score-pct">${pct}%</span>
               </div>
             </div>
+            ${pct === 100 ? `
+              <div class="score-perfect-badge" style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-family: var(--font-display); color: var(--correct);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path class="score-check-path" d="M20 6L9 17l-5-5"></path>
+                </svg>
+                <span>Mastery: Perfect Score!</span>
+              </div>
+            ` : ''}
             <div class="verdict-line">${esc(verdict)}</div>
             <div class="results-actions">
-              <button id="btn-retry-quiz" class="btn btn-primary">Retry quiz</button>
-              ${quiz.kind === "week" ? `
-                <a href="#/learn/${quiz.weekId}" class="btn btn-secondary">Review notes</a>
-                ${nextWeekId ? `<a href="#/learn/${nextWeekId}" class="btn btn-ghost">Next week (W${nextWeekId})</a>` : ''}
+              ${quiz.kind === "missed" && (store.missed || []).length === 0 ? `
+                <a href="#/learn/1" class="btn btn-primary">Start Learning (Week 1) ${ICONS.arrowRight}</a>
+                <button id="btn-retry-quiz" class="btn btn-secondary">Practice this set again</button>
               ` : `
-                <a href="#/quiz/${quiz.kind}" class="btn btn-secondary">New ${quiz.kind} set</a>
+                <button id="btn-retry-quiz" class="btn btn-primary">Retry quiz</button>
+                ${quiz.kind === "week" ? `
+                  <a href="#/learn/${quiz.weekId}" class="btn btn-secondary">Review notes</a>
+                  ${nextWeekId ? `<a href="#/learn/${nextWeekId}" class="btn btn-ghost">Next week (W${nextWeekId})</a>` : ''}
+                ` : `
+                  <button type="button" class="btn btn-secondary" data-action="new-quiz-set" data-kind="${quiz.kind}">New ${quiz.kind} set</button>
+                `}
               `}
             </div>
           </section>
@@ -2753,6 +5274,7 @@
 
       // Update segmented nav links & theme button icon
       updateThemeIcon();
+      updateMotionIcon();
 
       let activeWeekId = 1;
 
@@ -2851,15 +5373,26 @@
             if (stem) stem.focus();
           }
         }
+        if (param1 === "mixed" || param1 === "missed") {
+          store.lastRoute = `#/quiz/${param1}`;
+        } else {
+          store.lastRoute = `#/quiz/${activeWeekId}`;
+        }
+        saveStore();
         window.scrollTo(0, 0);
         app.focus();
+      } else {
+        window.location.hash = store.lastRoute || "#/learn/1";
+        return;
       }
     }
 
     /* 7. QUIZ ENGINE & STATE MANAGEMENT */
-    function startQuiz(kind, weekId) {
+    function startQuiz(kind, weekId, reuseIds) {
       let qids = [];
-      if (kind === "week") {
+      if (reuseIds && Array.isArray(reuseIds) && reuseIds.length > 0) {
+        qids = reuseIds.slice();
+      } else if (kind === "week") {
         const week = WEEKS.find(w => w.id === weekId);
         if (!week) return;
         qids = week.questions.map(q => q.id);
@@ -2870,7 +5403,8 @@
         qids = shuffle(allQuestions).slice(0, count);
       } else if (kind === "missed") {
         if (!store.missed || store.missed.length === 0) return;
-        qids = store.missed.slice();
+        qids = store.missed.filter(id => Boolean(getQuestionById(id)));
+        if (qids.length === 0) return;
       }
 
       state.quiz = {
@@ -2881,11 +5415,93 @@
         idx: 0,
         answers: {},
         checked: {},
+        eliminated: {},
         finished: false,
         submitPrompt: false
       };
 
+      // Resume from saved active quiz if matching session exists
+      if (!reuseIds && store.activeQuiz && store.activeQuiz.kind === kind &&
+          (kind !== "week" || store.activeQuiz.weekId === weekId) &&
+          Array.isArray(store.activeQuiz.ids) && store.activeQuiz.ids.length === qids.length &&
+          !store.activeQuiz.finished) {
+        state.quiz.idx = typeof store.activeQuiz.idx === "number" ? store.activeQuiz.idx : 0;
+        state.quiz.answers = Object.assign({}, store.activeQuiz.answers);
+        state.quiz.checked = Object.assign({}, store.activeQuiz.checked);
+        state.quiz.eliminated = Object.assign({}, store.activeQuiz.eliminated);
+      }
+
+      const targetHash = kind === "week" ? `#/quiz/${weekId}` : `#/quiz/${kind}`;
+      if (window.location.hash !== targetHash) {
+        window.location.hash = targetHash;
+      }
       render();
+    }
+
+    let lastRevealTimestamp = 0;
+
+    function isReducedMotion() {
+      if (typeof document === "undefined") return false;
+      if (document.documentElement && document.documentElement.getAttribute("data-motion") === "reduced") return true;
+      if (typeof window !== "undefined" && window.matchMedia) {
+        try {
+          return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        } catch (e) {}
+      }
+      return false;
+    }
+
+    function transitionRender(callback, direction) {
+      if (typeof document !== "undefined" && typeof document.startViewTransition === "function" && !isReducedMotion()) {
+        try {
+          if (direction) {
+            document.documentElement.setAttribute("data-vt-dir", direction);
+          }
+          const vt = document.startViewTransition(() => {
+            callback();
+          });
+          if (vt && typeof vt.finished !== "undefined" && typeof vt.finished.finally === "function") {
+            vt.finished.finally(() => {
+              document.documentElement.removeAttribute("data-vt-dir");
+            });
+          }
+          return;
+        } catch (e) {}
+      }
+      callback();
+    }
+
+    function triggerHaptic(type) {
+      try {
+        if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function" && store.vibrate !== false) {
+          if (type === "correct") {
+            navigator.vibrate(10);
+          } else {
+            navigator.vibrate([15, 30, 15]);
+          }
+        }
+      } catch (e) {}
+    }
+
+    function toggleMotion() {
+      const current = document.documentElement.getAttribute("data-motion");
+      const next = current === "reduced" ? "default" : "reduced";
+      if (next === "reduced") {
+        document.documentElement.setAttribute("data-motion", "reduced");
+      } else {
+        document.documentElement.removeAttribute("data-motion");
+      }
+      store.motion = next;
+      saveStore();
+      updateMotionIcon();
+      announce(`Motion set to ${next === "reduced" ? "reduced" : "normal"}`);
+    }
+
+    function updateMotionIcon() {
+      const wrap = document.getElementById("motion-icon-wrap");
+      if (!wrap) return;
+      const isReduced = document.documentElement.getAttribute("data-motion") === "reduced";
+      wrap.innerHTML = isReduced ? ICONS.motionReduced : ICONS.motionNormal;
     }
 
     function selectOption(optIdx) {
@@ -2893,18 +5509,37 @@
       const qid = state.quiz.ids[state.quiz.idx];
       if (state.quiz.checked[qid]) return; // locked
 
+      // If this option was eliminated, un-eliminate it when selected
+      if (state.quiz.eliminated && Array.isArray(state.quiz.eliminated[qid])) {
+        state.quiz.eliminated[qid] = state.quiz.eliminated[qid].filter(x => x !== optIdx);
+      }
+
       state.quiz.answers[qid] = optIdx;
 
+      // Local-first persistence: save state immediately on every answer
+      store.activeQuiz = {
+        kind: state.quiz.kind,
+        weekId: state.quiz.weekId,
+        mode: state.quiz.mode,
+        ids: state.quiz.ids,
+        idx: state.quiz.idx,
+        answers: Object.assign({}, state.quiz.answers),
+        checked: Object.assign({}, state.quiz.checked),
+        eliminated: Object.assign({}, state.quiz.eliminated)
+      };
+      saveStore();
+
       // In-place DOM patching to preserve focus & prevent complete re-render
-      const optLabels = document.querySelectorAll(".opt-label");
+      const optLabels = document.querySelectorAll(".opt-label, .opt-item");
       optLabels.forEach(lbl => {
         const idx = parseInt(lbl.getAttribute("data-opt-idx"), 10);
         const radio = lbl.querySelector('input[type="radio"]');
         if (idx === optIdx) {
-          lbl.classList.add("selected");
+          lbl.classList.add("selected", "is-selected");
+          lbl.classList.remove("is-eliminated");
           if (radio) radio.checked = true;
         } else {
-          lbl.classList.remove("selected");
+          lbl.classList.remove("selected", "is-selected");
           if (radio) radio.checked = false;
         }
       });
@@ -2913,6 +5548,72 @@
       if (btnCheck) btnCheck.removeAttribute("disabled");
       const btnNext = document.getElementById("btn-next-question");
       if (btnNext) btnNext.removeAttribute("disabled");
+
+      // Update progress bar in-place on GPU via scaleX(--p)
+      const total = state.quiz.ids.length;
+      const answeredCount = Object.keys(state.quiz.answers).length;
+      const progressRatio = total > 0 ? (answeredCount / total) : 0;
+      const track = document.querySelector(".progress-track");
+      if (track) track.setAttribute("aria-valuenow", answeredCount);
+      const fill = document.querySelector(".progress-fill");
+      if (fill && fill.style) {
+        fill.style.setProperty("--p", progressRatio.toFixed(4));
+      }
+    }
+
+    function toggleEliminate(optIdx) {
+      if (!state.quiz || state.quiz.finished || isNaN(optIdx)) return;
+      const qid = state.quiz.ids[state.quiz.idx];
+      if (state.quiz.checked[qid]) return; // locked
+
+      if (!state.quiz.eliminated) state.quiz.eliminated = {};
+      if (!Array.isArray(state.quiz.eliminated[qid])) {
+        state.quiz.eliminated[qid] = [];
+      }
+      const list = state.quiz.eliminated[qid];
+      const pos = list.indexOf(optIdx);
+      let isElim = false;
+      if (pos >= 0) {
+        list.splice(pos, 1);
+      } else {
+        list.push(optIdx);
+        isElim = true;
+        // If this option was previously selected, remove selection
+        if (state.quiz.answers[qid] === optIdx) {
+          delete state.quiz.answers[qid];
+          const btnCheck = document.getElementById("btn-check-answer");
+          if (btnCheck) btnCheck.setAttribute("disabled", "true");
+          const btnNext = document.getElementById("btn-next-question");
+          if (btnNext) btnNext.setAttribute("disabled", "true");
+        }
+      }
+
+      // In-place DOM patching without scroll jump or focus loss
+      const optLabels = document.querySelectorAll(".opt-label, .opt-item");
+      optLabels.forEach(lbl => {
+        const idx = parseInt(lbl.getAttribute("data-opt-idx"), 10);
+        if (idx === optIdx) {
+          if (isElim) {
+            lbl.classList.add("is-eliminated");
+            lbl.classList.remove("selected", "is-selected");
+            const radio = lbl.querySelector('input[type="radio"]');
+            if (radio) radio.checked = false;
+          } else {
+            lbl.classList.remove("is-eliminated");
+          }
+        }
+      });
+
+      // Update progress bar in-place
+      const total = state.quiz.ids.length;
+      const answeredCount = Object.keys(state.quiz.answers).length;
+      const progressRatio = total > 0 ? (answeredCount / total) : 0;
+      const track = document.querySelector(".progress-track");
+      if (track) track.setAttribute("aria-valuenow", answeredCount);
+      const fill = document.querySelector(".progress-fill");
+      if (fill && fill.style) {
+        fill.style.setProperty("--p", progressRatio.toFixed(4));
+      }
     }
 
     function checkAnswer() {
@@ -2921,14 +5622,61 @@
       if (state.quiz.answers[qid] === undefined) return;
 
       state.quiz.checked[qid] = true;
+      lastRevealTimestamp = Date.now();
+
+      const item = getQuestionById(qid);
+      const isCorrect = item && (state.quiz.answers[qid] === item.q.answer);
+
+      // Haptic feedback (Android only)
+      triggerHaptic(isCorrect ? "correct" : "wrong");
+
+      // Screen reader announcement via aria-live
+      if (item) {
+        const letter = ["A", "B", "C", "D"][item.q.answer];
+        const ansText = item.q.options[item.q.answer];
+        const msg = isCorrect
+          ? `Correct! The answer is ${letter}: ${ansText}.`
+          : `Not quite, the correct answer is ${letter}: ${ansText}.`;
+        announce(msg);
+      }
+
+      // Save progress immediately
+      store.activeQuiz = {
+        kind: state.quiz.kind,
+        weekId: state.quiz.weekId,
+        mode: state.quiz.mode,
+        ids: state.quiz.ids,
+        idx: state.quiz.idx,
+        answers: Object.assign({}, state.quiz.answers),
+        checked: Object.assign({}, state.quiz.checked),
+        eliminated: Object.assign({}, state.quiz.eliminated)
+      };
+      saveStore();
+
       render();
+
+      // Mobile: scroll rationale into view with block: "nearest" if it opens below fold
+      setTimeout(() => {
+        const exp = document.querySelector(".explanation-panel, .rationale-drawer");
+        if (exp && typeof exp.scrollIntoView === "function") {
+          exp.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }, 220);
     }
 
     function nextQuestion() {
       if (!state.quiz) return;
       if (state.quiz.idx + 1 < state.quiz.ids.length) {
         state.quiz.idx++;
-        render();
+        if (store.activeQuiz) {
+          store.activeQuiz.idx = state.quiz.idx;
+          saveStore();
+        }
+        transitionRender(() => {
+          render();
+          const stem = document.getElementById("q-stem");
+          if (stem && typeof stem.focus === "function") stem.focus();
+        }, "next");
       } else {
         finishQuiz();
       }
@@ -2938,7 +5686,15 @@
       if (!state.quiz || state.quiz.idx === 0) return;
       state.quiz.idx--;
       state.quiz.submitPrompt = false;
-      render();
+      if (store.activeQuiz) {
+        store.activeQuiz.idx = state.quiz.idx;
+        saveStore();
+      }
+      transitionRender(() => {
+        render();
+        const stem = document.getElementById("q-stem");
+        if (stem && typeof stem.focus === "function") stem.focus();
+      }, "prev");
     }
 
     function promptExamSubmit() {
@@ -2956,6 +5712,7 @@
       if (!state.quiz) return;
       state.quiz.finished = true;
       state.quiz.submitPrompt = false;
+      delete store.activeQuiz;
 
       let score = 0;
       state.quiz.ids.forEach(qid => {
@@ -2982,19 +5739,68 @@
       }
 
       saveStore();
+
+      if (score === state.quiz.ids.length && score > 0 && !isReducedMotion()) {
+        triggerConfetti();
+      }
+
       render();
+    }
+
+    function triggerConfetti() {
+      if (typeof document === "undefined" || isReducedMotion()) return;
+      try {
+        const container = document.createElement("div");
+        container.className = "confetti-container";
+        container.setAttribute("aria-hidden", "true");
+        const colors = ["#166534", "#4ADE80", "#0284C7", "#38BDF8", "#FBBF24", "#F4F4F5"];
+        for (let i = 0; i < 35; i++) {
+          const piece = document.createElement("div");
+          piece.className = "confetti-piece";
+          piece.style.left = (Math.random() * 100) + "vw";
+          piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          piece.style.animationDelay = (Math.random() * 0.5) + "s";
+          piece.style.animationDuration = (1.5 + Math.random() * 1.0) + "s";
+          container.appendChild(piece);
+        }
+        document.body.appendChild(container);
+        setTimeout(() => {
+          if (container.parentNode) container.parentNode.removeChild(container);
+        }, 2800);
+      } catch (e) {}
     }
 
     function toggleTheme() {
       const current = document.documentElement.getAttribute("data-theme") || "light";
       const next = current === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      store.theme = next;
-      saveStore();
-      updateThemeIcon();
 
-      const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute("content", next === "dark" ? "#111A14" : "#F3EEE1");
+      const applyTheme = () => {
+        document.documentElement.setAttribute("data-theme", next);
+        store.theme = next;
+        saveStore();
+        updateThemeIcon();
+
+        const isDark = next === "dark";
+        const pack = document.documentElement.getAttribute("data-pack") || (store && store.pack) || "mono";
+        const metaColors = {
+          mono: isDark ? "#09090B" : "#FAFAFA",
+          slate: isDark ? "#0B0F17" : "#F8FAFC",
+          sage: isDark ? "#0B110D" : "#F7F8F7",
+          moss: isDark ? "#0B110D" : "#F7F8F7",
+          graphite: isDark ? "#0C0C0C" : "#F5F5F5"
+        };
+        const meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute("content", metaColors[pack] || (isDark ? "#09090B" : "#FAFAFA"));
+        announce(`Switched to ${next} theme`);
+      };
+
+      if (typeof document !== "undefined" && typeof document.startViewTransition === "function" && !isReducedMotion()) {
+        try {
+          document.startViewTransition(applyTheme);
+          return;
+        } catch (e) {}
+      }
+      applyTheme();
     }
 
     function updateThemeIcon() {
@@ -3007,10 +5813,51 @@
 
     /* 8. EVENT LISTENERS & DELEGATION */
     document.addEventListener("click", function(e) {
+      // Skip link activation
+      const skipLink = e.target.closest(".skip-link");
+      if (skipLink) {
+        e.preventDefault();
+        const app = document.getElementById("app");
+        if (app) {
+          app.focus();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        return;
+      }
+
+      // New quiz set button on results page
+      const newSetBtn = e.target.closest('[data-action="new-quiz-set"]');
+      if (newSetBtn) {
+        state.quiz = null;
+        render();
+        return;
+      }
+
       // Theme toggle
       const themeBtn = e.target.closest("#theme-btn");
       if (themeBtn) {
         toggleTheme();
+        return;
+      }
+
+      // Motion toggle
+      const motionBtn = e.target.closest("#motion-btn");
+      if (motionBtn) {
+        toggleMotion();
+        return;
+      }
+
+      // Close shortcuts dialog button
+      const closeShortcuts = e.target.closest("#btn-close-shortcuts");
+      if (closeShortcuts) {
+        const dlg = document.getElementById("shortcuts-dialog");
+        if (dlg && typeof dlg.close === "function") dlg.close();
+        return;
+      }
+
+      // Backdrop click on shortcuts dialog
+      if (e.target && e.target.id === "shortcuts-dialog" && typeof e.target.close === "function") {
+        e.target.close();
         return;
       }
 
@@ -3047,7 +5894,11 @@
         const mode = modeCard.getAttribute("data-set-mode");
         store.mode = mode;
         saveStore();
-        render();
+        document.querySelectorAll("[data-set-mode]").forEach(card => {
+          const isSel = card.getAttribute("data-set-mode") === mode;
+          card.classList.toggle("selected", isSel);
+          card.setAttribute("aria-checked", isSel ? "true" : "false");
+        });
         return;
       }
 
@@ -3057,7 +5908,9 @@
         const cnt = parseInt(countBtn.getAttribute("data-set-count"), 10);
         store.mixedCount = cnt;
         saveStore();
-        render();
+        document.querySelectorAll("[data-set-count]").forEach(btn => {
+          btn.classList.toggle("active", parseInt(btn.getAttribute("data-set-count"), 10) === cnt);
+        });
         return;
       }
 
@@ -3070,11 +5923,23 @@
         return;
       }
 
+      // Eliminate toggle button clicked
+      const elimBtn = e.target.closest("[data-eliminate-idx]");
+      if (elimBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const oIdx = parseInt(elimBtn.getAttribute("data-eliminate-idx"), 10);
+        toggleEliminate(oIdx);
+        return;
+      }
+
       // Option label clicked
-      const optLbl = e.target.closest(".opt-label");
-      if (optLbl && !optLbl.classList.contains("locked")) {
+      const optLbl = e.target.closest(".opt-label, .opt-item");
+      if (optLbl && state.quiz && !state.quiz.finished && !optLbl.classList.contains("locked") && optLbl.hasAttribute("data-opt-idx")) {
         const oIdx = parseInt(optLbl.getAttribute("data-opt-idx"), 10);
-        selectOption(oIdx);
+        if (!isNaN(oIdx)) {
+          selectOption(oIdx);
+        }
         return;
       }
 
@@ -3084,6 +5949,10 @@
         return;
       }
       if (e.target.closest("#btn-next-question")) {
+        // Tap-through guard: ignore tap within 300ms of answer reveal in practice mode
+        if (state.quiz && state.quiz.mode === "practice" && Date.now() - lastRevealTimestamp < 300) {
+          return;
+        }
         nextQuestion();
         return;
       }
@@ -3108,7 +5977,11 @@
       }
       if (e.target.closest("#btn-retry-quiz")) {
         if (state.quiz) {
-          startQuiz(state.quiz.kind, state.quiz.weekId);
+          if (state.quiz.kind === "missed" && (!store.missed || store.missed.length === 0)) {
+            startQuiz("missed", null, state.quiz.ids);
+          } else {
+            startQuiz(state.quiz.kind, state.quiz.weekId);
+          }
         }
         return;
       }
@@ -3133,7 +6006,7 @@
 
     document.addEventListener("touchstart", function(e) {
       if (e.touches.length !== 1) return;
-      if (e.target.closest(".week-scroll, .learn-jump-scroll, .seg-control")) return;
+      if (e.target.closest(".week-scroll, .learn-jump-scroll, .seg-control, .mobile-bottom-bar")) return;
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
       touchStartTime = Date.now();
@@ -3162,9 +6035,57 @@
       touchStartTime = 0;
     }, { passive: true });
 
+    // Right-click on options to toggle Process of Elimination
+    document.addEventListener("contextmenu", function(e) {
+      const optLbl = e.target.closest(".opt-label, .opt-item");
+      if (optLbl && state.quiz && !state.quiz.finished) {
+        const qid = state.quiz.ids[state.quiz.idx];
+        if (!state.quiz.checked[qid]) {
+          e.preventDefault();
+          const oIdx = parseInt(optLbl.getAttribute("data-opt-idx"), 10);
+          if (!isNaN(oIdx)) {
+            toggleEliminate(oIdx);
+          }
+        }
+      }
+    });
+
     // Keyboard Shortcuts
     document.addEventListener("keydown", function(e) {
-      if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
+      if (e.ctrlKey || e.altKey || e.metaKey) return;
+      if (e.target && ((e.target.tagName === "INPUT" && e.target.type !== "radio" && e.target.type !== "checkbox") || e.target.tagName === "TEXTAREA" || e.target.isContentEditable)) return;
+
+      // ? key to toggle shortcuts modal
+      if (e.key === "?") {
+        e.preventDefault();
+        const dlg = document.getElementById("shortcuts-dialog");
+        if (dlg) {
+          if (dlg.open && typeof dlg.close === "function") {
+            dlg.close();
+          } else if (typeof dlg.showModal === "function") {
+            dlg.showModal();
+          }
+        }
+        return;
+      }
+
+      if (e.shiftKey) return;
+
+      // Escape key to dismiss shortcuts dialog or submit prompt
+      if (e.key === "Escape") {
+        const dlg = document.getElementById("shortcuts-dialog");
+        if (dlg && dlg.open && typeof dlg.close === "function") {
+          e.preventDefault();
+          dlg.close();
+          return;
+        }
+        if (state.quiz && state.quiz.submitPrompt) {
+          e.preventDefault();
+          state.quiz.submitPrompt = false;
+          render();
+          return;
+        }
+      }
 
       // Learn mode week navigation
       if (!state.quiz && window.location.hash.includes("/learn/")) {
@@ -3203,6 +6124,10 @@
 
       // Enter key for primary progression
       if (e.key === "Enter") {
+        if (e.target && e.target.closest("button, a, input:not([type='radio']):not([type='checkbox']), select, textarea, summary")) {
+          // Allow focused interactive element to execute its native button / anchor activation
+          return;
+        }
         if (state.quiz.submitPrompt) {
           e.preventDefault();
           finishQuiz();
@@ -3219,11 +6144,11 @@
             nextQuestion();
           }
         } else {
-          // Exam mode
+          // Exam mode: allow advancement or prompt submission
           if (state.quiz.idx + 1 === state.quiz.ids.length) {
             e.preventDefault();
             promptExamSubmit();
-          } else if (state.quiz.answers[qid] !== undefined) {
+          } else {
             e.preventDefault();
             nextQuestion();
           }
@@ -3236,7 +6161,7 @@
         if (state.quiz.mode === "practice" && isChecked) {
           e.preventDefault();
           nextQuestion();
-        } else if (state.quiz.mode === "exam" && state.quiz.idx + 1 < state.quiz.ids.length && state.quiz.answers[qid] !== undefined) {
+        } else if (state.quiz.mode === "exam" && state.quiz.idx + 1 < state.quiz.ids.length) {
           e.preventDefault();
           nextQuestion();
         }
@@ -3253,8 +6178,10 @@
 
     // Hash navigation listener
     window.addEventListener("hashchange", function() {
-      // Changing route during quiz abandons it
-      if (state.quiz && !state.quiz.finished) {
+      const hash = window.location.hash || store.lastRoute || "#/learn/1";
+      const parts = hash.replace(/^#\/?/, "").split("/");
+      const view = parts[0] || "learn";
+      if (view !== "quiz" && state.quiz) {
         state.quiz = null;
       }
       render();
@@ -3263,6 +6190,15 @@
     /* 9. BOOTSTRAP */
     function init() {
       loadStore();
+      if (store.theme) {
+        document.documentElement.setAttribute("data-theme", store.theme);
+      }
+      if (store.pack && store.pack !== "mono") {
+        document.documentElement.setAttribute("data-pack", store.pack);
+      }
+      if (store.motion === "reduced") {
+        document.documentElement.setAttribute("data-motion", "reduced");
+      }
       if (!validateData()) return;
 
       if (!window.location.hash) {
