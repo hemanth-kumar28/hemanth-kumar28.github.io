@@ -510,6 +510,9 @@
     }
     .seg-control {
       display: inline-flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      max-width: 100%;
       background: var(--surface-2);
       padding: 3px;
       border-radius: 999px;
@@ -4441,6 +4444,7 @@
       if (!Array.isArray(store.missed)) store.missed = [];
       if (!store.best || typeof store.best !== "object") store.best = {};
       if (!store.attempts || typeof store.attempts !== "object") store.attempts = {};
+      if (![10, 20, 40, 120].includes(store.mixedCount)) store.mixedCount = 20;
     }
 
     function saveStore() {
@@ -4851,7 +4855,9 @@
       const desc = kind === "week" 
         ? "10 multiple-choice questions from this week's assignments." 
         : (kind === "mixed" 
-            ? "Random sample of questions drawn from all 12 course weeks."
+            ? (store.mixedCount === 120
+                ? "All 120 questions drawn from across all 12 course weeks in a random mixed order."
+                : `Random sample of ${store.mixedCount || 20} questions drawn from all 12 course weeks.`)
             : (missedCount === 0 
                 ? "You currently have no recorded missed questions."
                 : `Retry questions you previously answered incorrectly (${missedCount} available).`));
@@ -4880,18 +4886,19 @@
         store.activeQuiz &&
         store.activeQuiz.kind === kind &&
         (!weekId || store.activeQuiz.weekId === weekId) &&
+        (kind !== "mixed" || (Array.isArray(store.activeQuiz.ids) && store.activeQuiz.ids.length === (parseInt(store.mixedCount, 10) || 20))) &&
         Array.isArray(store.activeQuiz.ids) &&
         !store.activeQuiz.finished
       );
       const activeIdx = hasActiveSession ? (typeof store.activeQuiz.idx === "number" ? store.activeQuiz.idx : 0) : 0;
-      const activeTotal = hasActiveSession ? store.activeQuiz.ids.length : 10;
+      const activeTotal = hasActiveSession ? store.activeQuiz.ids.length : (kind === "mixed" ? (parseInt(store.mixedCount, 10) || 20) : 10);
 
       return `
         <div class="container quiz-column">
           <section class="card hero">
             <div class="mono-label">${label}</div>
             <h1>${esc(title)}</h1>
-            <p style="margin-bottom: 16px; color: var(--muted);">${esc(desc)}</p>
+            <p id="quiz-start-desc" style="margin-bottom: 16px; color: var(--muted);">${esc(desc)}</p>
             ${kind === "week" ? `<div class="mono-label" style="margin-bottom: 24px;">${statsStr}</div>` : ""}
 
             <div style="margin-bottom: 24px;">
@@ -4914,15 +4921,26 @@
               </div>
             </div>
 
+            ${kind === "mixed" ? `
+              <div style="margin-bottom: 24px;">
+                <span class="mono-label" style="display: block; margin-bottom: 8px;">QUESTION COUNT</span>
+                <div class="seg-control" id="mixed-count-control-hero">
+                  ${[10, 20, 40, 120].map(cnt => `
+                    <button type="button" class="seg-btn ${store.mixedCount === cnt ? 'active' : ''}" data-set-count="${cnt}">
+                      ${cnt === 120 ? 'All 120 Qs' : `${cnt} Qs`}
+                    </button>
+                  `).join("")}
+                </div>
+              </div>
+            ` : ""}
+
             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-              <button id="btn-start-quiz" class="btn btn-primary" data-start-kind="${kind}" data-start-week="${weekId || 1}">
+              <button id="btn-start-quiz" class="btn btn-primary" data-start-kind="${kind}" data-start-week="${weekId || 1}" data-start-count="${store.mixedCount || 20}">
                 ${hasActiveSession ? `Resume Quiz (Q${activeIdx + 1} of ${activeTotal})` : 'Start Quiz'} ${ICONS.arrowRight}
               </button>
-              ${hasActiveSession ? `
-                <button type="button" id="btn-restart-quiz" class="btn btn-secondary" data-start-kind="${kind}" data-start-week="${weekId || 1}">
-                  Start Quiz from Q1
-                </button>
-              ` : ''}
+              <button type="button" id="btn-restart-quiz" class="btn btn-secondary" data-start-kind="${kind}" data-start-week="${weekId || 1}" data-start-count="${store.mixedCount || 20}" style="${hasActiveSession ? '' : 'display: none;'}">
+                Start Quiz from Q1
+              </button>
               ${kind === "week" ? `<a href="#/learn/${week.id}" class="btn btn-ghost">Review notes</a>` : ""}
             </div>
 
@@ -4943,9 +4961,9 @@
                 <div style="margin-bottom: 16px;">
                   <span class="mono-label" style="display: block; margin-bottom: 6px;">QUESTION COUNT</span>
                   <div class="seg-control" id="mixed-count-control">
-                    ${[10, 20, 40].map(cnt => `
-                      <button class="seg-btn ${store.mixedCount === cnt ? 'active' : ''}" data-set-count="${cnt}">
-                        ${cnt} Qs
+                    ${[10, 20, 40, 120].map(cnt => `
+                      <button type="button" class="seg-btn ${store.mixedCount === cnt ? 'active' : ''}" data-set-count="${cnt}">
+                        ${cnt === 120 ? 'All 120 Qs' : `${cnt} Qs`}
                       </button>
                     `).join("")}
                   </div>
@@ -5388,18 +5406,31 @@
     }
 
     /* 7. QUIZ ENGINE & STATE MANAGEMENT */
-    function startQuiz(kind, weekId, reuseIds) {
+    function startQuiz(kind, weekIdOrCount, reuseIds) {
+      let actualReuseIds = reuseIds;
+      if (Array.isArray(weekIdOrCount)) {
+        actualReuseIds = weekIdOrCount;
+        weekIdOrCount = undefined;
+      }
+
       let qids = [];
-      if (reuseIds && Array.isArray(reuseIds) && reuseIds.length > 0) {
-        qids = reuseIds.slice();
+      if (actualReuseIds && Array.isArray(actualReuseIds) && actualReuseIds.length > 0) {
+        qids = actualReuseIds.slice();
       } else if (kind === "week") {
-        const week = WEEKS.find(w => w.id === weekId);
+        const wId = typeof weekIdOrCount === "number" ? weekIdOrCount : 1;
+        const week = WEEKS.find(w => w.id === wId);
         if (!week) return;
         qids = week.questions.map(q => q.id);
       } else if (kind === "mixed") {
         const allQuestions = [];
         WEEKS.forEach(w => w.questions.forEach(q => allQuestions.push(q.id)));
-        const count = Math.min(store.mixedCount || 20, allQuestions.length);
+        const parsedCount = parseInt(weekIdOrCount, 10);
+        let targetCount = (!isNaN(parsedCount) && parsedCount > 0)
+          ? parsedCount
+          : (parseInt(store.mixedCount, 10) || 20);
+        store.mixedCount = targetCount;
+        saveStore();
+        const count = Math.min(targetCount, allQuestions.length);
         qids = shuffle(allQuestions).slice(0, count);
       } else if (kind === "missed") {
         if (!store.missed || store.missed.length === 0) return;
@@ -5407,9 +5438,11 @@
         if (qids.length === 0) return;
       }
 
+      const activeWeek = kind === "week" ? (typeof weekIdOrCount === "number" ? weekIdOrCount : 1) : null;
+
       state.quiz = {
         kind,
-        weekId: kind === "week" ? weekId : null,
+        weekId: activeWeek,
         mode: store.mode || "practice",
         ids: qids,
         idx: 0,
@@ -5421,18 +5454,27 @@
       };
 
       // Resume from saved active quiz if matching session exists
-      if (!reuseIds && store.activeQuiz && store.activeQuiz.kind === kind &&
-          (kind !== "week" || store.activeQuiz.weekId === weekId) &&
+      let resumed = false;
+      if (!actualReuseIds && store.activeQuiz && store.activeQuiz.kind === kind &&
+          (kind !== "week" || store.activeQuiz.weekId === activeWeek) &&
           Array.isArray(store.activeQuiz.ids) && store.activeQuiz.ids.length === qids.length &&
           !store.activeQuiz.finished) {
+        state.quiz.ids = store.activeQuiz.ids.slice();
         state.quiz.idx = typeof store.activeQuiz.idx === "number" ? store.activeQuiz.idx : 0;
         state.quiz.answers = Object.assign({}, store.activeQuiz.answers);
         state.quiz.checked = Object.assign({}, store.activeQuiz.checked);
         state.quiz.eliminated = Object.assign({}, store.activeQuiz.eliminated);
+        resumed = true;
       }
 
-      const targetHash = kind === "week" ? `#/quiz/${weekId}` : `#/quiz/${kind}`;
-      if (window.location.hash !== targetHash) {
+      // If starting fresh without resuming, clear any stale active quiz
+      if (!resumed && store.activeQuiz) {
+        delete store.activeQuiz;
+        saveStore();
+      }
+
+      const targetHash = kind === "week" ? `#/quiz/${activeWeek || 1}` : `#/quiz/${kind}`;
+      if (typeof window !== "undefined" && window.location && window.location.hash !== targetHash) {
         window.location.hash = targetHash;
       }
       render();
@@ -5911,6 +5953,39 @@
         document.querySelectorAll("[data-set-count]").forEach(btn => {
           btn.classList.toggle("active", parseInt(btn.getAttribute("data-set-count"), 10) === cnt);
         });
+
+        // Synchronize hero description if on mixed quiz start screen
+        const descEl = document.getElementById("quiz-start-desc");
+        if (descEl && (!state.route || state.route.includes("/quiz/mixed"))) {
+          descEl.textContent = cnt === 120
+            ? "All 120 questions drawn from across all 12 course weeks in a random mixed order."
+            : `Random sample of ${cnt} questions drawn from all 12 course weeks.`;
+        }
+
+        const startBtn = document.getElementById("btn-start-quiz");
+        const restartBtn = document.getElementById("btn-restart-quiz");
+        const hasMatchingActive = Boolean(
+          store.activeQuiz &&
+          store.activeQuiz.kind === "mixed" &&
+          Array.isArray(store.activeQuiz.ids) &&
+          store.activeQuiz.ids.length === cnt &&
+          !store.activeQuiz.finished
+        );
+
+        if (startBtn && startBtn.getAttribute("data-start-kind") === "mixed") {
+          startBtn.setAttribute("data-start-count", String(cnt));
+          if (hasMatchingActive) {
+            const aIdx = typeof store.activeQuiz.idx === "number" ? store.activeQuiz.idx : 0;
+            startBtn.innerHTML = `Resume Quiz (Q${aIdx + 1} of ${cnt}) ${ICONS.arrowRight}`;
+          } else {
+            startBtn.innerHTML = `Start Quiz ${ICONS.arrowRight}`;
+          }
+        }
+
+        if (restartBtn && restartBtn.getAttribute("data-start-kind") === "mixed") {
+          restartBtn.setAttribute("data-start-count", String(cnt));
+          restartBtn.style.display = hasMatchingActive ? "" : "none";
+        }
         return;
       }
 
@@ -5918,8 +5993,31 @@
       const startBtn = e.target.closest("#btn-start-quiz");
       if (startBtn) {
         const kind = startBtn.getAttribute("data-start-kind");
-        const week = parseInt(startBtn.getAttribute("data-start-week"), 10);
-        startQuiz(kind, week);
+        if (kind === "mixed") {
+          const count = parseInt(startBtn.getAttribute("data-start-count") || store.mixedCount || 20, 10);
+          startQuiz(kind, count);
+        } else {
+          const week = parseInt(startBtn.getAttribute("data-start-week"), 10);
+          startQuiz(kind, week);
+        }
+        return;
+      }
+
+      // Restart quiz from Q1 button
+      const restartBtn = e.target.closest("#btn-restart-quiz");
+      if (restartBtn) {
+        const kind = restartBtn.getAttribute("data-start-kind");
+        if (store.activeQuiz && store.activeQuiz.kind === kind) {
+          delete store.activeQuiz;
+          saveStore();
+        }
+        if (kind === "mixed") {
+          const count = parseInt(restartBtn.getAttribute("data-start-count") || store.mixedCount || 20, 10);
+          startQuiz(kind, count);
+        } else {
+          const week = parseInt(restartBtn.getAttribute("data-start-week"), 10);
+          startQuiz(kind, week);
+        }
         return;
       }
 
@@ -5979,6 +6077,8 @@
         if (state.quiz) {
           if (state.quiz.kind === "missed" && (!store.missed || store.missed.length === 0)) {
             startQuiz("missed", null, state.quiz.ids);
+          } else if (state.quiz.kind === "mixed") {
+            startQuiz("mixed", state.quiz.ids.length, state.quiz.ids);
           } else {
             startQuiz(state.quiz.kind, state.quiz.weekId);
           }
